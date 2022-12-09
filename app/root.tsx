@@ -10,11 +10,11 @@ import {
 } from "@remix-run/react";
 
 import { getUser } from "./session.server";
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+// import tailwindStylesheetUrl from "./styles/tailwind.css";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
+// export const links: LinksFunction = () => {
+//   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+// };
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
