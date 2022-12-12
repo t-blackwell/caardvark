@@ -152,7 +152,7 @@ export default function LoginPage() {
           <Link
             component={RemixLink}
             to={{
-              pathname: "/join",
+              pathname: "/signup",
               search: searchParams.toString(),
             }}
           >
