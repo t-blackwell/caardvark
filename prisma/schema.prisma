@@ -1,38 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model card {
+  card_id          Int           @id(map: "pk_card") @default(autoincrement())
+  hash             String        @db.VarChar(100)
+  user_id          Int
+  card_template_id Int
+  from             String        @db.VarChar(50)
+  to               String?       @db.VarChar(50)
+  published_date   DateTime?
+  deleted          String        @default("N") @db.VarChar(1)
+  created_date     DateTime      @default(now())
+  updated_date     DateTime      @default(now())
+  card_template    card_template @relation(fields: [card_template_id], references: [card_template_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_card_card_template")
+  user             user          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_card_user")
 }
 
-model User {
-  id    String @id @default(cuid())
-  email String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  password Password?
-  notes    Note[]
+model card_template {
+  card_template_id Int       @id(map: "pk_card_template") @default(autoincrement())
+  card_type_id     Int
+  text             String?   @db.VarChar(100)
+  text_css         String?   @db.VarChar(4000)
+  bg_css           String?   @db.VarChar(4000)
+  created_date     DateTime  @default(now())
+  updated_date     DateTime  @default(now())
+  card             card[]
+  card_type        card_type @relation(fields: [card_type_id], references: [card_type_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_card_template_card_type")
 }
 
-model Password {
-  hash String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+model card_type {
+  card_type_id  Int             @id(map: "pk_card_type") @default(autoincrement())
+  name          String?         @db.VarChar(50)
+  card_template card_template[]
 }
 
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
+model note {
+  note_id      Int      @id(map: "pk_note") @default(autoincrement())
+  user_id      Int
+  title        String   @db.VarChar(100)
+  body         String   @db.VarChar(4000)
+  created_date DateTime @default(now())
+  updated_date DateTime @default(now())
+  user         user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_note_user_id")
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model password {
+  hash    String @db.VarChar(100)
+  user_id Int    @unique(map: "uk_password_user_id")
+  user    user   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_password_user_id")
+}
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+model user {
+  user_id      Int       @id(map: "pk_user") @default(autoincrement())
+  email        String    @unique(map: "uk_user_email")
+  created_date DateTime  @default(now())
+  updated_date DateTime  @default(now())
+  card         card[]
+  note         note[]
+  password     password?
 }

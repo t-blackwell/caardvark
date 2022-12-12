@@ -28,7 +28,7 @@ async function seed() {
     data: {
       title: "My first note",
       body: "Hello, world!",
-      userId: user.id,
+      user_id: user.user_id,
     },
   });
 
@@ -36,7 +36,7 @@ async function seed() {
     data: {
       title: "My second note",
       body: "Hello, world!",
-      userId: user.id,
+      user_id: user.user_id,
     },
   });
 
