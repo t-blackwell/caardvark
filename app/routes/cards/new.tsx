@@ -1,8 +1,8 @@
 import {
-  Autocomplete,
   FormControl,
   InputLabel,
   MenuItem,
+  NativeSelect,
   Select,
   TextField,
 } from "@mui/material";
@@ -10,7 +10,6 @@ import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { createNote } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/new.css";
 
@@ -64,29 +63,19 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  const userId = await requireUserId(request);
-
+  console.log("DO action");
   const formData = await request.formData();
-  const title = formData.get("title");
-  const body = formData.get("body");
-
-  if (typeof title !== "string" || title.length === 0) {
-    return json(
-      { errors: { title: "Title is required", body: null } },
-      { status: 400 }
-    );
+  console.log(formData.entries(), " entries");
+  console.log(formData.get("whydoinotwork"), "  whydoinotwork");
+  if (formData.get("whydoinotwork") === "") {
+    console.log("i am an empty string");
   }
+  console.log(formData.get("hiddeninput"));
 
-  if (typeof body !== "string" || body.length === 0) {
-    return json(
-      { errors: { body: "Body is required", title: null } },
-      { status: 400 }
-    );
-  }
+  const type = formData.get("idonotexist");
+  console.log(type, " idonotexist");
 
-  const note = await createNote({ title, body, userId });
-
-  return redirect(`/notes/${note.id}`);
+  return redirect(`/cards/new`);
 }
 
 export function links() {
@@ -96,16 +85,12 @@ export function links() {
 export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
-  const titleRef = React.useRef<HTMLInputElement>(null);
-  const bodyRef = React.useRef<HTMLTextAreaElement>(null);
 
-  React.useEffect(() => {
-    if (actionData?.errors?.title) {
-      titleRef.current?.focus();
-    } else if (actionData?.errors?.body) {
-      bodyRef.current?.focus();
-    }
-  }, [actionData]);
+  const selectForm = React.useRef<HTMLFormElement>(null);
+  const handleSubmit = () => {
+    console.log(selectForm.current);
+    selectForm.current?.submit();
+  };
 
   return (
     <Form
@@ -116,13 +101,33 @@ export default function NewCardPage() {
         gap: 8,
         width: "100%",
       }}
+      ref={selectForm}
+      // onChange={handleSubmit}
     >
-      <FormControl fullWidth>
+      <input type="hidden" name="hiddeninput" value={25} />
+      <TextField
+        id="select"
+        label="type"
+        defaultValue={""}
+        select
+        onChange={handleSubmit}
+        inputProps={{ name: "whydoinotwork" }}
+      >
+        {templateData.types.map((type) => (
+          <MenuItem key={type.id} value={type.id}>
+            {type.label}
+          </MenuItem>
+        ))}
+      </TextField>
+      {/* <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           label="Type"
+          inputProps={{ name: "type", type: "text" }}
+          defaultValue={""}
         >
           {templateData.types.map((type) => (
             <MenuItem key={type.id} value={type.id}>
@@ -130,7 +135,7 @@ export default function NewCardPage() {
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <div className="NewCard__templates">
         {templateData.templates.map((template) => (
           <div className="NewCard__template" key={template.id}>
