@@ -66,7 +66,7 @@ export async function action({ request }: ActionArgs) {
 
   return createUserSession({
     request,
-    userId: user.id,
+    userId: user.user_id.toString(),
     remember: remember === "on" ? true : false,
     redirectTo,
   });
