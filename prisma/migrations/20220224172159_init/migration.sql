@@ -1,6 +1,8 @@
 CREATE TABLE "user" (
     user_id SERIAL NOT NULL,
-    email TEXT NOT NULL,
+    email VARCHAR(200) NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     created_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -30,7 +32,6 @@ CREATE TABLE note (
     CONSTRAINT fk_note_user_id FOREIGN KEY (user_id) REFERENCES "user"(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- CreateTable
 CREATE TABLE card_type (
     card_type_id SERIAL NOT NULL,
     name VARCHAR(50),
@@ -67,4 +68,38 @@ CREATE TABLE "card" (
     CONSTRAINT fk_card_user FOREIGN KEY (user_id) REFERENCES "user"(user_id),
     CONSTRAINT fk_card_card_template FOREIGN KEY (card_template_id) REFERENCES "card_template"(card_template_id),
     CONSTRAINT ch_card_deleted CHECK (deleted IN ('Y', 'N'))
+);
+
+CREATE TABLE color (
+    color_id SERIAL NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+    hex VARCHAR(8),
+
+    CONSTRAINT pk_color PRIMARY KEY (color_id)
+);
+
+CREATE TABLE font (
+    font_id SERIAL NOT NULL,
+    "name" VARCHAR(100),
+
+    CONSTRAINT pk_font PRIMARY KEY (font_id)
+);
+
+CREATE TABLE "message" (
+    message_id SERIAL NOT NULL,
+    card_id INTEGER NOT NULL,
+    "from" VARCHAR(50) NOT NULL,
+    "text" VARCHAR(500) NOT NULL,
+    color_id INTEGER NOT NULL,
+    font_id INTEGER NOT NULL,
+    image_url VARCHAR(500),
+    deleted VARCHAR(1) NOT NULL DEFAULT 'N',
+    created_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_message PRIMARY KEY (message_id),
+    CONSTRAINT fk_message_card FOREIGN KEY (card_id) REFERENCES card(card_id),
+    CONSTRAINT fk_message_color FOREIGN KEY (color_id) REFERENCES color(color_id),
+    CONSTRAINT fk_message_font FOREIGN KEY (font_id) REFERENCES font(font_id),
+    CONSTRAINT ch_message_deleted CHECK (deleted IN ('Y', 'N'))
 );
