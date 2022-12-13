@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
-import type { User } from "~/models/user.server";
+import type { user } from "~/models/user.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -44,11 +44,11 @@ export function useMatchesData(
   return route?.data;
 }
 
-function isUser(user: any): user is User {
+function isUser(user: any): user is user {
   return user && typeof user === "object" && typeof user.email === "string";
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalUser(): user | undefined {
   const data = useMatchesData("root");
   if (!data || !isUser(data.user)) {
     return undefined;
@@ -56,7 +56,7 @@ export function useOptionalUser(): User | undefined {
   return data.user;
 }
 
-export function useUser(): User {
+export function useUser(): user {
   const maybeUser = useOptionalUser();
   if (!maybeUser) {
     throw new Error(
