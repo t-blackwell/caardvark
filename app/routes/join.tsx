@@ -2,10 +2,8 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
-
-import { createUserSession, getUserId } from "~/session.server";
-
 import { createUser, getUserByEmail } from "~/models/user.server";
+import { createUserSession, getUserId } from "~/session.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
@@ -58,7 +56,7 @@ export async function action({ request }: ActionArgs) {
 
   return createUserSession({
     request,
-    userId: user.id,
+    userId: user.user_id.toString(),
     remember: false,
     redirectTo,
   });
