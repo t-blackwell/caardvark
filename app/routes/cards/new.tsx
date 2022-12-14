@@ -195,7 +195,7 @@ export default function NewCardPage() {
           native
         >
           <option value={""}>All Templates</option>
-          {templateData.types.map((type: any) => (
+          {templateData.types.map((type) => (
             <option key={type.card_type_id} value={type.card_type_id}>
               {type.name}
             </option>
@@ -203,7 +203,7 @@ export default function NewCardPage() {
         </Select>
       </FormControl>
       <div className="NewCard__templates">
-        {templateData.templates.map((template: any) => (
+        {templateData.templates.map((template) => (
           <button
             key={template.card_template_id}
             type="submit"
