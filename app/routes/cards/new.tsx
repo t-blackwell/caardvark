@@ -215,7 +215,9 @@ export default function NewCardPage() {
               navigate(
                 buildUrl({
                   template: template.card_template_id.toString(),
-                  type: templateData.selectedType,
+                  ...(templateData.selectedType !== undefined
+                    ? { type: templateData.selectedType }
+                    : undefined),
                 })
               )
             }
