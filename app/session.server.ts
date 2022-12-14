@@ -34,7 +34,7 @@ export async function getUserId(
 
 export async function getUser(request: Request) {
   const userId = await getUserId(request);
-  if (userId === undefined) return null;
+  if (userId === undefined || isNaN(userId)) return null;
 
   const user = await getUserById(userId);
   if (user) return user;
@@ -47,7 +47,7 @@ export async function requireUserId(
   redirectTo: string = new URL(request.url).pathname
 ) {
   const userId = await getUserId(request);
-  if (!userId) {
+  if (userId === undefined || isNaN(userId)) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
