@@ -17,6 +17,18 @@ const selectCardColumns = {
   updated_date: true,
 }
 
+const selectMessageColumns = { 
+  message_id: true,
+  from: true,
+  text: true,
+  color_id: true,
+  font_id: true,
+  image_url: true,
+  deleted: true,
+  created_date: true,
+  updated_date: true,
+}
+
 export function getCard({
   hash,
   user_id,
@@ -25,6 +37,18 @@ export function getCard({
 }) {
   return prisma.card.findFirst({
     select: selectCardColumns,
+    where: { hash, user_id },
+  });
+}
+
+export function getCardWithMessages({
+  hash, 
+  user_id,
+}: Pick<card, "hash"> & {
+  user_id: user["user_id"];
+}) {
+  return prisma.card.findFirst({
+    select: {...selectCardColumns, message: {select: selectMessageColumns}},
     where: { hash, user_id },
   });
 }
