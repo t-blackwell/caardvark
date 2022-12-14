@@ -184,14 +184,17 @@ export default function NewCardPage() {
       onChange={handleSubmit}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        <InputLabel id="demo-simple-select-label" shrink>
+          Type
+        </InputLabel>
         <Select
-          labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label="Type"
           inputProps={{ name: "type", type: "text" }}
-          value={templateData.selectedType}
+          label="Type"
+          labelId="demo-simple-select-label"
           native
+          notched
+          value={templateData.selectedType}
         >
           <option value={""}>All Templates</option>
           {templateData.types.map((type) => (
