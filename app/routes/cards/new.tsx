@@ -1,13 +1,23 @@
-import { FormControl, InputLabel, Select } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  Link,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
+  Link as RemixLink,
   useActionData,
   useLoaderData,
   useSubmit,
 } from "@remix-run/react";
 import * as React from "react";
+import invariant from "tiny-invariant";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
@@ -48,54 +58,40 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
+  const action = formData.get("_action");
 
-  const selectedType = formData.get("type");
-  const selectedTemplate = formData.get("template");
-  const selectedTemplateNum = Number(selectedTemplate);
+  if (action === "create") {
+    const selectedTemplate = formData.get("template");
+    const selectedTemplateNumorNull =
+      selectedTemplate !== null ? Number(selectedTemplate) : null;
+    invariant(selectedTemplateNumorNull, "Error");
+    const userId = await requireUserId(request);
+    const to = formData.get("to");
+    const from = formData.get("from");
 
-  if (selectedTemplate !== null && !isNaN(selectedTemplateNum)) {
-    const form = formData.get("__form");
-    if (typeof form === "string") {
-      if (form === "create") {
-        const userId = await requireUserId(request);
-        const to = formData.get("to");
-        const from = formData.get("from");
-
-        if (typeof to !== "string" || to.length === 0) {
-          return json(
-            { errors: { to: "to is required", from: null } },
-            { status: 400 }
-          );
-        }
-
-        if (typeof from !== "string" || from.length === 0) {
-          return json(
-            { errors: { from: "from is required", to: null } },
-            { status: 400 }
-          );
-        }
-
-        const card = await createCard({
-          card_template_id: selectedTemplateNum,
-          from: from,
-          to: to,
-          user_id: userId,
-        });
-
-        return redirect(`/${card.hash}`);
-      }
+    if (typeof to !== "string" || to.length === 0) {
+      return json(
+        { errors: { to: "to is required", from: null } },
+        { status: 400 }
+      );
     }
-    const searchParams = new URLSearchParams({
-      template: selectedTemplate.toString(),
+
+    if (typeof from !== "string" || from.length === 0) {
+      return json(
+        { errors: { from: "from is required", to: null } },
+        { status: 400 }
+      );
+    }
+
+    const card = await createCard({
+      card_template_id: selectedTemplateNumorNull,
+      from: from,
+      to: to,
+      user_id: userId,
     });
-    return redirect(`/cards/new?${searchParams}`);
-  }
 
-  if (typeof selectedType === "string") {
-    const searchParams = new URLSearchParams({ type: selectedType });
-    return redirect(`/cards/new?${searchParams}`);
+    return redirect(`/${card.hash}`);
   }
-
   return redirect(`/cards/new`);
 }
 
@@ -123,50 +119,50 @@ export default function NewCardPage() {
           width: "100%",
         }}
       >
-        <input type="hidden" name="__form" value="create" />
-        <input type="hidden" name="type" value={templateData.selectedType} />
         <input
           type="hidden"
           name="template"
           value={templateData.selectedTemplate}
         />
-        <p>
-          <label>
-            To:
-            <input
-              type="text"
-              name="to"
-              aria-invalid={actionData?.errors?.to ? true : undefined}
-              aria-errormessage={
-                actionData?.errors?.to ? "to-error" : undefined
-              }
-            />
-          </label>
-          {actionData?.errors?.to && (
-            <div id="to-error">{actionData.errors.to}</div>
-          )}
-        </p>
-        <p>
-          <label>
-            From:
-            <input
-              type="text"
-              name="from"
-              aria-invalid={actionData?.errors?.from ? true : undefined}
-              aria-errormessage={
-                actionData?.errors?.from ? "from-error" : undefined
-              }
-            />
-          </label>
-          {actionData?.errors?.from && (
-            <div id="from-error">{actionData.errors.from}</div>
-          )}
-        </p>
-        <p>
-          <button type="submit" name="_action" value="update">
+        <Typography className="CreatCard__from" variant="h5">
+          To:
+        </Typography>
+        <TextField
+          type="text"
+          name="to"
+          autoFocus
+          error={actionData?.errors?.to !== undefined}
+          helperText={actionData?.errors?.to}
+        />
+        <Typography className="CreatCard__to" variant="h5">
+          From:
+        </Typography>
+        <TextField
+          type="text"
+          name="from"
+          error={actionData?.errors?.from !== undefined}
+          helperText={actionData?.errors?.from}
+        />
+        <div>
+          <Button>
+            <Link
+              component={RemixLink}
+              to={`/cards/new?type=${templateData.selectedType}`}
+              className="CreatForm__backButton"
+              underline="none"
+            >
+              Back
+            </Link>
+          </Button>
+          <Button
+            type="submit"
+            name="_action"
+            value="create"
+            className="CreatForm__backButton"
+          >
             Create
-          </button>
-        </p>
+          </Button>
+        </div>
       </Form>
     );
   }
