@@ -30,6 +30,7 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireUserId(request);
   const url = new URL(request.url);
   const searchParams = Object.fromEntries(url.searchParams.entries());
 
@@ -54,6 +55,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const userId = await requireUserId(request);
   const formData = await request.formData();
 
   const selectedType = formData.get("type");
@@ -64,7 +66,6 @@ export async function action({ request }: ActionArgs) {
     const form = formData.get("__form");
     if (typeof form === "string") {
       if (form === "create") {
-        const userId = await requireUserId(request);
         const to = formData.get("to");
         const from = formData.get("from");
 
