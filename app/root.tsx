@@ -15,6 +15,7 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLocation,
 } from "@remix-run/react";
 import * as React from "react";
 import styles from "~/styles/App.css";
@@ -43,7 +44,7 @@ interface DocumentProps {
 const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
     const clientStyleData = React.useContext(ClientStyleContext);
-
+    const location = useLocation();
     const user = useOptionalUser();
     // Only executed on client
     useEnhancedEffect(() => {
@@ -77,11 +78,13 @@ const Document = withEmotionCache(
           />
         </head>
         <body>
-          <header>
-            {NavBar({
-              loggedIn: user !== undefined,
-            })}
-          </header>
+          {!["/signin", "/signup"].includes(location.pathname) ? (
+            <header>
+              {NavBar({
+                loggedIn: user !== undefined,
+              })}
+            </header>
+          ) : null}
           {children}
           <ScrollRestoration />
           <Scripts />
