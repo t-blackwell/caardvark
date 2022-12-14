@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { deleteCard, getCard } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
@@ -44,6 +44,7 @@ export default function CardDetailsPage() {
         <input type="hidden" name="card_id" value={data.card.card_id} />
         <button type="submit">Delete</button>
       </Form>
+      <Link to={`/${data.card.hash}`}>View Card</Link>
     </div>
   );
 }
