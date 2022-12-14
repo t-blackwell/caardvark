@@ -1,12 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Link, TextField, Typography } from "@mui/material";
 import { json, redirect } from "@remix-run/node";
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import {
@@ -16,9 +8,9 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import * as React from "react";
-import { verifyLogin } from "~/models/user.server";
+import { createUser, getUserByEmail } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
-import styles from "~/styles/login.css";
+import styles from "~/styles/signup.css";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
@@ -32,7 +24,6 @@ export async function action({ request }: ActionArgs) {
   const email = formData.get("email");
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  const remember = formData.get("remember");
 
   if (!validateEmail(email)) {
     return json(
@@ -43,38 +34,44 @@ export async function action({ request }: ActionArgs) {
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { password: "Password is required", email: null } },
+      { errors: { email: null, password: "Password is required" } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { password: "Password is too short", email: null } },
+      { errors: { email: null, password: "Password is too short" } },
       { status: 400 }
     );
   }
 
-  const user = await verifyLogin(email, password);
-
-  if (!user) {
+  const existingUser = await getUserByEmail(email);
+  if (existingUser) {
     return json(
-      { errors: { email: "Invalid email or password", password: null } },
+      {
+        errors: {
+          email: "A user already exists with this email",
+          password: null,
+        },
+      },
       { status: 400 }
     );
   }
+
+  const user = await createUser(email, password);
 
   return createUserSession({
     request,
     userId: user.user_id.toString(),
-    remember: remember === "on" ? true : false,
+    remember: false,
     redirectTo,
   });
 }
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Login",
+    title: "Sign Up",
   };
 };
 
@@ -82,9 +79,9 @@ export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
 
-export default function LoginPage() {
+export default function SignUp() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -98,15 +95,15 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <Container className="Login">
-      <Form className="Login__box" method="post" noValidate>
-        <Typography className="Login__title" variant="h5">
-          Log in
+    <Container className="SignUp">
+      <Form className="SignUp__box" method="post" noValidate>
+        <Typography className="SignUp__title" variant="h5">
+          Sign up
         </Typography>
         <TextField
           autoComplete="email"
           autoFocus={true}
-          className="Login__input"
+          className="SignUp__input"
           error={actionData?.errors?.email !== undefined}
           helperText={actionData?.errors?.email}
           id="email"
@@ -120,43 +117,39 @@ export default function LoginPage() {
 
         <TextField
           autoComplete="current-password"
-          className="Login__input"
+          className="SignUp__input"
           error={actionData?.errors?.password !== undefined}
           helperText={actionData?.errors?.password}
           id="password"
           label="Password"
           name="password"
           ref={passwordRef}
+          required
           size="small"
           type="password"
         />
 
         <input type="hidden" name="redirectTo" value={redirectTo} />
 
-        <FormControlLabel
-          control={<Checkbox defaultChecked name="remember" size="small" />}
-          label="Remember me"
-        />
-
         <Button
-          className="Login__button"
-          color="primary"
+          className="SignUp__button"
+          color="success"
           disableElevation
           type="submit"
           variant="contained"
         >
-          Log in
+          Create Account
         </Button>
         <Typography variant="caption">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <Link
             component={RemixLink}
             to={{
-              pathname: "/signup",
+              pathname: "/login",
               search: searchParams.toString(),
             }}
           >
-            Sign up
+            Log in
           </Link>
         </Typography>
       </Form>

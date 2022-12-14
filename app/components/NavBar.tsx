@@ -89,7 +89,7 @@ export default function NavBar({ loggedIn }: NavBarProps) {
           <Link component={RemixLink} to="/login" className="Nav__linkButton">
             <Button>Sign In</Button>
           </Link>
-          <Link component={RemixLink} to="join" className="Nav__linkButton">
+          <Link component={RemixLink} to="/signup" className="Nav__linkButton">
             <Button>Sign Up</Button>
           </Link>
         </Toolbar>
