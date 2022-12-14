@@ -100,7 +100,14 @@ export default function NavBar({
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Cards
+            <Link
+              component={RemixLink}
+              to="/"
+              className="Nav__linkButton"
+              underline="none"
+            >
+              Cards
+            </Link>
           </Typography>
           <Link
             component={RemixLink}
