@@ -36,6 +36,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const filteredTemplates = cardTemplates.filter(
     (template) =>
       searchParams.type === undefined ||
+      searchParams.type === "" ||
       template.card_type_id === Number(searchParams.type)
   );
   return json({
@@ -50,20 +51,18 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
 
   const selectedType = formData.get("type");
-  const selectedTemplate = Number(formData.get("template"));
+  const selectedTemplate = formData.get("template");
+  const selectedTemplateNum = Number(selectedTemplate);
 
-  if (!isNaN(selectedTemplate)) {
+  if (selectedTemplate !== null && !isNaN(selectedTemplateNum)) {
     const form = formData.get("__form");
     if (typeof form === "string") {
       if (form === "create") {
         const userId = await requireUserId(request);
         const to = formData.get("to");
         const from = formData.get("from");
-        console.log("to ", to);
-        console.log("from ", from);
 
         if (typeof to !== "string" || to.length === 0) {
-          console.log("here");
           return json(
             { errors: { to: "to is required", from: null } },
             { status: 400 }
@@ -78,7 +77,7 @@ export async function action({ request }: ActionArgs) {
         }
 
         const card = await createCard({
-          card_template_id: +selectedTemplate,
+          card_template_id: selectedTemplateNum,
           from: from,
           to: to,
           user_id: userId,
@@ -185,14 +184,17 @@ export default function NewCardPage() {
       onChange={handleSubmit}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        <InputLabel id="demo-simple-select-label" shrink>
+          Type
+        </InputLabel>
         <Select
-          labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label="Type"
           inputProps={{ name: "type", type: "text" }}
-          value={templateData.selectedType}
+          label="Type"
+          labelId="demo-simple-select-label"
           native
+          notched
+          value={templateData.selectedType}
         >
           <option value={""}>All Templates</option>
           {templateData.types.map((type) => (

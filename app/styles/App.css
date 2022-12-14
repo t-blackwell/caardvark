@@ -1,6 +1,9 @@
 body {
   margin: 0;
 }
+main {
+  margin: 16px;
+}
 
 .Nav__signout {
   background: transparent;
