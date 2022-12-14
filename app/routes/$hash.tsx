@@ -1,6 +1,4 @@
-import { ClassNames } from "@emotion/react";
 import {
-  Box,
   Card,
   CardContent,
   CardHeader,
@@ -9,7 +7,7 @@ import {
 } from "@mui/material";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
@@ -38,26 +36,32 @@ export default function ViewCardPage() {
     <div className="ViewCard">
       <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
       <hr className="my-4" />
-      <>
+      <div className="ViewCard__messageContainer">
         {data.card.message.map((message) => (
           <Card
             variant="outlined"
             key={message.message_id}
-            className="ViewPage__message"
+            className="ViewCard__message"
           >
             <CardHeader title={`From: ${message.from}`} />
             <CardContent>
-              <Typography>{message.text}</Typography>
+              <Typography
+                color={message.color.hex ?? undefined}
+                fontFamily={message.font.name ?? undefined}
+              >
+                {message.text}
+              </Typography>
             </CardContent>
-            <CardMedia
-              className="ViewPage__messageImage"
-              component="img"
-              src={message.image_url ?? undefined}
-              alt="message image"
-            />
+            {message.image_url !== null ? (
+              <CardMedia
+                component="img"
+                src={message.image_url}
+                alt="message image"
+              />
+            ) : null}
           </Card>
         ))}
-      </>
+      </div>
     </div>
   );
 }
