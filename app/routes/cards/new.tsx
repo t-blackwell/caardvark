@@ -36,6 +36,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const filteredTemplates = cardTemplates.filter(
     (template) =>
       searchParams.type === undefined ||
+      searchParams.type === "" ||
       template.card_type_id === Number(searchParams.type)
   );
   return json({
