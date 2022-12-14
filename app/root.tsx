@@ -43,7 +43,7 @@ interface DocumentProps {
 const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
     const clientStyleData = React.useContext(ClientStyleContext);
-    const user = useOptionalUser();
+    const maybeUser = useOptionalUser();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
       null
     );
@@ -79,17 +79,17 @@ const Document = withEmotionCache(
             content="emotion-insertion-point"
           />
         </head>
-        {!["/login", "/signup"].includes(location.pathname) ? (
-          <header>
-            <NavBar
-              loggedIn={user !== undefined}
-              anchorElUser={anchorElUser}
-              setAnchorElUser={setAnchorElUser}
-            />
-          </header>
-        ) : null}
         <body>
-          {children}
+          {!["/login", "/signup"].includes(location.pathname) ? (
+            <header>
+              <NavBar
+                anchorElUser={anchorElUser}
+                setAnchorElUser={setAnchorElUser}
+                user={maybeUser}
+              />
+            </header>
+          ) : null}
+          <main>{children}</main>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
