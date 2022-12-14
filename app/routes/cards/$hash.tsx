@@ -21,7 +21,7 @@ export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
 
   const cardId = Number(formData.get("card_id"));
-  invariant(isNaN(cardId), "card not found");
+  invariant(!isNaN(cardId), "card not found");
 
   await deleteCard({ user_id, card_id: cardId });
 
