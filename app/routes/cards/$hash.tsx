@@ -7,9 +7,9 @@ import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user_id = await requireUserId(request);
-  invariant(params.card_id, "card_id not found");
+  invariant(params.hash, "hash not found");
 
-  const card = await getCard({ user_id, card_id: Number(params.card_id) });
+  const card = await getCard({ user_id, hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -18,9 +18,12 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
   const user_id = await requireUserId(request);
-  invariant(params.card_id, "card_id not found");
+  const formData = await request.formData();
 
-  await deleteCard({ user_id, card_id: Number(params.card_id) });
+  const cardId = Number(formData.get("card_id"));
+  invariant(isNaN(cardId), "card not found");
+
+  await deleteCard({ user_id, card_id: cardId });
 
   return redirect("/cards");
 }
@@ -38,6 +41,7 @@ export default function CardDetailsPage() {
       <p className="py-6">{`deleted = ${data.card.deleted}`}</p>
       <hr className="my-4" />
       <Form method="post">
+        <input type="hidden" name="card_id" value={data.card.card_id} />
         <button
           type="submit"
           className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"

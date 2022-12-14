@@ -18,14 +18,14 @@ const selectCardColumns = {
 }
 
 export function getCard({
-  card_id,
+  hash,
   user_id,
-}: Pick<card, "card_id"> & {
+}: Pick<card, "hash"> & {
   user_id: user["user_id"];
 }) {
   return prisma.card.findFirst({
     select: selectCardColumns,
-    where: { card_id, user_id },
+    where: { hash, user_id },
   });
 }
 

@@ -9,12 +9,21 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import { createCard } from "~/models/card.server";
+import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
+import type { card_type } from "~/models/card_type.server";
 import { getCardTypes } from "~/models/card_type.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/new.css";
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+interface LoaderData {
+  types: card_type[];
+  templates: card_template[];
+  selectedType: string;
+  selectedTemplate: string;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const searchParams = Object.fromEntries(url.searchParams.entries());
 
@@ -38,13 +47,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  console.log("working");
   const formData = await request.formData();
 
   const selectedType = formData.get("type");
-  const selectedTemplate = formData.get("template");
+  const selectedTemplate = Number(formData.get("template"));
 
-  if (typeof selectedTemplate === "string") {
+  if (!isNaN(selectedTemplate)) {
     const form = formData.get("__form");
     if (typeof form === "string") {
       if (form === "create") {
@@ -79,10 +87,10 @@ export async function action({ request }: ActionArgs) {
         return redirect(`/${card.hash}`);
       }
     }
-    if (typeof selectedTemplate === "string") {
-      const searchParams = new URLSearchParams({ template: selectedTemplate });
-      return redirect(`/cards/new?${searchParams}`);
-    }
+    const searchParams = new URLSearchParams({
+      template: selectedTemplate.toString(),
+    });
+    return redirect(`/cards/new?${searchParams}`);
   }
 
   if (typeof selectedType === "string") {
@@ -98,8 +106,7 @@ export function links() {
 }
 
 export default function NewCardPage() {
-  // TODO: add types
-  const templateData = useLoaderData<any>();
+  const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
 
   const submit = useSubmit();

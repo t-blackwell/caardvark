@@ -50,7 +50,7 @@ export default function CardsPage() {
                     className={({ isActive }) =>
                       `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
                     }
-                    to={card.card_id.toString()}
+                    to={card.hash}
                   >
                     {`From "${card.from}" to "${card.to}"`}
                   </NavLink>
