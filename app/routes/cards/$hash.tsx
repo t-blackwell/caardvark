@@ -7,9 +7,9 @@ import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user_id = await requireUserId(request);
-  invariant(params.card_id, "card_id not found");
+  invariant(params.hash, "hash not found");
 
-  const card = await getCard({ user_id, card_id: Number(params.card_id) });
+  const card = await getCard({ user_id, hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -18,9 +18,12 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
   const user_id = await requireUserId(request);
-  invariant(params.card_id, "card_id not found");
+  const formData = await request.formData();
 
-  await deleteCard({ user_id, card_id: Number(params.card_id) });
+  const cardId = Number(formData.get("card_id"));
+  invariant(isNaN(cardId), "card not found");
+
+  await deleteCard({ user_id, card_id: cardId });
 
   return redirect("/cards");
 }
@@ -30,20 +33,16 @@ export default function CardDetailsPage() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <p className="py-6">{`card_template_id = ${data.card.card_template_id} `}</p>
-      <p className="py-6">{`created_date = ${data.card.created_date}`}</p>
-      <p className="py-6">{`updated_date = ${data.card.updated_date}`}</p>
-      <p className="py-6">{`published_date = ${data.card.published_date}`}</p>
-      <p className="py-6">{`deleted = ${data.card.deleted}`}</p>
-      <hr className="my-4" />
+      <h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>
+      <p>{`card_template_id = ${data.card.card_template_id} `}</p>
+      <p>{`created_date = ${data.card.created_date}`}</p>
+      <p>{`updated_date = ${data.card.updated_date}`}</p>
+      <p>{`published_date = ${data.card.published_date}`}</p>
+      <p>{`deleted = ${data.card.deleted}`}</p>
+      <hr />
       <Form method="post">
-        <button
-          type="submit"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
+        <input type="hidden" name="card_id" value={data.card.card_id} />
+        <button type="submit">Delete</button>
       </Form>
     </div>
   );
