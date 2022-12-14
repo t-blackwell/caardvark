@@ -79,17 +79,17 @@ const Document = withEmotionCache(
             content="emotion-insertion-point"
           />
         </head>
-        {!["/login", "/signup"].includes(location.pathname) ? (
-          <header>
-            <NavBar
-              loggedIn={user !== undefined}
-              anchorElUser={anchorElUser}
-              setAnchorElUser={setAnchorElUser}
-            />
-          </header>
-        ) : null}
         <body>
-          {children}
+          {!["/login", "/signup"].includes(location.pathname) ? (
+            <header>
+              <NavBar
+                loggedIn={user !== undefined}
+                anchorElUser={anchorElUser}
+                setAnchorElUser={setAnchorElUser}
+              />
+            </header>
+          ) : null}
+          <main>{children}</main>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
