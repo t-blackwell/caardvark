@@ -5,7 +5,6 @@ import {
   Link,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -70,19 +69,22 @@ export async function action({ request }: ActionArgs) {
     const to = formData.get("to");
     const from = formData.get("from");
 
-    if (typeof to !== "string" || to.length === 0) {
+    const toError = typeof to !== "string" || to.length === 0;
+    const fromError = typeof to !== "string" || to.length === 0;
+    if (toError || fromError) {
       return json(
-        { errors: { to: "to is required", from: null } },
+        {
+          errors: {
+            to: toError ? "to is required" : null,
+            from: fromError ? "from is required" : null,
+          },
+        },
         { status: 400 }
       );
     }
 
-    if (typeof from !== "string" || from.length === 0) {
-      return json(
-        { errors: { from: "from is required", to: null } },
-        { status: 400 }
-      );
-    }
+    invariant(typeof to === "string", "Error");
+    invariant(typeof from === "string", "Error");
 
     const card = await createCard({
       card_template_id: selectedTemplateNumorNull,
@@ -109,47 +111,38 @@ export default function NewCardPage() {
     submit(event.currentTarget, { replace: true });
   };
 
-  if (templateData.selectedTemplate !== undefined) {
+  if (
+    templateData.selectedTemplate !== undefined &&
+    templateData.selectedType !== undefined
+  ) {
     return (
-      <Form
-        method="post"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          width: "100%",
-        }}
-      >
+      <Form method="post" className="CreateForm">
         <input
           type="hidden"
           name="template"
           value={templateData.selectedTemplate}
         />
-        <Typography className="CreatCard__from" variant="h5">
-          To:
-        </Typography>
         <TextField
+          label="To"
           type="text"
           name="to"
           autoFocus
           error={actionData?.errors?.to !== undefined}
           helperText={actionData?.errors?.to}
         />
-        <Typography className="CreatCard__to" variant="h5">
-          From:
-        </Typography>
         <TextField
+          label="From"
           type="text"
           name="from"
           error={actionData?.errors?.from !== undefined}
           helperText={actionData?.errors?.from}
         />
         <div>
-          <Button>
+          <Button className="CreateForm__backButton">
             <Link
               component={RemixLink}
               to={`/cards/new?type=${templateData.selectedType}`}
-              className="CreatForm__backButton"
+              className="CreateForm__backButtonLink"
               underline="none"
             >
               Back
@@ -159,7 +152,7 @@ export default function NewCardPage() {
             type="submit"
             name="_action"
             value="create"
-            className="CreatForm__backButton"
+            className="CreateForm__createButton"
           >
             Create
           </Button>

@@ -9,3 +9,11 @@
   height: 284px;
   border: 1px solid #999;
 }
+
+.CreateForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 50%;
+  margin: 50px;
+}
