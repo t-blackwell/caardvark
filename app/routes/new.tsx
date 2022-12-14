@@ -1,16 +1,24 @@
-import type { ActionArgs } from "@remix-run/node";
+import { Button, Container, TextField, Typography } from "@mui/material";
+import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
+import invariant from "tiny-invariant";
 import { createMessage } from "~/models/message.server";
+import styles from "~/styles/messages/new.css";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  const text = formData.get("text");
-  const from = formData.get("from");
-  const card_id = formData.get("card_id");
-  const color_id = formData.get("color_id");
-  const font_id = formData.get("font_id");
+  const text = formData.get("text")?.toString();
+  invariant(text, "text not found");
+  const from = formData.get("from")?.toString();
+  invariant(from, "from not found");
+  const card_id = Number(formData.get("card_id"));
+  invariant(!isNaN(card_id), "card not found");
+  const color_id = Number(formData.get("color_id"));
+  invariant(!isNaN(color_id), "color not found");
+  const font_id = Number(formData.get("font_id"));
+  invariant(!isNaN(font_id), "font not found");
 
   const errors = {
     text:
@@ -30,86 +38,75 @@ export async function action({ request }: ActionArgs) {
     const message = await createMessage({
       text,
       from,
-      color_id,
-      font_id,
-      card_id,
+      color_id: 1,
+      font_id: 1,
+      card_id: 1,
     });
-    return redirect(`/${message.message_id}`);
+    return redirect(`/${message.card_id}`);
   } else return errors;
 }
 
-export default function NewMessagePage() {
-  const actionData = useActionData<typeof action>();
-  const fromRef = React.useRef<HTMLInputElement>(null);
-  const textRef = React.useRef<HTMLTextAreaElement>(null);
+export const meta: MetaFunction = () => {
+  return {
+    title: "Create Message",
+  };
+};
 
-  React.useEffect(() => {
-    if (actionData?.errors?.text) {
-      textRef.current?.focus();
-    } else if (actionData?.errors?.from) {
-      fromRef.current?.focus();
-    }
-  }, [actionData]);
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
+export default function NewMessagePage() {
+  const errors = useActionData();
+  const fromRef = React.useRef<HTMLInputElement>(null);
+  const textRef = React.useRef<HTMLInputElement>(null);
 
   return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>from: </span>
-          <input
-            ref={fromRef}
-            name="from"
-            className="flex-1 rounded-md border-2 border-blue-500 px-3 from-lg leading-loose"
-            aria-invalid={actionData?.errors?.from ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.from ? "from-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.from && (
-          <div className="pt-1 from-red-700" id="from-error">
-            {actionData.errors.from}
-          </div>
-        )}
-      </div>
+    <Container className="CreateMessage">
+      <Form
+        className="CreateMessage__box"
+        method="post"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          width: "100%",
+        }}
+      >
+        <Typography className="CreateMessage__title" variant="h5">
+          Create Message
+        </Typography>
+        <TextField
+          autoFocus
+          className="CreateMessage__input"
+          error={errors?.text !== undefined}
+          helperText={errors?.text}
+          id="text"
+          label="Message"
+          multiline
+          name="text"
+          ref={textRef}
+          required
+          size="small"
+        />
 
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>from: </span>
-          <textarea
-            ref={textRef}
-            name="text"
-            rows={8}
-            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-            aria-invalid={actionData?.errors?.text ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.text ? "from-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.text && (
-          <div className="pt-1 text-red-700" id="text-error">
-            {actionData.errors.text}
-          </div>
-        )}
-      </div>
+        <TextField
+          autoFocus
+          className="CreateMessage__input"
+          error={errors?.from !== undefined}
+          helperText={errors?.from}
+          id="from"
+          label="From"
+          name="from"
+          ref={fromRef}
+          required
+          size="small"
+        />
 
-      <div className="text-right">
-        <button
-          type="submit"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
+        <Button className="CreateMessage__button" type="submit">
           Save
-        </button>
-      </div>
-    </Form>
+        </Button>
+      </Form>
+    </Container>
   );
 }

@@ -59,8 +59,6 @@ export async function action({ request }: ActionArgs) {
         const userId = await requireUserId(request);
         const to = formData.get("to");
         const from = formData.get("from");
-        console.log("to ", to);
-        console.log("from ", from);
 
         if (typeof to !== "string" || to.length === 0) {
           console.log("here");
