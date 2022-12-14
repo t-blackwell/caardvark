@@ -1,5 +1,10 @@
-import * as React from "react";
+import NavBar from "./components/NavBar";
+import ClientStyleContext from "./contexts/ClientStyleContext";
+import { getUser } from "./session.server";
+import theme from "./theme";
+import { useOptionalUser } from "./utils";
 import { withEmotionCache } from "@emotion/react";
+import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
 import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -11,10 +16,8 @@ import {
   ScrollRestoration,
   useCatch,
 } from "@remix-run/react";
-import { getUser } from "./session.server";
-import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
-import ClientStyleContext from "./contexts/ClientStyleContext";
-import theme from "./theme";
+import * as React from "react";
+import styles from "~/styles/App.css";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -29,6 +32,9 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
 interface DocumentProps {
   children: React.ReactNode;
   title?: string;
@@ -38,6 +44,7 @@ const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
     const clientStyleData = React.useContext(ClientStyleContext);
 
+    const user = useOptionalUser();
     // Only executed on client
     useEnhancedEffect(() => {
       // re-link sheet container
@@ -70,6 +77,11 @@ const Document = withEmotionCache(
           />
         </head>
         <body>
+          <header>
+            {NavBar({
+              loggedIn: user !== undefined,
+            })}
+          </header>
           {children}
           <ScrollRestoration />
           <Scripts />

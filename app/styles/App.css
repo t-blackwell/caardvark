@@ -1,0 +1,12 @@
+.Nav__signout {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.Nav__linkButton,
+.Nav__linkButton button {
+  color: white !important;
+}
