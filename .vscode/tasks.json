@@ -26,6 +26,12 @@
       "problemMatcher": []
     },
     {
+      "label": "prisma pull db",
+      "type": "shell",
+      "command": "npx prisma db pull",
+      "problemMatcher": []
+    },
+    {
       "label": "setup db",
       "type": "npm",
       "script": "setup",

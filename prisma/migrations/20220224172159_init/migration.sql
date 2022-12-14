@@ -65,6 +65,7 @@ CREATE TABLE "card" (
     updated_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_card PRIMARY KEY (card_id),
+    CONSTRAINT uk_card_hash UNIQUE ("hash"),
     CONSTRAINT fk_card_user FOREIGN KEY (user_id) REFERENCES "user"(user_id),
     CONSTRAINT fk_card_card_template FOREIGN KEY (card_template_id) REFERENCES "card_template"(card_template_id),
     CONSTRAINT ch_card_deleted CHECK (deleted IN ('Y', 'N'))
