@@ -195,8 +195,7 @@ export default function NewCardPage() {
             navigate(
               buildUrl({
                 type: event.target.value,
-              }),
-              { replace: true }
+              })
             )
           }
           value={templateData.selectedType}
@@ -217,8 +216,7 @@ export default function NewCardPage() {
                 buildUrl({
                   template: template.card_template_id.toString(),
                   type: templateData.selectedType,
-                }),
-                { replace: true }
+                })
               )
             }
             type="button"
