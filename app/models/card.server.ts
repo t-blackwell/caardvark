@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import type { card, user } from "@prisma/client";
 
 import { prisma } from "~/db.server";
@@ -17,14 +18,14 @@ const selectCardColumns = {
 }
 
 export function getCard({
-  card_id,
+  hash,
   user_id,
-}: Pick<card, "card_id"> & {
+}: Pick<card, "hash"> & {
   user_id: user["user_id"];
 }) {
   return prisma.card.findFirst({
     select: selectCardColumns,
-    where: { card_id, user_id },
+    where: { hash, user_id },
   });
 }
 
@@ -48,18 +49,17 @@ export function createCard({
 }: createCardProps) {
   return prisma.card.create({
     data: {
-      // TODO: replace with a proper hash
-      hash: Math.random().toString(),
+      hash: uuidv4(),
       from,
       to,
-      user: {
-        connect: {
-          user_id,
-        },
-      },
       card_template: {
         connect: {
           card_template_id,
+        },
+      },
+      user: {
+        connect: {
+          user_id,
         },
       },
     },
