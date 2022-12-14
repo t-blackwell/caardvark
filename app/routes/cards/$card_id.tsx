@@ -2,37 +2,40 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-
-import { deleteNote, getNote } from "~/models/note.server";
+import { deleteCard, getCard } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  const user_id = await requireUserId(request);
+  invariant(params.card_id, "card_id not found");
 
-  const note = await getNote({ userId, id: params.noteId });
-  if (!note) {
+  const card = await getCard({ user_id, card_id: Number(params.card_id) });
+  if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ note });
+  return json({ card });
 }
 
 export async function action({ request, params }: ActionArgs) {
-  const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  const user_id = await requireUserId(request);
+  invariant(params.card_id, "card_id not found");
 
-  await deleteNote({ userId, id: params.noteId });
+  await deleteCard({ user_id, card_id: Number(params.card_id) });
 
-  return redirect("/notes");
+  return redirect("/cards");
 }
 
-export default function NoteDetailsPage() {
+export default function CardDetailsPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.note.title}</h3>
-      <p className="py-6">{data.note.body}</p>
+      <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
+      <p className="py-6">{`card_template_id = ${data.card.card_template_id} `}</p>
+      <p className="py-6">{`created_date = ${data.card.created_date}`}</p>
+      <p className="py-6">{`updated_date = ${data.card.updated_date}`}</p>
+      <p className="py-6">{`published_date = ${data.card.published_date}`}</p>
+      <p className="py-6">{`deleted = ${data.card.deleted}`}</p>
       <hr className="my-4" />
       <Form method="post">
         <button
@@ -56,7 +59,7 @@ export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Note not found</div>;
+    return <div>Card not found</div>;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
