@@ -7,18 +7,23 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { cyan } from "@mui/material/colors";
 import { Form, Link as RemixLink } from "@remix-run/react";
 import * as React from "react";
+import { useOptionalUser } from "~/utils";
 
 interface NavBarProps {
   loggedIn: boolean;
+  anchorElUser: null | HTMLElement;
+  setAnchorElUser: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
 }
 
-export default function NavBar({ loggedIn }: NavBarProps) {
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-
+export default function NavBar({
+  loggedIn,
+  anchorElUser,
+  setAnchorElUser,
+}: NavBarProps) {
+  const user = useOptionalUser();
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -32,11 +37,22 @@ export default function NavBar({ loggedIn }: NavBarProps) {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Cards
+            <Link
+              component={RemixLink}
+              to="/"
+              className="Nav__linkButton"
+              underline="none"
+            >
+              Cards
+            </Link>
           </Typography>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Avatar sx={{ backgroundColor: cyan[600] }}>
+                {user.first_name
+                  ? user.first_name.toUpperCase().charAt(0)
+                  : user.email.toUpperCase().charAt(0)}
+              </Avatar>
             </IconButton>
           </Tooltip>
           <Menu
@@ -86,10 +102,20 @@ export default function NavBar({ loggedIn }: NavBarProps) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Cards
           </Typography>
-          <Link component={RemixLink} to="/login" className="Nav__linkButton">
+          <Link
+            component={RemixLink}
+            to="/login"
+            className="Nav__linkButton"
+            underline="none"
+          >
             <Button>Sign In</Button>
           </Link>
-          <Link component={RemixLink} to="/signup" className="Nav__linkButton">
+          <Link
+            component={RemixLink}
+            to="/signup"
+            className="Nav__linkButton"
+            underline="none"
+          >
             <Button>Sign Up</Button>
           </Link>
         </Toolbar>
