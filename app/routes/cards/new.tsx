@@ -5,6 +5,7 @@ import {
   Link,
   Select,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -13,7 +14,7 @@ import {
   Link as RemixLink,
   useActionData,
   useLoaderData,
-  useSubmit,
+  useNavigate,
 } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -24,6 +25,12 @@ import type { card_type } from "~/models/card_type.server";
 import { getCardTypes } from "~/models/card_type.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/new.css";
+
+function buildUrl(searchParams: { template?: string; type?: string }) {
+  const baseUrl = "/cards/new";
+  const params = new URLSearchParams(searchParams);
+  return `${baseUrl}?${params}`;
+}
 
 interface LoaderData {
   types: card_type[];
@@ -105,16 +112,10 @@ export function links() {
 export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
+  const navigate = useNavigate();
+  console.log(templateData.selectedType);
 
-  const submit = useSubmit();
-  const handleSubmit = (event: any) => {
-    submit(event.currentTarget, { replace: true });
-  };
-
-  if (
-    templateData.selectedTemplate !== undefined &&
-    templateData.selectedType !== undefined
-  ) {
+  if (templateData.selectedTemplate !== undefined) {
     return (
       <Form method="post" className="CreateForm">
         <input
@@ -141,7 +142,11 @@ export default function NewCardPage() {
           <Button className="CreateForm__backButton">
             <Link
               component={RemixLink}
-              to={`/cards/new?type=${templateData.selectedType}`}
+              to={`/cards/new${
+                templateData.selectedType !== undefined
+                  ? `?type=${templateData.selectedType}`
+                  : ""
+              }`}
               className="CreateForm__backButtonLink"
               underline="none"
             >
@@ -170,26 +175,28 @@ export default function NewCardPage() {
         gap: 8,
         width: "100%",
       }}
-      onChange={handleSubmit}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label" shrink>
-          Type
-        </InputLabel>
+        <InputLabel id="type-select-label">Filter Templates</InputLabel>
         <Select
-          id="demo-simple-select"
+          id="type-select"
           inputProps={{ name: "type", type: "text" }}
-          label="Type"
-          labelId="demo-simple-select-label"
-          native
-          notched
+          label="Filter Templates"
+          labelId="type-select-label"
+          onChange={(event) =>
+            navigate(
+              buildUrl({
+                type: event.target.value,
+              }),
+              { replace: true }
+            )
+          }
           value={templateData.selectedType}
         >
-          <option value={""}>All Templates</option>
           {templateData.types.map((type) => (
-            <option key={type.card_type_id} value={type.card_type_id}>
+            <MenuItem key={type.card_type_id} value={type.card_type_id}>
               {type.name}
-            </option>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -197,9 +204,16 @@ export default function NewCardPage() {
         {templateData.templates.map((template) => (
           <button
             key={template.card_template_id}
-            type="submit"
-            name="template"
-            value={template.card_template_id}
+            onClick={() =>
+              navigate(
+                buildUrl({
+                  template: template.card_template_id.toString(),
+                  type: templateData.selectedType,
+                }),
+                { replace: true }
+              )
+            }
+            type="button"
           >
             <div className="NewCard__template">{template.text}</div>
           </button>
