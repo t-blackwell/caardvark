@@ -1,15 +1,19 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Card,
   CardContent,
   CardHeader,
   CardMedia,
+  IconButton,
   Typography,
 } from "@mui/material";
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
+import { deleteMessage } from "~/models/message.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/$hash.css";
 
@@ -21,7 +25,20 @@ export async function loader({ request, params }: LoaderArgs) {
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ card });
+  return json({ card, userId: user_id });
+}
+
+export async function action({ request }: ActionArgs) {
+  const formData = await request.formData();
+  const action = formData.get("_action");
+
+  if (action === "delete") {
+    const messageId = formData.get("messageId");
+    invariant(messageId, "Error");
+
+    await deleteMessage({ message_id: Number(messageId) });
+  }
+  return redirect(".");
 }
 
 export function links() {
@@ -30,7 +47,6 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
-  console.log(data);
 
   return (
     <div className="ViewCard">
@@ -43,7 +59,23 @@ export default function ViewCardPage() {
             key={message.message_id}
             className="ViewCard__message"
           >
-            <CardHeader title={`From: ${message.from}`} />
+            <div className="ViewCard__messageTitleContainer">
+              <CardHeader title={`From: ${message.from}`} />
+              {data.card.user_id === data.userId ? (
+                <Form method="post">
+                  <IconButton type="submit" name="_action" value="delete">
+                    <input
+                      type="hidden"
+                      name="messageId"
+                      value={message.message_id}
+                    />
+                    <DeleteIcon />
+                  </IconButton>
+                </Form>
+              ) : (
+                <></>
+              )}
+            </div>
             <CardContent>
               <Typography
                 color={message.color.hex ?? undefined}

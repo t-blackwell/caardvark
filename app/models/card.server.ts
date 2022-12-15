@@ -14,6 +14,7 @@ const selectCardColumns = {
   deleted: true,
   created_date: true,
   updated_date: true,
+  user_id: true,
 };
 
 const selectMessageColumns = {
