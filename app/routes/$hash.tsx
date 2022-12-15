@@ -14,18 +14,18 @@ import { Form, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
-import { requireUserId } from "~/session.server";
+import { getUserId } from "~/session.server";
 import styles from "~/styles/$hash.css";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const user_id = await requireUserId(request);
+  const userId = await getUserId(request);
   invariant(params.hash, "hash not found");
 
-  const card = await getCardWithMessages({ user_id, hash: params.hash });
+  const card = await getCardWithMessages({ hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ card, userId: user_id });
+  return json({ card, userId: userId });
 }
 
 export async function action({ request }: ActionArgs) {
