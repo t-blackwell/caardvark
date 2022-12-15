@@ -1,13 +1,14 @@
+import { Button } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
-import styles from "~/styles/$hash.css";
+import styles from "~/styles/messages/index.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -32,7 +33,6 @@ export async function action({ request }: ActionArgs) {
 
     await deleteMessage({
       request,
-      cardOwnerId: Number(cardOwnerId),
       message_id: Number(messageId),
     });
   }
@@ -48,6 +48,9 @@ export default function ViewCardPage() {
 
   return (
     <div className="ViewCard">
+      <Link className="ViewCard__addMessageLink" to="new">
+        <Button className="ViewCard__addMessageButton">Add message</Button>
+      </Link>
       <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
       <hr className="my-4" />
       <div className="ViewCard__messageContainer">

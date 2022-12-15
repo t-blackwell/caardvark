@@ -1,0 +1,19 @@
+.CreateMessage__box {
+  display: flex;
+  flex-direction: column;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  max-width: 350px;
+  text-align: center;
+  border-radius: 4px;
+}
+.CreateMessage__title {
+  margin-bottom: 20px !important;
+}
+.CreateMessage__input {
+  margin: 10px 0 !important;
+}
+.CreateMessage__button {
+  margin: 20px 0 !important;
+}
