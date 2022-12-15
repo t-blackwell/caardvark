@@ -10,8 +10,7 @@ export async function deleteMessage({ cardOwnerId, request, message_id }: Pick<m
 }) {
   const userId = await requireUserId(request);
   if (userId !== cardOwnerId) {
-    // TODO: throw error
-    return
+    throw new Response('Unauthorized', {status: 401});
   }
 
   return prisma.message.deleteMany({
