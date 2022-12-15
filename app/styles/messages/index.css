@@ -1,7 +1,3 @@
-.ViewCard__messageTitleContainer {
-  justify-content: space-between;
-}
-
 .ViewCard__addMessageLink {
   text-decoration: none !important;
 }

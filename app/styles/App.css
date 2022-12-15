@@ -46,3 +46,18 @@ p.TemplatePreview__text {
   font-size: 1.5rem;
   line-height: 1.2;
 }
+
+/* MessageCard */
+.MessageCard {
+  overflow: hidden;
+  max-width: 345px;
+}
+.MessageCard__content {
+  padding: 8px 16px !important;
+}
+.MessageCard__actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
