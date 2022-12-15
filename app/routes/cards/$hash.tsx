@@ -2,30 +2,32 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { deleteCard, getCard } from "~/models/card.server";
-import { requireUserId } from "~/session.server";
+import { deleteCard, getCard, publishCard } from "~/models/card.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const user_id = await requireUserId(request);
   invariant(params.hash, "hash not found");
 
-  const card = await getCard({ user_id, hash: params.hash });
+  const card = await getCard({ request, hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ card });
 }
 
-export async function action({ request, params }: ActionArgs) {
-  const user_id = await requireUserId(request);
+export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-
   const cardId = Number(formData.get("card_id"));
   invariant(!isNaN(cardId), "card not found");
 
-  await deleteCard({ user_id, card_id: cardId });
+  const { _action } = Object.fromEntries(formData);
 
-  return redirect("/cards");
+  switch (_action) {
+    case "delete":
+      await deleteCard({ request, card_id: cardId });
+      return redirect("/cards");
+    case "publish":
+      return await publishCard({ request, card_id: cardId });
+  }
 }
 
 export default function CardDetailsPage() {
@@ -42,7 +44,22 @@ export default function CardDetailsPage() {
       <hr />
       <Form method="post">
         <input type="hidden" name="card_id" value={data.card.card_id} />
-        <button type="submit">Delete</button>
+        <button
+          type="submit"
+          name="_action"
+          value="delete"
+          disabled={data.card.deleted === "Y"}
+        >
+          Delete
+        </button>
+        <button
+          type="submit"
+          name="_action"
+          value="publish"
+          disabled={data.card.published_date !== null}
+        >
+          Publish
+        </button>
       </Form>
       <Link to={`/${data.card.hash}`}>View Card</Link>
     </div>
