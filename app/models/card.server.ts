@@ -16,6 +16,7 @@ const selectCardColumns = {
   created_date: true,
   updated_date: true,
   card_template: true,
+  user_id: true,
 };
 
 const selectMessageColumns = {
