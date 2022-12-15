@@ -4,7 +4,11 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link as RemixLink, useLoaderData } from "@remix-run/react";
+import {
+  Link as RemixLink,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import * as React from "react";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardListItems } from "~/models/card.server";
@@ -22,14 +26,11 @@ export function links() {
 }
 export default function CardsPage() {
   const data = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
 
   return (
     <div>
-      <h1>
-        <Link component={RemixLink} underline="none" to=".">
-          My Cards
-        </Link>
-      </h1>
+      <h1 className="Title">My Cards</h1>
       <div>
         <Stack direction="row" spacing={2}>
           <Link
@@ -45,19 +46,38 @@ export default function CardsPage() {
         </Stack>
         <hr />
         {data.cardListItems.length === 0 ? (
-          <p>No cards yet</p>
+          <p>
+            You do not have any cards yet. Create one{" "}
+            <Link component={RemixLink} to="new" underline="none">
+              here
+            </Link>
+            .
+          </p>
         ) : (
           <div className="Wrapper">
             {data.cardListItems.map((card) => (
               <div className="Wrapper__template" key={card.card_id}>
                 <TemplatePreview
-                  // key={card.card_id}
-                  text={card.card_template.text}
+                  backgroundCss={
+                    card.card_template.bg_css !== null
+                      ? (JSON.parse(
+                          card.card_template.bg_css
+                        ) as React.CSSProperties)
+                      : undefined
+                  }
+                  textCss={
+                    card.card_template.text_css !== null
+                      ? (JSON.parse(
+                          card.card_template.text_css
+                        ) as React.CSSProperties)
+                      : undefined
+                  }
+                  text={card.card_template.text ?? ""}
                   onClick={() => {
-                    location = card.hash;
+                    navigate(`/cards/${card.hash}`);
                   }}
                 />
-                <div className="Wrapper__text">To {card.to}</div>
+                <div className="Wrapper__text">To: {card.to}</div>
               </div>
             ))}
           </div>
