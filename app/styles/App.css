@@ -29,8 +29,7 @@ main {
 }
 .TemplatePreview__card {
   aspect-ratio: 1 / 1.42;
-  min-height: 100px;
-  max-height: 284px;
+  min-width: 140px;
   border: 1px solid rgba(0, 0, 0, 0.23);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   padding: 20px 10px;

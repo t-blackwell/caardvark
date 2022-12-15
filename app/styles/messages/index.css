@@ -1,5 +1,4 @@
 .ViewCard__messageTitleContainer {
-  display: flex;
   justify-content: space-between;
 }
 .ViewCard__messageContainer {

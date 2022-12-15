@@ -178,7 +178,23 @@ export default function NewCardPage() {
           </Form>
         </div>
         <div className="CreateForm__templateContainer">
-          <TemplatePreview text={templateData.selectedTemplate.text ?? ""} />
+          <TemplatePreview
+            backgroundCss={
+              templateData.selectedTemplate.bg_css !== null
+                ? (JSON.parse(
+                    templateData.selectedTemplate.bg_css
+                  ) as React.CSSProperties)
+                : undefined
+            }
+            textCss={
+              templateData.selectedTemplate.text_css !== null
+                ? (JSON.parse(
+                    templateData.selectedTemplate.text_css
+                  ) as React.CSSProperties)
+                : undefined
+            }
+            text={templateData.selectedTemplate.text ?? ""}
+          />
         </div>
       </div>
     );
