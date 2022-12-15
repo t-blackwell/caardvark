@@ -19,6 +19,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import TemplatePreview from "~/components/TemplatePreview";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
@@ -41,6 +42,7 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireUserId(request);
   const url = new URL(request.url);
   const searchParams = Object.fromEntries(url.searchParams.entries());
 
@@ -207,7 +209,7 @@ export default function NewCardPage() {
       </FormControl>
       <div className="NewCard__templates">
         {templateData.templates.map((template) => (
-          <button
+          <TemplatePreview
             key={template.card_template_id}
             onClick={() =>
               navigate(
@@ -219,10 +221,8 @@ export default function NewCardPage() {
                 })
               )
             }
-            type="button"
-          >
-            <div className="NewCard__template">{template.text}</div>
-          </button>
+            text={template.text ?? ""}
+          />
         ))}
       </div>
     </Form>

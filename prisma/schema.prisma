@@ -9,7 +9,7 @@ datasource db {
 
 model card {
   card_id          Int           @id(map: "pk_card") @default(autoincrement())
-  hash             String        @db.VarChar(100)
+  hash             String        @unique(map: "uk_card_hash") @db.VarChar(100)
   user_id          Int
   card_template_id Int
   from             String        @db.VarChar(50)

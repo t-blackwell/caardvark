@@ -4,10 +4,8 @@
   gap: 20px;
 }
 
-.NewCard__template {
-  width: 200px;
-  height: 284px;
-  border: 1px solid #999;
+.CreateForm_container {
+  width: 50%;
 }
 
 .CreateForm {
@@ -19,8 +17,4 @@
   text-align: center;
   border-radius: 4px;
   gap: 20px
-}
-
-.CreateForm_container {
-  width: 50%;
 }
