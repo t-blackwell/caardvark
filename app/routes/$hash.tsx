@@ -10,14 +10,12 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
-import { requireUserId } from "~/session.server";
 import styles from "~/styles/$hash.css";
 
-export async function loader({ request, params }: LoaderArgs) {
-  const user_id = await requireUserId(request);
+export async function loader({ params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
 
-  const card = await getCardWithMessages({ user_id, hash: params.hash });
+  const card = await getCardWithMessages({ hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -30,7 +28,6 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
-  console.log(data);
 
   return (
     <div className="ViewCard">
