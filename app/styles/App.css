@@ -1,6 +1,9 @@
 body {
   margin: 0;
 }
+main {
+  margin: 16px;
+}
 
 .Nav__signout {
   background: transparent;
@@ -13,4 +16,31 @@ body {
 .Nav__linkButton,
 .Nav__linkButton button {
   color: white !important;
+}
+
+/* TemplatePreview */
+.TemplatePreview__button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.TemplatePreview__card {
+  aspect-ratio: 1 / 1.42;
+  min-height: 200px;
+  max-height: 284px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  padding: 20px 10px;
+  transition: all 0.1s ease-in;
+}
+.TemplatePreview__button:hover .TemplatePreview__card {
+  border: 1px solid rgba(0, 0, 0, 0.87);
+  transform: scale(1.05);
+}
+p.TemplatePreview__text {
+  text-align: left;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1.2;
 }

@@ -43,7 +43,7 @@ interface DocumentProps {
 const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
     const clientStyleData = React.useContext(ClientStyleContext);
-    const user = useOptionalUser();
+    const maybeUser = useOptionalUser();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
       null
     );
@@ -83,13 +83,13 @@ const Document = withEmotionCache(
           {!["/login", "/signup"].includes(location.pathname) ? (
             <header>
               <NavBar
-                loggedIn={user !== undefined}
                 anchorElUser={anchorElUser}
                 setAnchorElUser={setAnchorElUser}
+                user={maybeUser}
               />
             </header>
           ) : null}
-          {children}
+          <main>{children}</main>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />

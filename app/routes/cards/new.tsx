@@ -1,13 +1,14 @@
-import { FormControl, InputLabel, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
   useLoaderData,
-  useSubmit,
+  useNavigate,
 } from "@remix-run/react";
 import * as React from "react";
+import TemplatePreview from "~/components/TemplatePreview";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
@@ -15,6 +16,12 @@ import type { card_type } from "~/models/card_type.server";
 import { getCardTypes } from "~/models/card_type.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/new.css";
+
+function buildUrl(searchParams: { template?: string; type?: string }) {
+  const baseUrl = "/cards/new";
+  const params = new URLSearchParams(searchParams);
+  return `${baseUrl}?${params}`;
+}
 
 interface LoaderData {
   types: card_type[];
@@ -24,6 +31,7 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireUserId(request);
   const url = new URL(request.url);
   const searchParams = Object.fromEntries(url.searchParams.entries());
 
@@ -36,6 +44,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const filteredTemplates = cardTemplates.filter(
     (template) =>
       searchParams.type === undefined ||
+      searchParams.type === "" ||
       template.card_type_id === Number(searchParams.type)
   );
   return json({
@@ -47,21 +56,21 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const userId = await requireUserId(request);
   const formData = await request.formData();
 
   const selectedType = formData.get("type");
-  const selectedTemplate = Number(formData.get("template"));
+  const selectedTemplate = formData.get("template");
+  const selectedTemplateNum = Number(selectedTemplate);
 
-  if (!isNaN(selectedTemplate)) {
+  if (selectedTemplate !== null && !isNaN(selectedTemplateNum)) {
     const form = formData.get("__form");
     if (typeof form === "string") {
       if (form === "create") {
-        const userId = await requireUserId(request);
         const to = formData.get("to");
         const from = formData.get("from");
 
         if (typeof to !== "string" || to.length === 0) {
-          console.log("here");
           return json(
             { errors: { to: "to is required", from: null } },
             { status: 400 }
@@ -76,7 +85,7 @@ export async function action({ request }: ActionArgs) {
         }
 
         const card = await createCard({
-          card_template_id: +selectedTemplate,
+          card_template_id: selectedTemplateNum,
           from: from,
           to: to,
           user_id: userId,
@@ -106,11 +115,7 @@ export function links() {
 export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
-
-  const submit = useSubmit();
-  const handleSubmit = (event: any) => {
-    submit(event.currentTarget, { replace: true });
-  };
+  const navigate = useNavigate();
 
   if (templateData.selectedTemplate !== undefined) {
     return (
@@ -180,36 +185,46 @@ export default function NewCardPage() {
         gap: 8,
         width: "100%",
       }}
-      onChange={handleSubmit}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        <InputLabel id="type-select-label">Filter Templates</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Type"
+          id="type-select"
           inputProps={{ name: "type", type: "text" }}
+          label="Filter Templates"
+          labelId="type-select-label"
+          onChange={(event) =>
+            navigate(
+              buildUrl({
+                type: event.target.value,
+              })
+            )
+          }
           value={templateData.selectedType}
-          native
         >
-          <option value={""}>All Templates</option>
           {templateData.types.map((type) => (
-            <option key={type.card_type_id} value={type.card_type_id}>
+            <MenuItem key={type.card_type_id} value={type.card_type_id}>
               {type.name}
-            </option>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
       <div className="NewCard__templates">
         {templateData.templates.map((template) => (
-          <button
+          <TemplatePreview
             key={template.card_template_id}
-            type="submit"
-            name="template"
-            value={template.card_template_id}
-          >
-            <div className="NewCard__template">{template.text}</div>
-          </button>
+            onClick={() =>
+              navigate(
+                buildUrl({
+                  template: template.card_template_id.toString(),
+                  ...(templateData.selectedType !== undefined
+                    ? { type: templateData.selectedType }
+                    : undefined),
+                })
+              )
+            }
+            text={template.text ?? ""}
+          />
         ))}
       </div>
     </Form>

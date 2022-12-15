@@ -8,22 +8,21 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { cyan } from "@mui/material/colors";
+import type { user } from "@prisma/client";
 import { Form, Link as RemixLink } from "@remix-run/react";
 import * as React from "react";
-import { useOptionalUser } from "~/utils";
 
 interface NavBarProps {
-  loggedIn: boolean;
   anchorElUser: null | HTMLElement;
   setAnchorElUser: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
+  user: user | undefined;
 }
 
 export default function NavBar({
-  loggedIn,
   anchorElUser,
   setAnchorElUser,
+  user,
 }: NavBarProps) {
-  const user = useOptionalUser();
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -32,7 +31,7 @@ export default function NavBar({
     setAnchorElUser(null);
   };
 
-  return loggedIn ? (
+  return user !== undefined ? (
     <Box sx={{ flexGrow: 0 }}>
       <AppBar position="static">
         <Toolbar>
@@ -49,7 +48,7 @@ export default function NavBar({
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar sx={{ backgroundColor: cyan[600] }}>
-                {user.first_name
+                {user.first_name !== null
                   ? user.first_name.toUpperCase().charAt(0)
                   : user.email.toUpperCase().charAt(0)}
               </Avatar>
