@@ -30,7 +30,11 @@ export default function TemplatePreview({
       >
         <div className="TemplatePreview__card" style={backgroundCss}>
           <Typography className="TemplatePreview__text" style={textCss}>
-            {text}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: text.replace(/\n/g, "<br />"),
+              }}
+            />
           </Typography>
         </div>
       </ConditionalWrapper>
