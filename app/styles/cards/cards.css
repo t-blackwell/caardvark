@@ -1,0 +1,31 @@
+.Cards__linkbutton {
+  transition-duration: 0.5s;
+}
+
+.Cards__linkbutton button:hover {
+  background-color: #156dd2;
+  color: rgb(255, 255, 255);
+}
+
+.Wrapper {
+  max-width: auto;
+  margin: 0 auto;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.Wrapper__text {
+  justify-content: space-between;
+  /* display: flex; */
+  margin-top: 10px;
+  text-align: match-parent;
+  margin-left: 2%;
+}
+
+/* @media (min-width: 900px) {
+  .Cards-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 20px;
+  }
+} */
