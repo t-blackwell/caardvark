@@ -4,8 +4,14 @@
   gap: 20px;
 }
 
-.CreateForm_container {
-  width: 50%;
+.CreateForm_page {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.CreateForm_templateContainer {
+  justify-self: center;
+  margin: 40px auto;
 }
 
 .CreateForm {

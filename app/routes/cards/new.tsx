@@ -38,7 +38,7 @@ interface LoaderData {
   types: card_type[];
   templates: card_template[];
   selectedType: string;
-  selectedTemplate: string;
+  selectedTemplate: card_template;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -58,11 +58,16 @@ export const loader: LoaderFunction = async ({ request }) => {
       searchParams.type === "" ||
       template.card_type_id === Number(searchParams.type)
   );
+
+  const selectedTemplate = cardTemplates.find(
+    (template) => template.card_template_id.toString() === searchParams.template
+  );
+
   return json({
     types: cardTypes,
     templates: filteredTemplates,
     selectedType: searchParams.type,
-    selectedTemplate: searchParams.template,
+    selectedTemplate,
   });
 };
 
@@ -120,7 +125,7 @@ export default function NewCardPage() {
 
   if (templateData.selectedTemplate !== undefined) {
     return (
-      <div className="CreateForm_container">
+      <div className="CreateForm_page">
         <Form method="post" className="CreateForm">
           <Typography className="CreateForm__title" variant="h5">
             Create Card
@@ -128,7 +133,7 @@ export default function NewCardPage() {
           <input
             type="hidden"
             name="template"
-            value={templateData.selectedTemplate}
+            value={templateData.selectedTemplate.card_template_id}
           />
           <TextField
             label="To"
@@ -170,6 +175,9 @@ export default function NewCardPage() {
             </Button>
           </div>
         </Form>
+        <div className="CreateForm_templateContainer">
+          <TemplatePreview text={templateData.selectedTemplate.text ?? ""} />
+        </div>
       </div>
     );
   }
