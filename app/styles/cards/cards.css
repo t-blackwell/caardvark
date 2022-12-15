@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css?family=Muli&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
+
 .Cards__linkbutton {
   transition-duration: 0.5s;
 }
 
 .Cards__linkbutton button:hover {
-  background-color: #156dd2;
+  background-color: #1976d2;
   color: rgb(255, 255, 255);
 }
 
@@ -11,21 +14,25 @@
   max-width: auto;
   margin: 0 auto;
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, 160px);
 }
 
 .Wrapper__text {
   justify-content: space-between;
-  /* display: flex; */
   margin-top: 10px;
   text-align: match-parent;
   margin-left: 2%;
+  font-family: "Oxygen", sans-serif;
+  font-style: normal;
 }
 
-/* @media (min-width: 900px) {
-  .Cards-wrapper {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 20px;
-  }
-} */
+.Title {
+  font-family: "Oxygen", sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  text-align: left;
+  color: #1976d2;
+}
