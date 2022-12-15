@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -7,7 +8,7 @@ import {
 } from "@mui/material";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
@@ -30,10 +31,12 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
-  console.log(data);
 
   return (
     <div className="ViewCard">
+      <Link className="ViewCard__addMessageLink" to="new">
+        <Button className="ViewCard__addMessageButton">Add message</Button>
+      </Link>
       <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
       <hr className="my-4" />
       <div className="ViewCard__messageContainer">

@@ -20,9 +20,3 @@ export function createMessage({
     },
   });
 }
-
-export function deleteMessage({ message_id }: Pick<message, "message_id">) {
-  return prisma.message.deleteMany({
-    where: { message_id },
-  });
-}
