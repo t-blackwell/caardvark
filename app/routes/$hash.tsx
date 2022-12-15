@@ -1,17 +1,9 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  IconButton,
-  Typography,
-} from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import MessageCard from "~/components/MessageCard";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
@@ -60,53 +52,11 @@ export default function ViewCardPage() {
       <hr className="my-4" />
       <div className="ViewCard__messageContainer">
         {data.card.message.map((message) => (
-          <Card
-            variant="outlined"
+          <MessageCard
+            message={message}
+            isOwner={data.userId === data.card.user_id}
             key={message.message_id}
-            className="ViewCard__message"
-          >
-            <div className="ViewCard__messageTitleContainer">
-              <CardHeader
-                title={`From: ${message.from}`}
-                action={
-                  data.card.user_id === data.userId ? (
-                    <Form method="post">
-                      <IconButton type="submit" name="_action" value="delete">
-                        <input
-                          type="hidden"
-                          name="messageId"
-                          value={message.message_id}
-                        />
-                        <input
-                          type="hidden"
-                          name="cardOwnerId"
-                          value={data.card.user_id}
-                        />
-                        <DeleteIcon />
-                      </IconButton>
-                    </Form>
-                  ) : (
-                    <></>
-                  )
-                }
-              />
-            </div>
-            <CardContent>
-              <Typography
-                color={message.color.hex ?? undefined}
-                fontFamily={message.font.name ?? undefined}
-              >
-                {message.text}
-              </Typography>
-            </CardContent>
-            {message.image_url !== null ? (
-              <CardMedia
-                component="img"
-                src={message.image_url}
-                alt="message image"
-              />
-            ) : null}
-          </Card>
+          />
         ))}
       </div>
     </div>
