@@ -1,5 +1,10 @@
 import { Button, Container, TextField, Typography } from "@mui/material";
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionArgs,
+  LoaderArgs,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
@@ -10,16 +15,19 @@ import { createMessage } from "~/models/message.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/messages/new.css";
 
-export async function loader({ request, params }: LoaderArgs) {
-  const user_id = await requireUserId(request);
+export const loader: LoaderFunction = async ({
+  request,
+  params,
+}: LoaderArgs) => {
+  await requireUserId(request);
   invariant(params.hash, "hash not found");
 
-  const card = await getCard({ user_id, hash: params.hash });
+  const card = await getCard({ request, hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ card });
-}
+};
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
