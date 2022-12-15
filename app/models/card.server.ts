@@ -62,7 +62,7 @@ export async function getCardWithMessages({ hash }: Pick<card, "hash">) {
 
 export function getCardListItems({ user_id }: { user_id: user["user_id"] }) {
   return prisma.card.findMany({
-    where: { user_id },
+    where: { user_id, deleted: "N" },
     select: selectCardColumns,
     orderBy: { updated_date: "desc" },
   });
