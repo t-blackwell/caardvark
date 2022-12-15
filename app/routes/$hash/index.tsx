@@ -8,7 +8,6 @@ import MessageCard from "~/components/MessageCard";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
-import styles from "~/styles/messages/index.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -37,10 +36,6 @@ export async function action({ request }: ActionArgs) {
     });
   }
   return redirect(".");
-}
-
-export function links() {
-  return [{ rel: "stylesheet", href: styles }];
 }
 
 export default function ViewCardPage() {

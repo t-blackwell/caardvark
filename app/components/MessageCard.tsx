@@ -1,8 +1,8 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Card,
+  CardActions,
   CardContent,
-  CardHeader,
   CardMedia,
   IconButton,
   Typography,
@@ -16,40 +16,7 @@ interface MessageCardProps {
 
 export default function MessageCard({ message, isOwner }: MessageCardProps) {
   return (
-    <Card
-      variant="outlined"
-      key={message.message_id}
-      className="ViewCard__message"
-    >
-      <div className="ViewCard__messageTitleContainer">
-        <CardHeader
-          title={`From: ${message.from}`}
-          action={
-            isOwner ? (
-              <Form method="post">
-                <IconButton type="submit" name="_action" value="delete">
-                  <input
-                    type="hidden"
-                    name="messageId"
-                    value={message.message_id}
-                  />
-                  <DeleteIcon />
-                </IconButton>
-              </Form>
-            ) : (
-              <></>
-            )
-          }
-        />
-      </div>
-      <CardContent>
-        <Typography
-          color={message.color.hex ?? undefined}
-          fontFamily={message.font.name ?? undefined}
-        >
-          {message.text}
-        </Typography>
-      </CardContent>
+    <Card className="MessageCard" variant="outlined">
       {message.image_url !== null ? (
         <CardMedia
           component="img"
@@ -57,6 +24,32 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
           alt="message image"
         />
       ) : null}
+      <CardContent className="MessageCard__content">
+        <Typography
+          color={message.color.hex ?? undefined}
+          fontFamily={message.font.name ?? undefined}
+        >
+          {message.text}
+        </Typography>
+      </CardContent>
+      <CardActions className="MessageCard__actions">
+        <Typography variant="caption" color="text.secondary">
+          From <strong>{message.from}</strong>
+        </Typography>
+        {isOwner ? (
+          <Form method="post">
+            <input type="hidden" name="messageId" value={message.message_id} />
+            <IconButton
+              name="_action"
+              type="submit"
+              value="delete"
+              size="small"
+            >
+              <DeleteIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Form>
+        ) : null}
+      </CardActions>
     </Card>
   );
 }
