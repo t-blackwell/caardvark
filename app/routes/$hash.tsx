@@ -34,9 +34,15 @@ export async function action({ request }: ActionArgs) {
 
   if (action === "delete") {
     const messageId = formData.get("messageId");
+    const cardOwnerId = formData.get("cardOwnerId");
     invariant(messageId, "Error");
+    invariant(cardOwnerId, "Error");
 
-    await deleteMessage({ message_id: Number(messageId) });
+    await deleteMessage({
+      request,
+      cardOwnerId: Number(cardOwnerId),
+      message_id: Number(messageId),
+    });
   }
   return redirect(".");
 }
@@ -70,6 +76,11 @@ export default function ViewCardPage() {
                           type="hidden"
                           name="messageId"
                           value={message.message_id}
+                        />
+                        <input
+                          type="hidden"
+                          name="cardOwnerId"
+                          value={data.card.user_id}
                         />
                         <DeleteIcon />
                       </IconButton>
