@@ -177,7 +177,7 @@ export default function NewCardPage() {
             </div>
           </Form>
         </div>
-        <div className="CreateForm_templateContainer">
+        <div className="CreateForm__templateContainer">
           <TemplatePreview text={templateData.selectedTemplate.text ?? ""} />
         </div>
       </div>
@@ -195,12 +195,17 @@ export default function NewCardPage() {
       }}
     >
       <FormControl fullWidth>
-        <InputLabel id="type-select-label">Filter Templates</InputLabel>
+        <InputLabel id="type-select-label" shrink>
+          Category
+        </InputLabel>
         <Select
+          displayEmpty
+          defaultValue=""
           id="type-select"
           inputProps={{ name: "type", type: "text" }}
-          label="Filter Templates"
+          label="Category"
           labelId="type-select-label"
+          notched
           onChange={(event) =>
             navigate(
               buildUrl({
@@ -210,6 +215,7 @@ export default function NewCardPage() {
           }
           value={templateData.selectedType}
         >
+          <MenuItem value="">All Cards</MenuItem>
           {templateData.types.map((type) => (
             <MenuItem key={type.card_type_id} value={type.card_type_id}>
               {type.name}
