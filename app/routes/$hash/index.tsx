@@ -3,6 +3,8 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import * as React from "react";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
 import { getCardWithMessages } from "~/models/card.server";
@@ -54,13 +56,19 @@ export default function ViewCardPage() {
       <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
       <hr className="my-4" />
       <div className="ViewCard__messageContainer">
-        {data.card.message.map((message) => (
-          <MessageCard
-            message={message}
-            isOwner={data.userId === data.card.user_id}
-            key={message.message_id}
-          />
-        ))}
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+          <Masonry>
+            {data.card.message.map((message: any) => (
+              <div key={message.message_id}>
+                <MessageCard
+                  message={message}
+                  isOwner={data.userId === data.card.user_id}
+                  key={message.message_id}
+                />
+              </div>
+            ))}
+          </Masonry>
+        </ResponsiveMasonry>
       </div>
     </div>
   );

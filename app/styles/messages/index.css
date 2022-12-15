@@ -1,11 +1,7 @@
 .ViewCard__messageTitleContainer {
   justify-content: space-between;
 }
-.ViewCard__messageContainer {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fill, 300px);
-}
+
 .ViewCard__addMessageLink {
   text-decoration: none !important;
 }
