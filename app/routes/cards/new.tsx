@@ -6,6 +6,7 @@ import {
   Select,
   TextField,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -117,52 +118,57 @@ export default function NewCardPage() {
 
   if (templateData.selectedTemplate !== undefined) {
     return (
-      <Form method="post" className="CreateForm">
-        <input
-          type="hidden"
-          name="template"
-          value={templateData.selectedTemplate}
-        />
-        <TextField
-          label="To"
-          type="text"
-          name="to"
-          autoFocus
-          error={actionData?.errors?.to !== undefined}
-          helperText={actionData?.errors?.to}
-        />
-        <TextField
-          label="From"
-          type="text"
-          name="from"
-          error={actionData?.errors?.from !== undefined}
-          helperText={actionData?.errors?.from}
-        />
-        <div>
-          <Button className="CreateForm__backButton">
-            <Link
-              component={RemixLink}
-              to={`/cards/new${
-                templateData.selectedType !== undefined
-                  ? `?type=${templateData.selectedType}`
-                  : ""
-              }`}
-              className="CreateForm__backButtonLink"
-              underline="none"
+      <div className="CreateForm_container">
+        <Form method="post" className="CreateForm">
+          <Typography className="CreateForm__title" variant="h5">
+            Create Card
+          </Typography>
+          <input
+            type="hidden"
+            name="template"
+            value={templateData.selectedTemplate}
+          />
+          <TextField
+            label="To"
+            type="text"
+            name="to"
+            autoFocus
+            error={actionData?.errors?.to !== undefined}
+            helperText={actionData?.errors?.to}
+          />
+          <TextField
+            label="From"
+            type="text"
+            name="from"
+            error={actionData?.errors?.from !== undefined}
+            helperText={actionData?.errors?.from}
+          />
+          <div>
+            <Button className="CreateForm__backButton">
+              <Link
+                component={RemixLink}
+                to={`/cards/new${
+                  templateData.selectedType !== undefined
+                    ? `?type=${templateData.selectedType}`
+                    : ""
+                }`}
+                className="CreateForm__backButtonLink"
+                underline="none"
+              >
+                Back
+              </Link>
+            </Button>
+            <Button
+              type="submit"
+              name="_action"
+              value="create"
+              className="CreateForm__createButton"
             >
-              Back
-            </Link>
-          </Button>
-          <Button
-            type="submit"
-            name="_action"
-            value="create"
-            className="CreateForm__createButton"
-          >
-            Create
-          </Button>
-        </div>
-      </Form>
+              Create
+            </Button>
+          </div>
+        </Form>
+      </div>
     );
   }
 
