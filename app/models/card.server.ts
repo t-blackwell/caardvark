@@ -1,6 +1,7 @@
 import type { card, user } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "~/db.server";
+import { requireUserId } from "~/session.server";
 
 export type { card } from "@prisma/client";
 
@@ -14,6 +15,7 @@ const selectCardColumns = {
   deleted: true,
   created_date: true,
   updated_date: true,
+  user_id: true,
 };
 
 const selectMessageColumns = {
@@ -28,24 +30,21 @@ const selectMessageColumns = {
   updated_date: true,
 };
 
-export function getCard({
+export async function getCard({
+  request,
   hash,
-  user_id,
 }: Pick<card, "hash"> & {
-  user_id: user["user_id"];
+  request: Request;
 }) {
+  const userId = await requireUserId(request);
+
   return prisma.card.findFirst({
     select: selectCardColumns,
-    where: { hash, user_id },
+    where: { hash, user_id: userId },
   });
 }
 
-export function getCardWithMessages({
-  hash,
-  user_id,
-}: Pick<card, "hash"> & {
-  user_id: user["user_id"];
-}) {
+export async function getCardWithMessages({ hash }: Pick<card, "hash">) {
   return prisma.card.findFirst({
     select: {
       ...selectCardColumns,
@@ -57,7 +56,7 @@ export function getCardWithMessages({
         },
       },
     },
-    where: { hash, user_id },
+    where: { hash },
   });
 }
 
@@ -99,11 +98,30 @@ export function createCard({
   });
 }
 
-export function deleteCard({
+export async function deleteCard({
+  request,
   card_id,
-}: Pick<card, "card_id"> & { user_id: user["user_id"] }) {
+}: Pick<card, "card_id"> & {
+  request: Request;
+}) {
+  const userId = await requireUserId(request);
+
   return prisma.card.update({
     data: { deleted: "Y" },
-    where: { card_id },
+    where: { card_id, user_id: userId },
+  });
+}
+
+export async function publishCard({
+  request,
+  card_id,
+}: Pick<card, "card_id"> & {
+  request: Request;
+}) {
+  const userId = await requireUserId(request);
+
+  return prisma.card.update({
+    data: { published_date: new Date() },
+    where: { card_id, user_id: userId, published_date: null },
   });
 }
