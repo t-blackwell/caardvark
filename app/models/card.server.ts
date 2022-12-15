@@ -41,7 +41,7 @@ export async function getCard({
 
   return prisma.card.findFirst({
     select: selectCardColumns,
-    where: { hash, user_id: userId },
+    where: { hash, user_id: userId, deleted: "N" },
   });
 }
 
@@ -57,7 +57,7 @@ export async function getCardWithMessages({ hash }: Pick<card, "hash">) {
         },
       },
     },
-    where: { hash },
+    where: { hash, deleted: "N" },
   });
 }
 

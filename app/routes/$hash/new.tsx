@@ -82,8 +82,8 @@ export function links() {
 
 export default function NewMessagePage() {
   const errors = useActionData();
-  const fromRef = React.useRef<HTMLInputElement>(null);
   const textRef = React.useRef<HTMLInputElement>(null);
+  const fromRef = React.useRef<HTMLInputElement>(null);
   const loaderData = useLoaderData<typeof loader>();
 
   return (
@@ -116,7 +116,6 @@ export default function NewMessagePage() {
         />
 
         <TextField
-          autoFocus
           className="CreateMessage__input"
           error={errors?.from !== undefined}
           helperText={errors?.from}
