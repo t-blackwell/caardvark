@@ -232,6 +232,16 @@ export default function NewCardPage() {
               )
             }
             text={template.text ?? ""}
+            backgroundCss={
+              template.bg_css !== null
+                ? (JSON.parse(template.bg_css) as React.CSSProperties)
+                : undefined
+            }
+            textCss={
+              template.text_css !== null
+                ? (JSON.parse(template.text_css) as React.CSSProperties)
+                : undefined
+            }
           />
         ))}
       </div>
