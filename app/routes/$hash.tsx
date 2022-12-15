@@ -60,21 +60,25 @@ export default function ViewCardPage() {
             className="ViewCard__message"
           >
             <div className="ViewCard__messageTitleContainer">
-              <CardHeader title={`From: ${message.from}`} />
-              {data.card.user_id === data.userId ? (
-                <Form method="post">
-                  <IconButton type="submit" name="_action" value="delete">
-                    <input
-                      type="hidden"
-                      name="messageId"
-                      value={message.message_id}
-                    />
-                    <DeleteIcon />
-                  </IconButton>
-                </Form>
-              ) : (
-                <></>
-              )}
+              <CardHeader
+                title={`From: ${message.from}`}
+                action={
+                  data.card.user_id === data.userId ? (
+                    <Form method="post">
+                      <IconButton type="submit" name="_action" value="delete">
+                        <input
+                          type="hidden"
+                          name="messageId"
+                          value={message.message_id}
+                        />
+                        <DeleteIcon />
+                      </IconButton>
+                    </Form>
+                  ) : (
+                    <></>
+                  )
+                }
+              />
             </div>
             <CardContent>
               <Typography
