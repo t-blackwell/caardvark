@@ -66,7 +66,7 @@ async function seed() {
   await prisma.card_template.create({
     data: {
       card_type_id: cardTypeLeaving.card_type_id,
-      text: "Fine. Go.",
+      text: "Fine.\nGo.",
       text_css: '{ "color": "white" }',
       bg_css: '{ "backgroundColor": "#E75E53" }',
     },
@@ -75,7 +75,7 @@ async function seed() {
   await prisma.card_template.create({
     data: {
       card_type_id: cardTypeLeaving.card_type_id,
-      text: "You're dead to us",
+      text: "You're\ndead to us",
       text_css: '{ "color": "white" }',
       bg_css: '{ "backgroundColor": "#EF7D37" }',
     },
@@ -84,7 +84,7 @@ async function seed() {
   await prisma.card_template.create({
     data: {
       card_type_id: cardTypeBaby.card_type_id,
-      text: "Congrats on your new baby boy",
+      text: "Congrats\non your\nnew baby\nboy",
       text_css: '{ "color": "black" }',
       bg_css: `{ "background": "linear-gradient(45deg, #89cfef 45px, transparent 45px)64px 64px,linear-gradient(45deg, #89cfef 45px, transparent 45px,transparent 91px, #9dd9f3 91px, #9dd9f3 135px, transparent 135px),linear-gradient(-45deg, #89cfef 23px, transparent 23px, transparent 68px,#89cfef 68px,#89cfef 113px,transparent 113px,transparent 158px,#89cfef 158px)","backgroundColor": "#9dd9f3","backgroundSize": "128px 128px" }`,
     },
@@ -93,7 +93,7 @@ async function seed() {
   await prisma.card_template.create({
     data: {
       card_type_id: cardTypeBaby.card_type_id,
-      text: "Congrats on your new baby girl",
+      text: "Congrats\non your\nnew baby\ngirl",
       text_css: '{ "color": "black" }',
       bg_css: `{ "background": "linear-gradient(45deg, #ffbec2 45px, transparent 45px)64px 64px,linear-gradient(45deg, #ffbec2 45px, transparent 45px,transparent 91px, #fdd4ce 91px, #fdd4ce 135px, transparent 135px),linear-gradient(-45deg, #ffbec2 23px, transparent 23px, transparent 68px,#ffbec2 68px,#ffbec2 113px,transparent 113px,transparent 158px,#ffbec2 158px)","backgroundColor": "#fdd4ce","backgroundSize": "128px 128px" }`,
     },
@@ -102,7 +102,7 @@ async function seed() {
   await prisma.card_template.create({
     data: {
       card_type_id: cardTypeBirthday.card_type_id,
-      text: "Geez you're old",
+      text: "Geez\nyou're old",
       text_css: '{ "color": "#049FA9" }',
       bg_css: '{ "backgroundColor": "white" }',
     },
@@ -111,7 +111,7 @@ async function seed() {
   const cardTemplateBirthday = await prisma.card_template.create({
     data: {
       card_type_id: cardTypeBirthday.card_type_id,
-      text: "Happy Birthday",
+      text: "Happy\nBirthday",
       text_css: '{ "color": "white" }',
       bg_css: '{ "backgroundColor": "black" }',
     },
