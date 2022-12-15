@@ -16,7 +16,7 @@ import invariant from "tiny-invariant";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
-import styles from "~/styles/$hash.css";
+import styles from "~/styles/messages/index.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -41,7 +41,6 @@ export async function action({ request }: ActionArgs) {
 
     await deleteMessage({
       request,
-      cardOwnerId: Number(cardOwnerId),
       message_id: Number(messageId),
     });
   }
