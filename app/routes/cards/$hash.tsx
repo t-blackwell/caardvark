@@ -1,8 +1,20 @@
+import { Button, TextField } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useCatch,
+  useLoaderData,
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { deleteCard, getCard, publishCard } from "~/models/card.server";
+import {
+  deleteCard,
+  getCard,
+  publishCard,
+  updateCard,
+} from "~/models/card.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
@@ -25,43 +37,90 @@ export async function action({ request }: ActionArgs) {
     case "delete":
       await deleteCard({ request, card_id: cardId });
       return redirect("/cards");
+    case "update":
+      const to = formData.get("to");
+      const from = formData.get("from");
+
+      const toError = typeof to !== "string" || to.length === 0;
+      const fromError = typeof from !== "string" || from.length === 0;
+
+      if (toError || fromError) {
+        return json(
+          {
+            errors: {
+              to: toError ? "to is required" : null,
+              from: fromError ? "from is required" : null,
+            },
+          },
+          { status: 400 }
+        );
+      }
+      return await updateCard({ request, card_id: cardId, from, to });
     case "publish":
       return await publishCard({ request, card_id: cardId });
   }
 }
 
 export default function CardDetailsPage() {
-  const data = useLoaderData<typeof loader>();
+  const { card } = useLoaderData<typeof loader>();
+
+  // can't figure out how to narrow the type of this.
+  // use optional chaining for some protection
+  const actionData = useActionData();
 
   return (
     <div>
-      <h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <p>{`card_template_id = ${data.card.card_template_id} `}</p>
-      <p>{`created_date = ${data.card.created_date}`}</p>
-      <p>{`updated_date = ${data.card.updated_date}`}</p>
-      <p>{`published_date = ${data.card.published_date}`}</p>
-      <p>{`deleted = ${data.card.deleted}`}</p>
-      <hr />
       <Form method="post">
-        <input type="hidden" name="card_id" value={data.card.card_id} />
-        <button
+        <input type="hidden" name="card_id" value={card.card_id} />
+        <TextField
+          autoFocus
+          defaultValue={card.to}
+          error={actionData?.errors?.to}
+          helperText={actionData?.errors?.to}
+          label="To"
+          name="to"
+          type="text"
+        />
+        <TextField
+          defaultValue={card.from}
+          error={actionData?.errors?.from !== undefined}
+          helperText={actionData?.errors?.from}
+          label="From"
+          name="from"
+          type="text"
+        />
+
+        <p>{`card_template_id = ${card.card_template_id} `}</p>
+        <p>{`created_date = ${card.created_date}`}</p>
+        <p>{`updated_date = ${card.updated_date}`}</p>
+        <p>{`published_date = ${card.published_date}`}</p>
+        <p>{`deleted = ${card.deleted}`}</p>
+        <Button
           type="submit"
           name="_action"
-          value="delete"
-          disabled={data.card.deleted === "Y"}
+          value="update"
+          disabled={card.deleted === "Y" || card.published_date !== null}
         >
-          Delete
-        </button>
-        <button
+          Update
+        </Button>
+        <Button
           type="submit"
           name="_action"
           value="publish"
-          disabled={data.card.published_date !== null}
+          disabled={card.deleted === "Y" || card.published_date !== null}
         >
           Publish
-        </button>
+        </Button>
+        <Button
+          type="submit"
+          name="_action"
+          value="delete"
+          disabled={card.deleted === "Y"}
+        >
+          Delete
+        </Button>
       </Form>
-      <Link to={`/${data.card.hash}`}>View Card</Link>
+      <Link to={`/${card.hash}`}>View Card</Link>
     </div>
   );
 }

@@ -111,6 +111,22 @@ export async function deleteCard({
   });
 }
 
+export async function updateCard({
+  request,
+  card_id,
+  from,
+  to,
+}: Pick<card, "card_id" | "from" | "to"> & {
+  request: Request;
+}) {
+  const userId = await requireUserId(request);
+
+  return prisma.card.update({
+    data: { from, to, updated_date: new Date() },
+    where: { card_id, user_id: userId },
+  });
+}
+
 export async function publishCard({
   request,
   card_id,

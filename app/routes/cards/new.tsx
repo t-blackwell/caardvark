@@ -85,7 +85,7 @@ export async function action({ request }: ActionArgs) {
     const from = formData.get("from");
 
     const toError = typeof to !== "string" || to.length === 0;
-    const fromError = typeof to !== "string" || to.length === 0;
+    const fromError = typeof from !== "string" || from.length === 0;
     if (toError || fromError) {
       return json(
         {
@@ -97,9 +97,6 @@ export async function action({ request }: ActionArgs) {
         { status: 400 }
       );
     }
-
-    invariant(typeof to === "string", "Error");
-    invariant(typeof from === "string", "Error");
 
     const card = await createCard({
       card_template_id: selectedTemplateNumorNull,
@@ -121,7 +118,6 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
-  console.log(templateData.selectedType);
 
   if (templateData.selectedTemplate !== undefined) {
     return (
