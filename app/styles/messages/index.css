@@ -45,3 +45,7 @@
     transform: translateY(10px);
   }
 }
+.ViewCard__addMessage {
+  display: flex;
+  justify-content: center;
+}
