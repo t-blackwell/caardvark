@@ -1,3 +1,4 @@
+import { AddComment } from "@mui/icons-material";
 import { Button, Link } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -53,7 +54,7 @@ export default function ViewCardPage() {
         title={`From "${data.card.from}" to "${data.card.to}"`}
         actions={
           <Link component={RemixLink} underline="none" to="new">
-            <Button>Add Message</Button>
+            <Button startIcon={<AddComment />}>Message</Button>
           </Link>
         }
       />
