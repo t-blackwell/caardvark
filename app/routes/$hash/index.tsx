@@ -10,6 +10,7 @@ import MessageCard from "~/components/MessageCard";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
+import styles from "~/styles/messages/index.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -40,6 +41,10 @@ export async function action({ request }: ActionArgs) {
   return redirect(".");
 }
 
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
 
@@ -48,11 +53,13 @@ export default function ViewCardPage() {
       <Link className="ViewCard__addMessageLink" to="new">
         <Button className="ViewCard__addMessageButton">Add message</Button>
       </Link>
-      <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <hr className="my-4" />
-      <div className="ViewCard__messageContainer">
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-          <Masonry>
+      <h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>
+      <hr />
+      <div className="ViewCard__masonryContainer">
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
+        >
+          <Masonry gutter="10px">
             {data.card.message.map((message: any) => (
               <div key={message.message_id}>
                 <MessageCard

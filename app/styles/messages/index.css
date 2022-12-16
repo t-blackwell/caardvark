@@ -4,3 +4,8 @@
 .ViewCard__addMessageButton {
   margin: 20px 0 !important;
 }
+
+.ViewCard__masonryContainer {
+  margin: auto;
+  max-width: 1350px;
+}
