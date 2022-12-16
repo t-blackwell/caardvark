@@ -1,4 +1,5 @@
-import { Button, Link } from "@mui/material";
+import SouthIcon from "@mui/icons-material/South";
+import { Button, IconButton, Link } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -8,6 +9,8 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
 import PageHeader from "~/components/PageHeader";
+import ScrollButton from "~/components/ScrollButton";
+import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
@@ -40,6 +43,22 @@ export async function action({ request }: ActionArgs) {
   return redirect(".");
 }
 
+export function handleScrollDown() {
+  const scrolled = document.documentElement.scrollTop;
+  const items = window.document.getElementsByClassName(
+    "ViewCard__messageContainer"
+  );
+  const elDistanceToTop =
+    window.pageYOffset + items[0].getBoundingClientRect().top;
+
+  window.scrollTo({
+    top:
+      Math.round(elDistanceToTop) > Math.round(scrolled + 1)
+        ? elDistanceToTop
+        : undefined,
+    behavior: "smooth",
+  });
+}
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
@@ -57,22 +76,52 @@ export default function ViewCardPage() {
           </Link>
         }
       />
-      <div className="ViewCard__masonryContainer">
-        <ResponsiveMasonry
-          columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
+      <div className="ViewCard__templateContainer">
+        <TemplatePreview
+          size="large"
+          backgroundCss={
+            data.card.card_template.bg_css !== null
+              ? (JSON.parse(
+                  data.card.card_template.bg_css
+                ) as React.CSSProperties)
+              : undefined
+          }
+          textCss={
+            data.card.card_template.text_css !== null
+              ? (JSON.parse(
+                  data.card.card_template.text_css
+                ) as React.CSSProperties)
+              : undefined
+          }
+          text={data.card.card_template.text ?? ""}
+        />
+        <IconButton
+          className="ScrollDownButton"
+          sx={{ mt: 2 }}
+          onClick={handleScrollDown}
         >
-          <Masonry gutter="10px">
-            {data.card.message.map((message: any) => (
-              <div key={message.message_id}>
-                <MessageCard
-                  message={message}
-                  isOwner={data.userId === data.card.user_id}
-                  key={message.message_id}
-                />
-              </div>
-            ))}
-          </Masonry>
-        </ResponsiveMasonry>
+          <SouthIcon fontSize="large" />
+        </IconButton>
+        <ScrollButton />
+      </div>
+      <div className="ViewCard__messageContainer">
+        <div id="messages" className="ViewCard__masonryContainer">
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
+          >
+            <Masonry gutter="10px">
+              {data.card.message.map((message: any) => (
+                <div key={message.message_id}>
+                  <MessageCard
+                    message={message}
+                    isOwner={data.userId === data.card.user_id}
+                    key={message.message_id}
+                  />
+                </div>
+              ))}
+            </Masonry>
+          </ResponsiveMasonry>
+        </div>
       </div>
     </div>
   );
