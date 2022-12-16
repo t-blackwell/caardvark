@@ -1,8 +1,50 @@
 .ViewCard__masonryContainer {
   margin: auto;
+  justify-content: center;
   max-width: 1350px;
 }
 
+.ViewCard__templateContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20vh;
+}
+
+.ScrollUpButton {
+  right: 0;
+  bottom: 0;
+  margin-bottom: 10vh;
+  margin-right: 10vh;
+  position: fixed;
+  background-color: rgb(245, 245, 245);
+  border-radius: 50%;
+  -webkit-animation: moveUp 1s infinite alternate;
+  animation: moveUp 1s infinite alternate;
+}
+
+.ScrollDownButton {
+  animation: MoveUp 1s infinite alternate;
+  -webkit-animation: moveUp 1s infinite alternate;
+}
+
+@-webkit-keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+}
 .ViewCard__addMessage {
   display: flex;
   justify-content: center;
