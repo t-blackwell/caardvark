@@ -119,19 +119,10 @@ p.TemplatePreview__text {
 
 /* PageHeader */
 .PageHeader {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 20px;
-}
-
-.PageHeader__left {
-  display: flex;
-  justify-self: flex-start;
-}
-
-.PageHeader__right {
-  display: flex;
-  justify-self: flex-end;
+  padding-bottom: 10px;
 }

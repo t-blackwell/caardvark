@@ -1,13 +1,17 @@
-interface TemplatePreviewProps {
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+import { Typography } from "@mui/material";
+
+interface PageHeaderProps {
+  title: string;
+  actions?: React.ReactNode;
 }
 
-export default function TemplatePreview({ left, right }: TemplatePreviewProps) {
+export default function PageHeader({ title, actions }: PageHeaderProps) {
   return (
     <div className="PageHeader">
-      <div className="PageHeader__left">{left}</div>
-      <div className="PageHeader__right">{right}</div>
+      <Typography variant="h5" component="h1">
+        {title}
+      </Typography>
+      <div className="PageHeader__actions">{actions}</div>
     </div>
   );
 }
