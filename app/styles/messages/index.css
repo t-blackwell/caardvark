@@ -1,0 +1,11 @@
+.ViewCard__addMessageLink {
+  text-decoration: none !important;
+}
+.ViewCard__addMessageButton span{
+  padding-left: 5px;
+}
+
+.ViewCard__masonryContainer {
+  margin: auto;
+  max-width: 1350px;
+}

@@ -1,13 +1,18 @@
+import AddCommentIcon from "@mui/icons-material/AddComment";
 import { Button } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import * as React from "react";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
+import PageHeader from "~/components/PageHeader";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
+import styles from "~/styles/messages/index.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -26,9 +31,7 @@ export async function action({ request }: ActionArgs) {
 
   if (action === "delete") {
     const messageId = formData.get("messageId");
-    const cardOwnerId = formData.get("cardOwnerId");
     invariant(messageId, "Error");
-    invariant(cardOwnerId, "Error");
 
     await deleteMessage({
       request,
@@ -38,24 +41,39 @@ export async function action({ request }: ActionArgs) {
   return redirect(".");
 }
 
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div className="ViewCard">
-      <Link className="ViewCard__addMessageLink" to="new">
-        <Button className="ViewCard__addMessageButton">Add message</Button>
-      </Link>
-      <h3 className="text-2xl font-bold">{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <hr className="my-4" />
-      <div className="ViewCard__messageContainer">
-        {data.card.message.map((message) => (
-          <MessageCard
-            message={message}
-            isOwner={data.userId === data.card.user_id}
-            key={message.message_id}
-          />
-        ))}
+      <PageHeader
+        left={<h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>}
+        right={
+          <Link className="ViewCard__addMessageLink" to="new">
+            <Button startIcon={<AddCommentIcon />}>Message</Button>
+          </Link>
+        }
+      />
+      <div className="ViewCard__masonryContainer">
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
+        >
+          <Masonry gutter="10px">
+            {data.card.message.map((message: any) => (
+              <div key={message.message_id}>
+                <MessageCard
+                  message={message}
+                  isOwner={data.userId === data.card.user_id}
+                  key={message.message_id}
+                />
+              </div>
+            ))}
+          </Masonry>
+        </ResponsiveMasonry>
       </div>
     </div>
   );
