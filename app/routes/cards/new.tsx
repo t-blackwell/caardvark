@@ -194,6 +194,7 @@ export default function NewCardPage() {
                 : undefined
             }
             text={templateData.selectedTemplate.text ?? ""}
+            size="medium"
           />
         </div>
       </div>
