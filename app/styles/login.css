@@ -1,7 +1,16 @@
+.Login {
+  text-align: center;
+}
+.Login__logo {
+  margin: 40px auto;
+}
+.Login__logo .Logo {
+  display: inline-flex;
+}
 .Login__box {
+  margin: 40px auto;
   display: flex;
   flex-direction: column;
-  margin: 40px auto;
   padding: 20px;
   border: 1px solid #ddd;
   max-width: 350px;

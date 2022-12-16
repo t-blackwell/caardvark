@@ -22,7 +22,7 @@ import styles from "~/styles/App.css";
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   "theme-color": theme.palette.primary.main,
-  title: "Remix Notes",
+  title: "Caardvark",
   viewport: "width=device-width,initial-scale=1",
 });
 
