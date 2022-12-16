@@ -29,9 +29,7 @@ export async function action({ request }: ActionArgs) {
 
   if (action === "delete") {
     const messageId = formData.get("messageId");
-    const cardOwnerId = formData.get("cardOwnerId");
     invariant(messageId, "Error");
-    invariant(cardOwnerId, "Error");
 
     await deleteMessage({
       request,
