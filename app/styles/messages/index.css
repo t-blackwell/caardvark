@@ -1,4 +1,5 @@
 .ViewCard__masonryContainer {
+  padding-top: 10px;
   margin: auto;
   justify-content: center;
   max-width: 1350px;
