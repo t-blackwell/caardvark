@@ -1,3 +1,4 @@
+import { selectCardTemplateColumns } from "./card_template.server";
 import type { card, user } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "~/db.server";
@@ -40,7 +41,10 @@ export async function getCard({
   const userId = await requireUserId(request);
 
   return prisma.card.findFirst({
-    select: selectCardColumns,
+    select: {
+      ...selectCardColumns,
+      card_template: { select: selectCardTemplateColumns },
+    },
     where: { hash, user_id: userId, deleted: "N" },
   });
 }
@@ -109,6 +113,22 @@ export async function deleteCard({
 
   return prisma.card.update({
     data: { deleted: "Y" },
+    where: { card_id, user_id: userId },
+  });
+}
+
+export async function updateCard({
+  request,
+  card_id,
+  from,
+  to,
+}: Pick<card, "card_id" | "from" | "to"> & {
+  request: Request;
+}) {
+  const userId = await requireUserId(request);
+
+  return prisma.card.update({
+    data: { from, to, updated_date: new Date() },
     where: { card_id, user_id: userId },
   });
 }

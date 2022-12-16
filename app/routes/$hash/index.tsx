@@ -1,9 +1,8 @@
-import AddCommentIcon from "@mui/icons-material/AddComment";
-import { Button } from "@mui/material";
+import { Button, Link } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link as RemixLink, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import invariant from "tiny-invariant";
@@ -51,10 +50,10 @@ export default function ViewCardPage() {
   return (
     <div className="ViewCard">
       <PageHeader
-        left={<h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>}
-        right={
-          <Link className="ViewCard__addMessageLink" to="new">
-            <Button startIcon={<AddCommentIcon />}>Message</Button>
+        title={`From "${data.card.from}" to "${data.card.to}"`}
+        actions={
+          <Link component={RemixLink} underline="none" to="new">
+            <Button>Add Message</Button>
           </Link>
         }
       />

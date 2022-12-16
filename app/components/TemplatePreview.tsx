@@ -1,8 +1,9 @@
 import { ConditionalWrapper } from "./ConditionalWrapper";
 import { Typography } from "@mui/material";
-import classNames from "classnames";
+import classnames from "classnames";
 
 interface TemplatePreviewProps {
+  className?: string;
   backgroundCss?: React.CSSProperties;
   onClick?: () => void;
   size?: "small" | "medium" | "large";
@@ -11,6 +12,7 @@ interface TemplatePreviewProps {
 }
 
 export default function TemplatePreview({
+  className,
   backgroundCss,
   onClick,
   size = "small",
@@ -18,7 +20,13 @@ export default function TemplatePreview({
   textCss,
 }: TemplatePreviewProps) {
   return (
-    <div className={classNames("TemplatePreview", `TemplatePreview--${size}`)}>
+    <div
+      className={classnames(
+        "TemplatePreview",
+        `TemplatePreview--${size}`,
+        className
+      )}
+    >
       <ConditionalWrapper
         showWrapper={onClick !== undefined}
         wrapper={(children) => (

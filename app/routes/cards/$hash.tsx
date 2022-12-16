@@ -1,8 +1,24 @@
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Button, TextField, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useCatch,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
+import React from "react";
 import invariant from "tiny-invariant";
-import { deleteCard, getCard, publishCard } from "~/models/card.server";
+import TemplatePreview from "~/components/TemplatePreview";
+import {
+  deleteCard,
+  getCard,
+  publishCard,
+  updateCard,
+} from "~/models/card.server";
+import styles from "~/styles/cards/$hash.css";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
@@ -25,43 +41,130 @@ export async function action({ request }: ActionArgs) {
     case "delete":
       await deleteCard({ request, card_id: cardId });
       return redirect("/cards");
+    case "update":
+      const to = formData.get("to");
+      const from = formData.get("from");
+
+      const toError = typeof to !== "string" || to.length === 0;
+      const fromError = typeof from !== "string" || from.length === 0;
+
+      if (toError || fromError) {
+        return json(
+          {
+            errors: {
+              to: toError ? "to is required" : null,
+              from: fromError ? "from is required" : null,
+            },
+          },
+          { status: 400 }
+        );
+      }
+      return await updateCard({ request, card_id: cardId, from, to });
     case "publish":
       return await publishCard({ request, card_id: cardId });
   }
 }
 
-export default function CardDetailsPage() {
-  const data = useLoaderData<typeof loader>();
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
 
+export default function CardDetailsPage() {
+  const { card } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+
+  // can't figure out how to narrow the type of this.
+  // use optional chaining for some protection
+  const actionData = useActionData();
+
+  const isDeleted = card.deleted === "Y";
+  const isPublished = card.published_date !== null;
   return (
-    <div>
-      <h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <p>{`card_template_id = ${data.card.card_template_id} `}</p>
-      <p>{`created_date = ${data.card.created_date}`}</p>
-      <p>{`updated_date = ${data.card.updated_date}`}</p>
-      <p>{`published_date = ${data.card.published_date}`}</p>
-      <p>{`deleted = ${data.card.deleted}`}</p>
-      <hr />
-      <Form method="post">
-        <input type="hidden" name="card_id" value={data.card.card_id} />
-        <button
-          type="submit"
-          name="_action"
-          value="delete"
-          disabled={data.card.deleted === "Y"}
-        >
-          Delete
-        </button>
-        <button
-          type="submit"
-          name="_action"
-          value="publish"
-          disabled={data.card.published_date !== null}
-        >
-          Publish
-        </button>
-      </Form>
-      <Link to={`/${data.card.hash}`}>View Card</Link>
+    <div className="CardDetails">
+      <div className="CardDetails__formContainer">
+        <Form method="post" className="CardDetails__form">
+          <input type="hidden" name="card_id" value={card.card_id} />
+          <Typography className="CardDetails__title" variant="h5">
+            Edit Card
+          </Typography>
+          <div className="CardDetails__inputsContainer">
+            <div className="CardDetails__fieldsContainer">
+              <TextField
+                autoFocus
+                className="CardDetails__field"
+                disabled={isDeleted || isPublished}
+                defaultValue={card.to}
+                error={actionData?.errors?.to}
+                helperText={actionData?.errors?.to}
+                label="To"
+                name="to"
+                type="text"
+              />
+              <TextField
+                className="CardDetails__field"
+                defaultValue={card.from}
+                disabled={isDeleted || isPublished}
+                error={actionData?.errors?.from !== undefined}
+                helperText={actionData?.errors?.from}
+                label="From"
+                name="from"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div className="CardDetails__actionsContainer">
+            <Button
+              disabled={isDeleted || isPublished}
+              name="_action"
+              type="submit"
+              value="update"
+            >
+              Update
+            </Button>
+            <Button
+              disabled={isDeleted || isPublished}
+              endIcon={isPublished ? <CheckCircleIcon color="success" /> : null}
+              name="_action"
+              type="submit"
+              value="publish"
+            >
+              Publish
+            </Button>
+            <Button
+              disabled={isDeleted}
+              endIcon={isDeleted ? <CheckCircleIcon color="success" /> : null}
+              name="_action"
+              type="submit"
+              value="delete"
+            >
+              Delete
+            </Button>
+          </div>
+        </Form>
+      </div>
+
+      <div className="CardDetails__templateContainer">
+        {/* <Link to={`/${card.hash}`}>
+          <Launch></Launch>
+        </Link> */}
+
+        <TemplatePreview
+          className="CardDetails__template"
+          onClick={() => navigate(`/${card.hash}`)}
+          text={card.card_template.text ?? ""}
+          textCss={
+            card.card_template.text_css !== null
+              ? (JSON.parse(card.card_template.text_css) as React.CSSProperties)
+              : undefined
+          }
+          backgroundCss={
+            card.card_template.bg_css !== null
+              ? (JSON.parse(card.card_template.bg_css) as React.CSSProperties)
+              : undefined
+          }
+        />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,5 @@
-import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import { Link } from "@mui/material";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -10,6 +8,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import * as React from "react";
+import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardListItems } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
@@ -30,21 +29,15 @@ export default function CardsPage() {
 
   return (
     <div>
-      <h1 className="Title">My Cards</h1>
-      <div>
-        <Stack direction="row" spacing={2}>
-          <Link
-            component={RemixLink}
-            underline="none"
-            to="new"
-            className="Cards__linkbutton"
-          >
-            <Button variant="outlined" startIcon={<AddToPhotosIcon />}>
-              New Card
-            </Button>
+      <PageHeader
+        title="My Cards"
+        actions={
+          <Link component={RemixLink} underline="none" to="new">
+            <Button>Create New Card</Button>
           </Link>
-        </Stack>
-        <hr />
+        }
+      />
+      <div>
         {data.cardListItems.length === 0 ? (
           <p>
             You do not have any cards yet. Create one{" "}

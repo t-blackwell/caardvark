@@ -1,3 +1,12 @@
+.SignUp {
+  text-align: center;
+}
+.SignUp__logo {
+  margin: 40px auto;
+}
+.SignUp__logo .Logo {
+  display: inline-flex;
+}
 .SignUp__box {
   display: flex;
   flex-direction: column;

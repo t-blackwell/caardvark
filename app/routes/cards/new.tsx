@@ -19,6 +19,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
@@ -85,7 +86,7 @@ export async function action({ request }: ActionArgs) {
     const from = formData.get("from");
 
     const toError = typeof to !== "string" || to.length === 0;
-    const fromError = typeof to !== "string" || to.length === 0;
+    const fromError = typeof from !== "string" || from.length === 0;
     if (toError || fromError) {
       return json(
         {
@@ -97,9 +98,6 @@ export async function action({ request }: ActionArgs) {
         { status: 400 }
       );
     }
-
-    invariant(typeof to === "string", "Error");
-    invariant(typeof from === "string", "Error");
 
     const card = await createCard({
       card_template_id: selectedTemplateNumorNull,
@@ -121,7 +119,6 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
-  console.log(templateData.selectedType);
 
   if (templateData.selectedTemplate !== undefined) {
     return (
@@ -202,72 +199,76 @@ export default function NewCardPage() {
   }
 
   return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <FormControl fullWidth>
-        <InputLabel id="type-select-label" shrink>
-          Category
-        </InputLabel>
-        <Select
-          displayEmpty
-          defaultValue=""
-          id="type-select"
-          inputProps={{ name: "type", type: "text" }}
-          label="Category"
-          labelId="type-select-label"
-          notched
-          onChange={(event) =>
-            navigate(
-              buildUrl({
-                type: event.target.value,
-              })
-            )
-          }
-          value={templateData.selectedType}
-        >
-          <MenuItem value="">All Cards</MenuItem>
-          {templateData.types.map((type) => (
-            <MenuItem key={type.card_type_id} value={type.card_type_id}>
-              {type.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <div className="NewCard__templates">
-        {templateData.templates.map((template) => (
-          <TemplatePreview
-            key={template.card_template_id}
-            onClick={() =>
+    <>
+      <PageHeader title="Create new card" />
+
+      <Form
+        method="post"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          width: "100%",
+        }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="type-select-label" shrink>
+            Category
+          </InputLabel>
+          <Select
+            displayEmpty
+            defaultValue=""
+            id="type-select"
+            inputProps={{ name: "type", type: "text" }}
+            label="Category"
+            labelId="type-select-label"
+            notched
+            onChange={(event) =>
               navigate(
                 buildUrl({
-                  template: template.card_template_id.toString(),
-                  ...(templateData.selectedType !== undefined
-                    ? { type: templateData.selectedType }
-                    : undefined),
+                  type: event.target.value,
                 })
               )
             }
-            text={template.text ?? ""}
-            backgroundCss={
-              template.bg_css !== null
-                ? (JSON.parse(template.bg_css) as React.CSSProperties)
-                : undefined
-            }
-            textCss={
-              template.text_css !== null
-                ? (JSON.parse(template.text_css) as React.CSSProperties)
-                : undefined
-            }
-          />
-        ))}
-      </div>
-    </Form>
+            value={templateData.selectedType}
+          >
+            <MenuItem value="">All Cards</MenuItem>
+            {templateData.types.map((type) => (
+              <MenuItem key={type.card_type_id} value={type.card_type_id}>
+                {type.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <div className="NewCard__templates">
+          {templateData.templates.map((template) => (
+            <TemplatePreview
+              key={template.card_template_id}
+              onClick={() =>
+                navigate(
+                  buildUrl({
+                    template: template.card_template_id.toString(),
+                    ...(templateData.selectedType !== undefined
+                      ? { type: templateData.selectedType }
+                      : undefined),
+                  })
+                )
+              }
+              text={template.text ?? ""}
+              backgroundCss={
+                template.bg_css !== null
+                  ? (JSON.parse(template.bg_css) as React.CSSProperties)
+                  : undefined
+              }
+              textCss={
+                template.text_css !== null
+                  ? (JSON.parse(template.text_css) as React.CSSProperties)
+                  : undefined
+              }
+            />
+          ))}
+        </div>
+      </Form>
+    </>
   );
 }
