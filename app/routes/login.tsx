@@ -119,7 +119,6 @@ export default function LoginPage() {
           name="email"
           ref={emailRef}
           required
-          size="small"
           type="email"
         />
 
@@ -132,7 +131,6 @@ export default function LoginPage() {
           label="Password"
           name="password"
           ref={passwordRef}
-          size="small"
           type="password"
         />
 

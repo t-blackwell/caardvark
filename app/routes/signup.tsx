@@ -122,7 +122,6 @@ export default function SignUp() {
           name="email"
           ref={emailRef}
           required
-          size="small"
           type="email"
         />
 
@@ -136,7 +135,6 @@ export default function SignUp() {
           name="password"
           ref={passwordRef}
           required
-          size="small"
           type="password"
         />
 
