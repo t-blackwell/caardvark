@@ -2,3 +2,8 @@
   margin: auto;
   max-width: 1350px;
 }
+
+.ViewCard__addMessage {
+  display: flex;
+  justify-content: center;
+}
