@@ -67,7 +67,6 @@ main {
   aspect-ratio: 1 / 1.42;
   border: 1px solid rgba(0, 0, 0, 0.23);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  box-sizing: border-box;
 
   transition: all 0.1s ease-in;
 }
