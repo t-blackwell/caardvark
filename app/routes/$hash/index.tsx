@@ -1,3 +1,4 @@
+import AddCommentIcon from "@mui/icons-material/AddComment";
 import { Button } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -7,6 +8,7 @@ import * as React from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
+import PageHeader from "~/components/PageHeader";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
 import { getUserId } from "~/session.server";
@@ -48,11 +50,14 @@ export default function ViewCardPage() {
 
   return (
     <div className="ViewCard">
-      <Link className="ViewCard__addMessageLink" to="new">
-        <Button className="ViewCard__addMessageButton">Add message</Button>
-      </Link>
-      <h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>
-      <hr />
+      <PageHeader
+        left={<h3>{`From "${data.card.from}" to "${data.card.to}"`}</h3>}
+        right={
+          <Link className="ViewCard__addMessageLink" to="new">
+            <Button startIcon={<AddCommentIcon />}>Message</Button>
+          </Link>
+        }
+      />
       <div className="ViewCard__masonryContainer">
         <ResponsiveMasonry
           columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
