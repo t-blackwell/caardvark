@@ -1,3 +1,7 @@
+html {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 body {
   margin: 0;
 }
@@ -18,6 +22,38 @@ main {
   color: white !important;
 }
 
+/* Logo */
+.Logo {
+  display: flex;
+  align-items: center;
+}
+.Logo__text {
+  font-family: "Covered By Your Grace", cursive !important;
+  color: #fff;
+  letter-spacing: 0.05rem !important;
+}
+.Logo__icon {
+  margin-right: 5px;
+}
+.Logo--black .Logo__icon {
+  filter: brightness(0);
+}
+.Logo--black .Logo__text {
+  color: rgba(0, 0, 0, 0.87);
+}
+.Logo--small .Logo__icon {
+  height: 40px;
+}
+.Logo--small .Logo__text {
+  font-size: 1.8rem;
+}
+.Logo--medium .Logo__icon {
+  height: 50px;
+}
+.Logo--medium .Logo__text {
+  font-size: 2.2rem;
+}
+
 /* TemplatePreview */
 .TemplatePreview__button {
   cursor: pointer;
@@ -29,10 +65,8 @@ main {
 }
 .TemplatePreview__card {
   aspect-ratio: 1 / 1.42;
-  min-width: 140px;
   border: 1px solid rgba(0, 0, 0, 0.23);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  padding: 20px 10px;
   transition: all 0.1s ease-in;
 }
 .TemplatePreview__button:hover .TemplatePreview__card {
@@ -43,6 +77,50 @@ p.TemplatePreview__text {
   text-align: left;
   text-transform: uppercase;
   font-weight: bold;
-  font-size: 1.5rem;
   line-height: 1.2;
+}
+.TemplatePreview--small .TemplatePreview__card {
+  width: 140px;
+  padding: 30px 15px 15px 15px;
+}
+.TemplatePreview--small .TemplatePreview__text {
+  font-size: 1.5rem;
+}
+.TemplatePreview--medium .TemplatePreview__card {
+  width: 180px;
+  padding: 40px 20px 20px 20px;
+}
+.TemplatePreview--medium .TemplatePreview__text {
+  font-size: 1.8rem;
+}
+.TemplatePreview--large .TemplatePreview__card {
+  width: 220px;
+  padding: 60px 30px 30px 30px;
+}
+.TemplatePreview--large .TemplatePreview__text {
+  font-size: 2.1rem;
+}
+
+/* MessageCard */
+.MessageCard {
+  overflow: hidden;
+  max-width: 345px;
+}
+.MessageCard__content {
+  padding: 8px 16px !important;
+}
+.MessageCard__actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px !important;
+}
+
+/* PageHeader */
+.PageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
 }

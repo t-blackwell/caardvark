@@ -1,3 +1,4 @@
+import Logo from "./Logo";
 import { Avatar, Divider, Link, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -35,16 +36,9 @@ export default function NavBar({
     <Box sx={{ flexGrow: 0 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link
-              component={RemixLink}
-              to="/"
-              className="Nav__linkButton"
-              underline="none"
-            >
-              Cards
-            </Link>
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Logo color="white" size="small" />
+          </Box>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar sx={{ backgroundColor: cyan[600] }}>
@@ -98,16 +92,9 @@ export default function NavBar({
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link
-              component={RemixLink}
-              to="/"
-              className="Nav__linkButton"
-              underline="none"
-            >
-              Cards
-            </Link>
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Logo color="white" size="small" />
+          </Box>
           <Link
             component={RemixLink}
             to="/login"
