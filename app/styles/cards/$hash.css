@@ -16,13 +16,17 @@
   gap: 20px;
 }
 
-.CardDetails__fieldsContainer  {
+.CardDetails__fieldsContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 20px;
 }
 
+.CardDetails__templateContainer {
+  display: flex;
+  justify-content: center;
+}
 
 .CardDetails__actionButton--xs {
   min-width: 0 !important;

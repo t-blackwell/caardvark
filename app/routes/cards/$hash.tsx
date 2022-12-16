@@ -172,25 +172,28 @@ export default function CardDetailsPage() {
               Save Changes
             </Button>
           </div>
-
-          <TemplatePreview
-            backgroundCss={
-              card.card_template.bg_css !== null
-                ? (JSON.parse(card.card_template.bg_css) as React.CSSProperties)
-                : undefined
-            }
-            className="CardDetails__template"
-            onClick={() => navigate(`/${card.hash}`)}
-            size="large"
-            text={card.card_template.text ?? ""}
-            textCss={
-              card.card_template.text_css !== null
-                ? (JSON.parse(
-                    card.card_template.text_css
-                  ) as React.CSSProperties)
-                : undefined
-            }
-          />
+          <div className="CardDetails__templateContainer">
+            <TemplatePreview
+              backgroundCss={
+                card.card_template.bg_css !== null
+                  ? (JSON.parse(
+                      card.card_template.bg_css
+                    ) as React.CSSProperties)
+                  : undefined
+              }
+              className="CardDetails__template"
+              onClick={() => navigate(`/${card.hash}`)}
+              size="medium"
+              text={card.card_template.text ?? ""}
+              textCss={
+                card.card_template.text_css !== null
+                  ? (JSON.parse(
+                      card.card_template.text_css
+                    ) as React.CSSProperties)
+                  : undefined
+              }
+            />
+          </div>
         </div>
       </Form>
     </div>
