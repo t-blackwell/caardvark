@@ -121,7 +121,6 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
-  console.log(templateData.selectedType);
 
   if (templateData.selectedTemplate !== undefined) {
     return (
@@ -211,9 +210,6 @@ export default function NewCardPage() {
       }}
     >
       <FormControl fullWidth>
-        <InputLabel id="type-select-label" shrink>
-          Category
-        </InputLabel>
         <Select
           displayEmpty
           defaultValue=""
