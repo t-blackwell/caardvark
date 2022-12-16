@@ -1,3 +1,7 @@
+html {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 body {
   margin: 0;
 }
@@ -16,6 +20,38 @@ main {
 .Nav__linkButton,
 .Nav__linkButton button {
   color: white !important;
+}
+
+/* Logo */
+.Logo {
+  display: flex;
+  align-items: center;
+}
+.Logo__text {
+  font-family: "Covered By Your Grace", cursive !important;
+  color: #fff;
+  letter-spacing: 0.05rem !important;
+}
+.Logo__icon {
+  margin-right: 5px;
+}
+.Logo--black .Logo__icon {
+  filter: brightness(0);
+}
+.Logo--black .Logo__text {
+  color: rgba(0, 0, 0, 0.87);
+}
+.Logo--small .Logo__icon {
+  height: 40px;
+}
+.Logo--small .Logo__text {
+  font-size: 1.8rem;
+}
+.Logo--medium .Logo__icon {
+  height: 50px;
+}
+.Logo--medium .Logo__text {
+  font-size: 2.2rem;
 }
 
 /* TemplatePreview */
