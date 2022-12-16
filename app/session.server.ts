@@ -1,6 +1,5 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
-
 import type { user } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 
@@ -42,13 +41,13 @@ export async function getUser(request: Request) {
   throw await logout(request);
 }
 
-export async function requireUserId(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-) {
+export async function requireUserId(request: Request, redirectTo?: string) {
+  const currentTo = new URL(request.url).pathname;
   const userId = await getUserId(request);
   if (userId === undefined || isNaN(userId)) {
-    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    const searchParams = new URLSearchParams([
+      ["redirectTo", redirectTo ?? currentTo],
+    ]);
     throw redirect(`/login?${searchParams}`);
   }
   return userId;

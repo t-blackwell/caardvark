@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   Container,
@@ -16,6 +17,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import * as React from "react";
+import Logo from "~/components/Logo";
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import styles from "~/styles/login.css";
@@ -74,7 +76,7 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Login",
+    title: "Log in · Caardvark",
   };
 };
 
@@ -99,6 +101,9 @@ export default function LoginPage() {
 
   return (
     <Container className="Login">
+      <Box className="Login__logo">
+        <Logo color="black" size="medium" />
+      </Box>
       <Form className="Login__box" method="post" noValidate>
         <Typography className="Login__title" variant="h5">
           Log in

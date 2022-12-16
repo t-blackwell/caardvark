@@ -16,6 +16,8 @@ const selectCardColumns = {
   deleted: true,
   created_date: true,
   updated_date: true,
+  card_template: true,
+  user_id: true,
 };
 
 const selectMessageColumns = {
@@ -43,7 +45,7 @@ export async function getCard({
       ...selectCardColumns,
       card_template: { select: selectCardTemplateColumns },
     },
-    where: { hash, user_id: userId },
+    where: { hash, user_id: userId, deleted: "N" },
   });
 }
 
@@ -59,13 +61,13 @@ export async function getCardWithMessages({ hash }: Pick<card, "hash">) {
         },
       },
     },
-    where: { hash },
+    where: { hash, deleted: "N" },
   });
 }
 
 export function getCardListItems({ user_id }: { user_id: user["user_id"] }) {
   return prisma.card.findMany({
-    where: { user_id },
+    where: { user_id, deleted: "N" },
     select: selectCardColumns,
     orderBy: { updated_date: "desc" },
   });

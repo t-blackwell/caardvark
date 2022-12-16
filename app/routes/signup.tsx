@@ -1,4 +1,11 @@
-import { Button, Container, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { json, redirect } from "@remix-run/node";
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import {
@@ -8,6 +15,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import * as React from "react";
+import Logo from "~/components/Logo";
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import styles from "~/styles/signup.css";
@@ -71,7 +79,7 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Sign Up",
+    title: "Sign up · Caardvark",
   };
 };
 
@@ -96,6 +104,9 @@ export default function SignUp() {
 
   return (
     <Container className="SignUp">
+      <Box className="SignUp__logo">
+        <Logo color="black" size="medium" />
+      </Box>
       <Form className="SignUp__box" method="post" noValidate>
         <Typography className="SignUp__title" variant="h5">
           Sign up
@@ -133,7 +144,7 @@ export default function SignUp() {
 
         <Button
           className="SignUp__button"
-          color="success"
+          color="primary"
           disableElevation
           type="submit"
           variant="contained"

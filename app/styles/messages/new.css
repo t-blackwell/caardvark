@@ -1,13 +1,4 @@
-.SignUp {
-  text-align: center;
-}
-.SignUp__logo {
-  margin: 40px auto;
-}
-.SignUp__logo .Logo {
-  display: inline-flex;
-}
-.SignUp__box {
+.CreateMessage__box {
   display: flex;
   flex-direction: column;
   margin: 40px auto;
@@ -17,12 +8,12 @@
   text-align: center;
   border-radius: 4px;
 }
-.SignUp__title {
+.CreateMessage__title {
   margin-bottom: 20px !important;
 }
-.SignUp__input {
+.CreateMessage__input {
   margin: 10px 0 !important;
 }
-.SignUp__button {
+.CreateMessage__button {
   margin: 20px 0 !important;
 }

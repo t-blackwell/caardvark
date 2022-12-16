@@ -22,7 +22,7 @@ import styles from "~/styles/App.css";
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   "theme-color": theme.palette.primary.main,
-  title: "Remix Notes",
+  title: "Caardvark",
   viewport: "width=device-width,initial-scale=1",
 });
 
@@ -70,10 +70,13 @@ const Document = withEmotionCache(
           {title ? <title>{title}</title> : null}
           <Meta />
           <Links />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
+            href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&family=Roboto:wght@300;400;500;700&display=swap"
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+
           <meta
             name="emotion-insertion-point"
             content="emotion-insertion-point"
