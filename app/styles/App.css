@@ -67,6 +67,8 @@ main {
   aspect-ratio: 1 / 1.42;
   border: 1px solid rgba(0, 0, 0, 0.23);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  display: inline-flex;
+  box-sizing: border-box;
 
   transition: all 0.1s ease-in;
 }
@@ -126,3 +128,11 @@ p.TemplatePreview__text {
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
+
+.PageHeader__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+

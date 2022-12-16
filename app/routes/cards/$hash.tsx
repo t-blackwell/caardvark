@@ -1,5 +1,7 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Button, TextField, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Send";
+import { Button, TextField, useMediaQuery } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -9,8 +11,10 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import classnames from "classnames";
 import React from "react";
 import invariant from "tiny-invariant";
+import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
 import {
   deleteCard,
@@ -72,6 +76,7 @@ export function links() {
 export default function CardDetailsPage() {
   const { card } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const smScreen = useMediaQuery("(min-width:370px)");
 
   // can't figure out how to narrow the type of this.
   // use optional chaining for some protection
@@ -81,12 +86,57 @@ export default function CardDetailsPage() {
   const isPublished = card.published_date !== null;
   return (
     <div className="CardDetails">
-      <div className="CardDetails__formContainer">
-        <Form method="post" className="CardDetails__form">
-          <input type="hidden" name="card_id" value={card.card_id} />
-          <Typography className="CardDetails__title" variant="h5">
-            Edit Card
-          </Typography>
+      <Form method="post">
+        <input type="hidden" name="card_id" value={card.card_id} />
+        <PageHeader
+          title="Edit Card"
+          actions={
+            <>
+              <Button
+                color="error"
+                className={classnames(
+                  "CardDetails__actionButton",
+                  smScreen
+                    ? "CardDetails__actionButton--sm"
+                    : "CardDetails__actionButton--xs"
+                )}
+                disabled={isDeleted}
+                endIcon={isDeleted ? <CheckCircleIcon color="success" /> : null}
+                name="_action"
+                type="submit"
+                value="delete"
+                variant="contained"
+              >
+                {smScreen ? "Delete" : <DeleteIcon></DeleteIcon>}
+              </Button>
+              <Button
+                className={classnames(
+                  "CardDetails__actionButton",
+                  smScreen
+                    ? "CardDetails__actionButton--sm"
+                    : "CardDetails__actionButton--xs"
+                )}
+                disabled={isDeleted || isPublished}
+                name="_action"
+                type="submit"
+                value="publish"
+                variant="contained"
+              >
+                {smScreen ? (
+                  isPublished ? (
+                    "Sent"
+                  ) : (
+                    "Send"
+                  )
+                ) : (
+                  <SendIcon></SendIcon>
+                )}
+              </Button>
+            </>
+          }
+        />
+
+        <div className="CardDetails__pageContent">
           <div className="CardDetails__inputsContainer">
             <div className="CardDetails__fieldsContainer">
               <TextField
@@ -111,60 +161,38 @@ export default function CardDetailsPage() {
                 type="text"
               />
             </div>
-          </div>
 
-          <div className="CardDetails__actionsContainer">
             <Button
               disabled={isDeleted || isPublished}
               name="_action"
               type="submit"
               value="update"
+              variant="contained"
             >
-              Update
-            </Button>
-            <Button
-              disabled={isDeleted || isPublished}
-              endIcon={isPublished ? <CheckCircleIcon color="success" /> : null}
-              name="_action"
-              type="submit"
-              value="publish"
-            >
-              Publish
-            </Button>
-            <Button
-              disabled={isDeleted}
-              endIcon={isDeleted ? <CheckCircleIcon color="success" /> : null}
-              name="_action"
-              type="submit"
-              value="delete"
-            >
-              Delete
+              Save Changes
             </Button>
           </div>
-        </Form>
-      </div>
 
-      <div className="CardDetails__templateContainer">
-        {/* <Link to={`/${card.hash}`}>
-          <Launch></Launch>
-        </Link> */}
-
-        <TemplatePreview
-          className="CardDetails__template"
-          onClick={() => navigate(`/${card.hash}`)}
-          text={card.card_template.text ?? ""}
-          textCss={
-            card.card_template.text_css !== null
-              ? (JSON.parse(card.card_template.text_css) as React.CSSProperties)
-              : undefined
-          }
-          backgroundCss={
-            card.card_template.bg_css !== null
-              ? (JSON.parse(card.card_template.bg_css) as React.CSSProperties)
-              : undefined
-          }
-        />
-      </div>
+          <TemplatePreview
+            backgroundCss={
+              card.card_template.bg_css !== null
+                ? (JSON.parse(card.card_template.bg_css) as React.CSSProperties)
+                : undefined
+            }
+            className="CardDetails__template"
+            onClick={() => navigate(`/${card.hash}`)}
+            size="large"
+            text={card.card_template.text ?? ""}
+            textCss={
+              card.card_template.text_css !== null
+                ? (JSON.parse(
+                    card.card_template.text_css
+                  ) as React.CSSProperties)
+                : undefined
+            }
+          />
+        </div>
+      </Form>
     </div>
   );
 }

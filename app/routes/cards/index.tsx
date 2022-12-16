@@ -1,5 +1,6 @@
-import { Link } from "@mui/material";
-import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Link } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -7,6 +8,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import classnames from "classnames";
 import * as React from "react";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
@@ -23,17 +25,27 @@ export async function loader({ request }: LoaderArgs) {
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
+
 export default function CardsPage() {
   const data = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const smScreen = useMediaQuery("(min-width:370px)");
 
   return (
-    <div>
+    <div className="Cards">
       <PageHeader
         title="My Cards"
         actions={
           <Link component={RemixLink} underline="none" to="new">
-            <Button>Create New Card</Button>
+            <Button
+              variant="outlined"
+              className={classnames(
+                "Cards__actionButton",
+                smScreen ? "Cards__actionButton--sm" : "Cards__actionButton--xs"
+              )}
+            >
+              {smScreen ? "Create New Card" : <AddIcon />}
+            </Button>
           </Link>
         }
       />
