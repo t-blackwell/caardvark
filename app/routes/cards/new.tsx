@@ -1,3 +1,5 @@
+import ReplyIcon from "@mui/icons-material/Reply";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
 import {
   Button,
   FormControl,
@@ -6,7 +8,7 @@ import {
   Select,
   TextField,
   MenuItem,
-  Typography,
+  useMediaQuery,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -17,6 +19,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import classNames from "classnames";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import PageHeader from "~/components/PageHeader";
@@ -119,81 +122,97 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
+  const smScreen = useMediaQuery("(min-width:370px)");
 
   if (templateData.selectedTemplate !== undefined) {
     return (
-      <div className="CreateForm_page">
-        <div className="CreateForm_formContainer">
-          <Form method="post" className="CreateForm">
-            <Typography className="CreateForm__title" variant="h5">
-              Create Card
-            </Typography>
-            <input
-              type="hidden"
-              name="template"
-              value={templateData.selectedTemplate.card_template_id}
-            />
-            <TextField
-              label="To"
-              type="text"
-              name="to"
-              autoFocus
-              error={actionData?.errors?.to !== undefined}
-              helperText={actionData?.errors?.to}
-            />
-            <TextField
-              label="From"
-              type="text"
-              name="from"
-              error={actionData?.errors?.from !== undefined}
-              helperText={actionData?.errors?.from}
-            />
-            <div>
-              <Button className="CreateForm__backButton">
-                <Link
-                  component={RemixLink}
-                  to={`/cards/new${
-                    templateData.selectedType !== undefined
-                      ? `?type=${templateData.selectedType}`
-                      : ""
-                  }`}
-                  className="CreateForm__backButtonLink"
-                  underline="none"
-                >
-                  Back
-                </Link>
-              </Button>
-              <Button
-                type="submit"
-                name="_action"
-                value="create"
-                className="CreateForm__createButton"
-              >
-                Create
-              </Button>
-            </div>
-          </Form>
-        </div>
-        <div className="CreateForm__templateContainer">
-          <TemplatePreview
-            backgroundCss={
-              templateData.selectedTemplate.bg_css !== null
-                ? (JSON.parse(
-                    templateData.selectedTemplate.bg_css
-                  ) as React.CSSProperties)
-                : undefined
-            }
-            textCss={
-              templateData.selectedTemplate.text_css !== null
-                ? (JSON.parse(
-                    templateData.selectedTemplate.text_css
-                  ) as React.CSSProperties)
-                : undefined
-            }
-            text={templateData.selectedTemplate.text ?? ""}
-            size="medium"
+      <div className="CreateForm__page">
+        <Form method="post">
+          <input
+            type="hidden"
+            name="template"
+            value={templateData.selectedTemplate.card_template_id}
           />
-        </div>
+          <PageHeader
+            title="Create Card"
+            actions={
+              <>
+                <Button
+                  color="error"
+                  className={classNames(
+                    "CreateForm__actionButton",
+                    smScreen
+                      ? "CreateForm__actionButton--sm"
+                      : "CreateForm__actionButton--xs"
+                  )}
+                  name="_action"
+                  type="submit"
+                  value="back"
+                  variant="contained"
+                >
+                  {smScreen ? "BACK" : <ReplyIcon />}
+                </Button>
+                <Button
+                  className={classNames(
+                    "CreateForm__actionButton",
+                    smScreen
+                      ? "CreateForm__actionButton--sm"
+                      : "CreateForm__actionButton--xs"
+                  )}
+                  name="_action"
+                  type="submit"
+                  value="create"
+                  variant="contained"
+                >
+                  {smScreen ? "CREATE" : <SaveAsIcon />}
+                </Button>
+              </>
+            }
+          />
+
+          <div className="CreateForm__pageContent">
+            <div className="CreateForm__inputsContainer">
+              <div className="CreateForm__fieldsContainer">
+                <TextField
+                  autoFocus
+                  className="CreateForm__field"
+                  helperText={actionData?.errors?.to}
+                  label="To"
+                  name="to"
+                  type="text"
+                />
+                <TextField
+                  className="CreateForm__field"
+                  error={actionData?.errors?.from !== undefined}
+                  helperText={actionData?.errors?.from}
+                  label="From"
+                  name="from"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div className="CreateForm__templateContainer">
+              <TemplatePreview
+                backgroundCss={
+                  templateData.selectedTemplate.bg_css !== null
+                    ? (JSON.parse(
+                        templateData.selectedTemplate.bg_css
+                      ) as React.CSSProperties)
+                    : undefined
+                }
+                textCss={
+                  templateData.selectedTemplate.text_css !== null
+                    ? (JSON.parse(
+                        templateData.selectedTemplate.text_css
+                      ) as React.CSSProperties)
+                    : undefined
+                }
+                text={templateData.selectedTemplate.text ?? ""}
+                size="medium"
+              />
+            </div>
+          </div>
+        </Form>
       </div>
     );
   }
