@@ -34,3 +34,9 @@
 .AddMessage__inlineError {
   color: #d32f2f;
 }
+.AddMessage__backLink,
+.AddMessage__backLink a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

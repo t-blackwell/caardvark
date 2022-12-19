@@ -1,4 +1,12 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import type {
   ActionArgs,
   LoaderArgs,
@@ -7,7 +15,12 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link as RemixLink,
+  useActionData,
+  useLoaderData,
+} from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import RichTextEditor from "~/components/RichTextEditor";
@@ -148,6 +161,16 @@ export default function NewMessagePage() {
         >
           Add message
         </Button>
+        <Typography className="AddMessage__backLink" variant="caption">
+          <Link
+            component={RemixLink}
+            to={`/${loaderData.card.hash}`}
+            underline="hover"
+          >
+            <ArrowBackIcon sx={{ mr: 0.5 }} fontSize="small" />
+            Go back to card
+          </Link>
+        </Typography>
       </Form>
     </Container>
   );
