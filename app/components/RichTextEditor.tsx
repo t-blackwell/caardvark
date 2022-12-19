@@ -44,6 +44,7 @@ interface RichTextEditorProps {
   autoFocus?: boolean;
   color: Color;
   fontFamily: FontFamily;
+  fullWidth?: boolean;
   name?: string;
   placeholder?: string;
   required?: boolean;
@@ -55,6 +56,7 @@ export default function RichTextEditor({
   autoFocus = false,
   color,
   fontFamily,
+  fullWidth = false,
   name,
   placeholder,
   required = false,
@@ -94,6 +96,7 @@ export default function RichTextEditor({
       </div>
       <InputBase
         autoFocus={autoFocus}
+        fullWidth={fullWidth}
         multiline
         name={name}
         placeholder={placeholder}

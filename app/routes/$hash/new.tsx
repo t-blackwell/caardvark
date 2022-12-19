@@ -119,6 +119,7 @@ export default function NewMessagePage() {
           autoFocus
           color={color}
           fontFamily={fontFamily}
+          fullWidth
           name="text"
           placeholder="Start typing message..."
           required
