@@ -1,6 +1,12 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { Button, TextField, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Link,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -11,6 +17,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import { Link as RemixLink } from "@remix-run/react";
 import classnames from "classnames";
 import React from "react";
 import invariant from "tiny-invariant";
@@ -259,6 +266,9 @@ export default function CardDetailsPage() {
                   : undefined
               }
             />
+            <Link component={RemixLink} to={`/${card.hash}`} underline="none">
+              <Typography>View messages</Typography>
+            </Link>
           </div>
         </div>
       </Form>
