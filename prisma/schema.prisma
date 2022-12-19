@@ -70,31 +70,16 @@ model user {
   password     password?
 }
 
-model color {
-  color_id Int       @id(map: "pk_color") @default(autoincrement())
-  name     String    @db.VarChar(50)
-  hex      String?   @db.VarChar(8)
-  message  message[]
-}
-
-model font {
-  font_id Int       @id(map: "pk_font") @default(autoincrement())
-  name    String?   @db.VarChar(100)
-  message message[]
-}
-
 model message {
   message_id   Int      @id(map: "pk_message") @default(autoincrement())
   card_id      Int
   from         String   @db.VarChar(50)
   text         String   @db.VarChar(500)
-  color_id     Int
-  font_id      Int
+  color        String   @db.VarChar(50)
+  font         String   @db.VarChar(50)
   image_url    String?  @db.VarChar(500)
   deleted      String   @default("N") @db.VarChar(1)
   created_date DateTime @default(now())
   updated_date DateTime @default(now())
   card         card     @relation(fields: [card_id], references: [card_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_card")
-  color        color    @relation(fields: [color_id], references: [color_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_color")
-  font         font     @relation(fields: [font_id], references: [font_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_font")
 }
