@@ -92,20 +92,9 @@ export default function NewMessagePage() {
   const [color, setColor] = React.useState<Color>("#000");
   const [fontFamily, setFontFamily] = React.useState<FontFamily>("Arial");
 
-  const textRef = React.useRef<HTMLInputElement>(null);
-
   return (
     <Container className="AddMessage">
-      <Form
-        className="AddMessage__box"
-        method="post"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          width: "100%",
-        }}
-      >
+      <Form className="AddMessage__box" method="post">
         <Typography className="AddMessage__title" variant="h5">
           Add Message
         </Typography>
@@ -114,11 +103,14 @@ export default function NewMessagePage() {
         <input name="color" value={color} hidden />
 
         <RichTextEditor
-          fontFamily={fontFamily}
-          setFontFamily={setFontFamily}
+          autoFocus
           color={color}
-          setColor={setColor}
+          fontFamily={fontFamily}
           name="text"
+          placeholder="Start typing message..."
+          required
+          setColor={setColor}
+          setFontFamily={setFontFamily}
         />
         {errors?.text !== undefined ? (
           <Typography className="AddMessage__inlineError" variant="caption">

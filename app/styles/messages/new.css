@@ -7,6 +7,8 @@
   max-width: 350px;
   text-align: center;
   border-radius: 4px;
+  gap: 8px;
+  width: 100%;
 }
 .AddMessage__title {
   margin-bottom: 20px !important;

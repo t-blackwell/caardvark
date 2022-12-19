@@ -41,17 +41,23 @@ export type Color = typeof colors[number];
 export type FontFamily = typeof fonts[number];
 
 interface RichTextEditorProps {
+  autoFocus?: boolean;
   color: Color;
   fontFamily: FontFamily;
   name?: string;
+  placeholder?: string;
+  required?: boolean;
   setColor: React.Dispatch<React.SetStateAction<Color>>;
   setFontFamily: React.Dispatch<React.SetStateAction<FontFamily>>;
 }
 
 export default function RichTextEditor({
+  autoFocus = false,
   color,
   fontFamily,
   name,
+  placeholder,
+  required = false,
   setColor,
   setFontFamily,
 }: RichTextEditorProps) {
@@ -87,8 +93,11 @@ export default function RichTextEditor({
         </IconButton>
       </div>
       <InputBase
+        autoFocus={autoFocus}
+        multiline
         name={name}
-        placeholder="Start typing message..."
+        placeholder={placeholder}
+        required={required}
         spellCheck
         style={{ fontFamily, color }}
       />
