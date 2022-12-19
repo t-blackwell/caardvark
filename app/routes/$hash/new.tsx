@@ -27,8 +27,9 @@ import RichTextEditor from "~/components/RichTextEditor";
 import type { Color, FontFamily } from "~/components/RichTextEditor";
 import { getCard } from "~/models/card.server";
 import { createMessage } from "~/models/message.server";
-import { requireUserId } from "~/session.server";
+import { getSession, getSessionHeaders, requireUserId } from "~/session.server";
 import styles from "~/styles/messages/new.css";
+import { setSuccessMessage } from "~/toast-message.server";
 
 export const loader: LoaderFunction = async ({
   request,
@@ -46,6 +47,8 @@ export const loader: LoaderFunction = async ({
 };
 
 export async function action({ request }: ActionArgs) {
+  const session = await getSession(request);
+
   const formData = await request.formData();
   const text = formData.get("text")?.toString();
   const from = formData.get("from")?.toString();
@@ -83,7 +86,12 @@ export async function action({ request }: ActionArgs) {
       card_id,
       image_url: imageUrl ?? null,
     });
-    return redirect(`/${hash}`);
+
+    setSuccessMessage(session, "Message added.");
+
+    return redirect(`/${hash}`, {
+      headers: await getSessionHeaders(session),
+    });
   } else return errors;
 }
 

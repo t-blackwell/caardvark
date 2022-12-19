@@ -4,7 +4,6 @@ import {
   Button,
   FormControl,
   InputLabel,
-  Link,
   Select,
   TextField,
   MenuItem,
@@ -14,7 +13,6 @@ import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
-  Link as RemixLink,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -29,8 +27,9 @@ import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
 import type { card_type } from "~/models/card_type.server";
 import { getCardTypes } from "~/models/card_type.server";
-import { requireUserId } from "~/session.server";
+import { getSession, getSessionHeaders, requireUserId } from "~/session.server";
 import styles from "~/styles/cards/new.css";
+import { setSuccessMessage } from "~/toast-message.server";
 
 function buildUrl(searchParams: { template?: string; type?: string }) {
   const baseUrl = "/cards/new";
@@ -76,6 +75,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const session = await getSession(request);
+
   const formData = await request.formData();
   const action = formData.get("_action");
 
@@ -109,7 +110,11 @@ export async function action({ request }: ActionArgs) {
       user_id: userId,
     });
 
-    return redirect(`/${card.hash}`);
+    setSuccessMessage(session, "Card created.");
+
+    return redirect(`/${card.hash}`, {
+      headers: await getSessionHeaders(session),
+    });
   }
   return redirect(`/cards/new`);
 }

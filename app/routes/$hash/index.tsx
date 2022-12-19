@@ -21,8 +21,9 @@ import ScrollButton from "~/components/ScrollButton";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
-import { getUserId } from "~/session.server";
+import { getSession, getSessionHeaders, getUserId } from "~/session.server";
 import styles from "~/styles/messages/index.css";
+import { setSuccessMessage } from "~/toast-message.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -36,6 +37,8 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
+  const session = await getSession(request);
+
   const formData = await request.formData();
   const action = formData.get("_action");
 
@@ -47,8 +50,13 @@ export async function action({ request }: ActionArgs) {
       request,
       message_id: Number(messageId),
     });
+
+    setSuccessMessage(session, "Message deleted.");
   }
-  return redirect(".");
+
+  return redirect(".", {
+    headers: await getSessionHeaders(session),
+  });
 }
 
 export function handleScrollDown() {
