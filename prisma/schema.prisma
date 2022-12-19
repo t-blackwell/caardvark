@@ -65,6 +65,7 @@ model user {
   last_name    String?   @db.VarChar(50)
   created_date DateTime  @default(now())
   updated_date DateTime  @default(now())
+  deleted      String    @default("N") @db.VarChar(1)
   card         card[]
   note         note[]
   password     password?
