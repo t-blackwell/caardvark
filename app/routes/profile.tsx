@@ -41,8 +41,8 @@ export async function action({ request }: ActionArgs) {
       return await updateUser({
         request,
         email,
-        first_name: first,
-        last_name: last,
+        first_name: first?.trim() === "" ? null : first,
+        last_name: last?.trim() === "" ? null : last,
       });
   }
 }
