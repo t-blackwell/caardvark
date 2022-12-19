@@ -24,8 +24,8 @@ const selectMessageColumns = {
   message_id: true,
   from: true,
   text: true,
-  color_id: true,
-  font_id: true,
+  color: true,
+  font: true,
   image_url: true,
   deleted: true,
   created_date: true,
@@ -56,8 +56,6 @@ export async function getCardWithMessages({ hash }: Pick<card, "hash">) {
       message: {
         select: {
           ...selectMessageColumns,
-          color: { select: { hex: true } },
-          font: { select: { name: true } },
         },
       },
     },
