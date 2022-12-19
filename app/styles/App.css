@@ -145,3 +145,9 @@ p.TemplatePreview__text {
   align-items: center;
   gap: 10px;
 }
+
+/* ActionButton */
+.ActionButton--xs {
+  min-width: 0 !important;
+  padding: 5px !important;
+}

@@ -30,11 +30,6 @@
   align-items: center;
 }
 
-.CardDetails__actionButton--xs {
-  min-width: 0 !important;
-  padding: 5px !important;
-}
-
 @media (min-width: 800px) {
   .CardDetails__pageContent {
     grid-template-columns: repeat(2, 1fr);

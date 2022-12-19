@@ -1,12 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Muli&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
 
- .Cards__actionButton--xs {
-  min-width: 0 !important;
-  padding: 5px !important;
-}
-
-
 .Wrapper {
   max-width: auto;
   margin: 0 auto;

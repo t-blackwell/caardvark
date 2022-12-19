@@ -1,5 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Button, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -7,11 +7,10 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import classnames from "classnames";
 import * as React from "react";
+import ActionButton from "~/components/ActionButton";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
-import useSmallScreen from "~/hooks/useSmallScreen";
 import { getCardListItems } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/cards.css";
@@ -29,24 +28,18 @@ export function links() {
 export default function CardsPage() {
   const data = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const smScreen = useSmallScreen();
 
   return (
     <div className="Cards">
       <PageHeader
         title="My Cards"
         actions={
-          <Link component={RemixLink} underline="none" to="new">
-            <Button
-              variant="outlined"
-              className={classnames(
-                "Cards__actionButton",
-                smScreen ? "Cards__actionButton--sm" : "Cards__actionButton--xs"
-              )}
-            >
-              {smScreen ? "Create New Card" : <AddIcon />}
-            </Button>
-          </Link>
+          <ActionButton
+            icon={<AddIcon />}
+            title="Create New Card"
+            to="new"
+            variant="outlined"
+          />
         }
       />
       <div>

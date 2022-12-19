@@ -1,7 +1,6 @@
 import ReplyIcon from "@mui/icons-material/Reply";
 import SaveIcon from "@mui/icons-material/Save";
 import {
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -16,12 +15,11 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import classNames from "classnames";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import ActionButton from "~/components/ActionButton";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
-import useSmallScreen from "~/hooks/useSmallScreen";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
@@ -128,7 +126,6 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
-  const smScreen = useSmallScreen();
 
   if (templateData.selectedTemplate !== undefined) {
     return (
@@ -143,32 +140,20 @@ export default function NewCardPage() {
             title="Create Card"
             actions={
               <>
-                <Button
-                  className={classNames(
-                    "CreateForm__actionButton",
-                    smScreen
-                      ? "CreateForm__actionButton--sm"
-                      : "CreateForm__actionButton--xs"
-                  )}
-                  onClick={() => navigate("/cards/new")}
+                <ActionButton
+                  icon={<ReplyIcon />}
+                  title="Back"
+                  to="/cards/new"
                   variant="outlined"
-                >
-                  {smScreen ? "BACK" : <ReplyIcon />}
-                </Button>
-                <Button
-                  className={classNames(
-                    "CreateForm__actionButton",
-                    smScreen
-                      ? "CreateForm__actionButton--sm"
-                      : "CreateForm__actionButton--xs"
-                  )}
+                />
+                <ActionButton
+                  icon={<SaveIcon />}
+                  title="Create"
                   name="_action"
                   type="submit"
                   value="create"
                   variant="contained"
-                >
-                  {smScreen ? "CREATE" : <SaveIcon />}
-                </Button>
+                />
               </>
             }
           />
@@ -225,18 +210,12 @@ export default function NewCardPage() {
       <PageHeader
         title="Create new card"
         actions={
-          <Button
-            className={classNames(
-              "CreateForm__actionButton",
-              smScreen
-                ? "CreateForm__actionButton--sm"
-                : "CreateForm__actionButton--xs"
-            )}
-            onClick={() => navigate("/cards")}
+          <ActionButton
+            icon={<ReplyIcon />}
+            title="Back"
+            to="/cards"
             variant="outlined"
-          >
-            {smScreen ? "BACK" : <ReplyIcon />}
-          </Button>
+          />
         }
       />
 

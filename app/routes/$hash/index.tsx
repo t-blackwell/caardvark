@@ -1,13 +1,7 @@
 import { AddComment } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import SouthIcon from "@mui/icons-material/South";
-import {
-  Button,
-  IconButton,
-  Card,
-  CardContent,
-  Link,
-  Typography,
-} from "@mui/material";
+import { IconButton, Card, CardContent, Link, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -15,6 +9,7 @@ import { Link as RemixLink, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
+import ActionButton from "~/components/ActionButton";
 import MessageCard from "~/components/MessageCard";
 import PageHeader from "~/components/PageHeader";
 import ScrollButton from "~/components/ScrollButton";
@@ -87,9 +82,12 @@ export default function ViewCardPage() {
       <PageHeader
         title={`From "${data.card.from}" to "${data.card.to}"`}
         actions={
-          <Link component={RemixLink} underline="none" to="new">
-            <Button variant="outlined">Add Message</Button>
-          </Link>
+          <ActionButton
+            icon={<AddIcon />}
+            title="Add Message"
+            to="new"
+            variant="outlined"
+          />
         }
       />
       <div className="ViewCard__templateContainer">

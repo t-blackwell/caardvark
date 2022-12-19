@@ -13,14 +13,12 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { Link as RemixLink } from "@remix-run/react";
-import classNames from "classnames";
-import classnames from "classnames";
 import React from "react";
 import invariant from "tiny-invariant";
+import ActionButton from "~/components/ActionButton";
 import ConfirmActionDialog from "~/components/ConfirmActionDialog";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
-import useSmallScreen from "~/hooks/useSmallScreen";
 import {
   deleteCard,
   getCard,
@@ -120,8 +118,6 @@ export default function CardDetailsPage() {
 
   const navigate = useNavigate();
 
-  const smScreen = useSmallScreen();
-
   const fetcher = useFetcher();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
@@ -167,56 +163,29 @@ export default function CardDetailsPage() {
           title="Edit Card"
           actions={
             <>
-              <Button
-                className={classNames(
-                  "CardDetails__actionButton",
-                  smScreen
-                    ? "CardDetails__actionButton--sm"
-                    : "CardDetails__actionButton--xs"
-                )}
-                name="_action"
-                onClick={() => navigate("/cards")}
+              <ActionButton
+                icon={<ReplyIcon />}
+                title="Back"
+                to="/cards"
                 variant="outlined"
-              >
-                {smScreen ? "Back" : <ReplyIcon />}
-              </Button>
-              <Button
+              />
+              <ActionButton
                 color="error"
-                className={classnames(
-                  "CardDetails__actionButton",
-                  smScreen
-                    ? "CardDetails__actionButton--sm"
-                    : "CardDetails__actionButton--xs"
-                )}
                 disabled={isDeleted}
+                icon={<DeleteIcon />}
                 onClick={() => setIsDeleteDialogOpen(true)}
+                title="Delete"
                 value="delete"
                 variant="contained"
-              >
-                {smScreen ? "Delete" : <DeleteIcon></DeleteIcon>}
-              </Button>
-              <Button
-                className={classnames(
-                  "CardDetails__actionButton",
-                  smScreen
-                    ? "CardDetails__actionButton--sm"
-                    : "CardDetails__actionButton--xs"
-                )}
+              />
+              <ActionButton
                 disabled={isDeleted || isPublished}
+                icon={<SendIcon />}
                 onClick={() => setIsPublishDialogOpen(true)}
+                title={isPublished ? "Sent" : "Send"}
                 value="publish"
                 variant="contained"
-              >
-                {smScreen ? (
-                  isPublished ? (
-                    "Sent"
-                  ) : (
-                    "Send"
-                  )
-                ) : (
-                  <SendIcon></SendIcon>
-                )}
-              </Button>
+              />
             </>
           }
         />

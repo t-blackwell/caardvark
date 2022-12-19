@@ -1,10 +1,10 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, TextField, useMediaQuery } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { Form, useActionData } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json, redirect } from "@remix-run/server-runtime";
-import classnames from "classnames";
 import invariant from "tiny-invariant";
+import ActionButton from "~/components/ActionButton";
 import PageHeader from "~/components/PageHeader";
 import { deleteUserByEmail, updateUser } from "~/models/user.server";
 import { getSession, getSessionHeaders } from "~/session.server";
@@ -67,7 +67,6 @@ export function links() {
 
 export default function ProfilePage() {
   const user = useUser();
-  const smScreen = useMediaQuery("(min-width:370px)");
 
   const actionData = useActionData();
 
@@ -78,21 +77,15 @@ export default function ProfilePage() {
         <PageHeader
           title="Profile"
           actions={
-            <Button
+            <ActionButton
               color="error"
-              className={classnames(
-                "Profile__actionButton",
-                smScreen
-                  ? "Profile__actionButton--sm"
-                  : "Profile__actionButton--xs"
-              )}
+              icon={<DeleteIcon />}
               name="_action"
+              title="Delete"
               type="submit"
               value="delete"
               variant="contained"
-            >
-              {smScreen ? "Delete" : <DeleteIcon></DeleteIcon>}
-            </Button>
+            />
           }
         />
 
@@ -141,7 +134,6 @@ export default function ProfilePage() {
             </div>
 
             <Button
-              // disabled={isDeleted || isPublished}
               name="_action"
               type="submit"
               value="update"
