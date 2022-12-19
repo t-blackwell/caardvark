@@ -1,9 +1,12 @@
 import NavBar from "./components/NavBar";
 import ClientStyleContext from "./contexts/ClientStyleContext";
-import { getUser } from "./session.server";
+import { getSession, getUser, getSessionHeaders } from "./session.server";
 import theme from "./theme";
+import { getMessage } from "./toast-message.server";
 import { useOptionalUser } from "./utils";
 import { withEmotionCache } from "@emotion/react";
+import { Snackbar } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
 import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -14,6 +17,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
   useLocation,
 } from "@remix-run/react";
 import * as React from "react";
@@ -27,9 +31,14 @@ export const meta: MetaFunction = () => ({
 });
 
 export async function loader({ request }: LoaderArgs) {
-  return json({
-    user: await getUser(request),
-  });
+  const session = await getSession(request);
+  const toastMessage = getMessage(session);
+  const user = await getUser(request);
+
+  return json(
+    { toastMessage, user },
+    { headers: await getSessionHeaders(session) }
+  );
 }
 
 export function links() {
@@ -103,8 +112,39 @@ const Document = withEmotionCache(
 );
 
 export default function App() {
+  const { toastMessage } = useLoaderData<typeof loader>();
+  const { message, type } = toastMessage ?? {};
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setSnackbarOpen(toastMessage !== null);
+  }, [toastMessage]);
+
+  const handleSnackbarClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   return (
     <Document>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity={type}
+          variant="filled"
+        >
+          {message}
+        </MuiAlert>
+      </Snackbar>
       <Outlet />
     </Document>
   );

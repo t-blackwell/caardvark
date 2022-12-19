@@ -22,19 +22,25 @@ import {
   publishCard,
   updateCard,
 } from "~/models/card.server";
+import { getSession, getSessionHeaders } from "~/session.server";
 import styles from "~/styles/cards/$hash.css";
+import { setSuccessMessage } from "~/toast-message.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
 
   const card = await getCard({ request, hash: params.hash });
-  if (!card) {
+  if (card === null) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ card });
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request, params }: ActionArgs) {
+  invariant(params.hash, "hash not found");
+
+  const session = await getSession(request);
+
   const formData = await request.formData();
   const cardId = Number(formData.get("card_id"));
   invariant(!isNaN(cardId), "card not found");
@@ -42,9 +48,17 @@ export async function action({ request }: ActionArgs) {
   const { _action } = Object.fromEntries(formData);
 
   switch (_action) {
+    // delete
     case "delete":
       await deleteCard({ request, card_id: cardId });
-      return redirect("/cards");
+
+      setSuccessMessage(session, "Card Deleted.");
+
+      return redirect("/cards", {
+        headers: await getSessionHeaders(session),
+      });
+
+    // update
     case "update":
       const to = formData.get("to");
       const from = formData.get("from");
@@ -63,9 +77,24 @@ export async function action({ request }: ActionArgs) {
           { status: 400 }
         );
       }
-      return await updateCard({ request, card_id: cardId, from, to });
+
+      await updateCard({ request, card_id: cardId, from, to });
+
+      setSuccessMessage(session, "Card Updated.");
+
+      return redirect("", {
+        headers: await getSessionHeaders(session),
+      });
+
+    // publish
     case "publish":
-      return await publishCard({ request, card_id: cardId });
+      await publishCard({ request, card_id: cardId });
+
+      setSuccessMessage(session, "Card Sent.");
+
+      return redirect("", {
+        headers: await getSessionHeaders(session),
+      });
   }
 }
 
@@ -75,15 +104,16 @@ export function links() {
 
 export default function CardDetailsPage() {
   const { card } = useLoaderData<typeof loader>();
+  const isDeleted = card.deleted === "Y";
+  const isPublished = card.published_date !== null;
+
+  // can't figure out how to narrow the type of `actionData<typeof action>`.
+  // use optional chaining for minimal protection
+  const actionData = useActionData();
+
   const navigate = useNavigate();
   const smScreen = useMediaQuery("(min-width:370px)");
 
-  // can't figure out how to narrow the type of this.
-  // use optional chaining for some protection
-  const actionData = useActionData();
-
-  const isDeleted = card.deleted === "Y";
-  const isPublished = card.published_date !== null;
   return (
     <div className="CardDetails">
       <Form method="post">
