@@ -1,4 +1,3 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import { Button, TextField, useMediaQuery } from "@mui/material";
@@ -8,12 +7,14 @@ import {
   Form,
   useActionData,
   useCatch,
+  useFetcher,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
 import classnames from "classnames";
 import React from "react";
 import invariant from "tiny-invariant";
+import ConfirmActionDialog from "~/components/ConfirmActionDialog";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
 import {
@@ -112,10 +113,48 @@ export default function CardDetailsPage() {
   const actionData = useActionData();
 
   const navigate = useNavigate();
+
   const smScreen = useMediaQuery("(min-width:370px)");
+
+  const fetcher = useFetcher();
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const onConfirmDelete = () => {
+    fetcher.submit(
+      { _action: "delete", card_id: card.card_id.toString() },
+      { method: "post" }
+    );
+  };
+
+  const [isPublishDialogOpen, setIsPublishDialogOpen] = React.useState(false);
+  const onConfirmPublish = () => {
+    fetcher.submit(
+      { _action: "publish", card_id: card.card_id.toString() },
+      { method: "post" }
+    );
+    setIsPublishDialogOpen(false);
+  };
 
   return (
     <div className="CardDetails">
+      <fetcher.Form>
+        <ConfirmActionDialog
+          actionName="Delete"
+          actionColorTheme="error"
+          isOpen={isDeleteDialogOpen}
+          message="Are you sure you want to delete this card?"
+          onClose={() => setIsDeleteDialogOpen(false)}
+          onConfirm={onConfirmDelete}
+        />
+        <ConfirmActionDialog
+          actionName="Send"
+          actionColorTheme="primary"
+          isOpen={isPublishDialogOpen}
+          message="Are you sure you want to send this card?"
+          onClose={() => setIsPublishDialogOpen(false)}
+          onConfirm={onConfirmPublish}
+        />
+      </fetcher.Form>
       <Form method="post">
         <input type="hidden" name="card_id" value={card.card_id} />
         <PageHeader
@@ -131,9 +170,7 @@ export default function CardDetailsPage() {
                     : "CardDetails__actionButton--xs"
                 )}
                 disabled={isDeleted}
-                endIcon={isDeleted ? <CheckCircleIcon color="success" /> : null}
-                name="_action"
-                type="submit"
+                onClick={() => setIsDeleteDialogOpen(true)}
                 value="delete"
                 variant="contained"
               >
@@ -147,8 +184,7 @@ export default function CardDetailsPage() {
                     : "CardDetails__actionButton--xs"
                 )}
                 disabled={isDeleted || isPublished}
-                name="_action"
-                type="submit"
+                onClick={() => setIsPublishDialogOpen(true)}
                 value="publish"
                 variant="contained"
               >
