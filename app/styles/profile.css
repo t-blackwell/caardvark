@@ -1,0 +1,40 @@
+.Profile {
+  display: grid;
+  gap: 20px;
+}
+
+.Profile__pageContent {
+  text-align: center;
+  display: grid;
+  gap: 20px;
+}
+
+.Profile__inputsContainer {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 20px;
+}
+
+.Profile__fieldsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.Profile__templateContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.Profile__actionButton--xs {
+  min-width: 0 !important;
+  padding: 5px !important;
+}
+
+@media (min-width: 800px) {
+  .Profile__pageContent {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
