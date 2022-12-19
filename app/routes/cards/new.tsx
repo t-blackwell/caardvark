@@ -143,7 +143,6 @@ export default function NewCardPage() {
             actions={
               <>
                 <Button
-                  color="error"
                   className={classNames(
                     "CreateForm__actionButton",
                     smScreen
@@ -153,7 +152,7 @@ export default function NewCardPage() {
                   name="_action"
                   type="submit"
                   value="back"
-                  variant="contained"
+                  variant="outlined"
                 >
                   {smScreen ? "BACK" : <ReplyIcon />}
                 </Button>
