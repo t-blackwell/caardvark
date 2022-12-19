@@ -7,7 +7,6 @@ import {
   Select,
   TextField,
   MenuItem,
-  useMediaQuery,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -22,6 +21,7 @@ import * as React from "react";
 import invariant from "tiny-invariant";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
+import useSmallScreen from "~/hooks/useSmallScreen";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
 import { getCardTemplates } from "~/models/card_template.server";
@@ -116,7 +116,8 @@ export async function action({ request }: ActionArgs) {
       headers: await getSessionHeaders(session),
     });
   }
-  return redirect(`/cards/new`);
+
+  throw new Error(`Action ${action} not recognised`);
 }
 
 export function links() {
@@ -127,7 +128,7 @@ export default function NewCardPage() {
   const templateData = useLoaderData<LoaderData>();
   const actionData = useActionData<typeof action>();
   const navigate = useNavigate();
-  const smScreen = useMediaQuery("(min-width:370px)");
+  const smScreen = useSmallScreen();
 
   if (templateData.selectedTemplate !== undefined) {
     return (
@@ -149,9 +150,7 @@ export default function NewCardPage() {
                       ? "CreateForm__actionButton--sm"
                       : "CreateForm__actionButton--xs"
                   )}
-                  name="_action"
-                  type="submit"
-                  value="back"
+                  onClick={() => navigate("/cards/new")}
                   variant="outlined"
                 >
                   {smScreen ? "BACK" : <ReplyIcon />}
@@ -223,7 +222,23 @@ export default function NewCardPage() {
 
   return (
     <>
-      <PageHeader title="Create new card" />
+      <PageHeader
+        title="Create new card"
+        actions={
+          <Button
+            className={classNames(
+              "CreateForm__actionButton",
+              smScreen
+                ? "CreateForm__actionButton--sm"
+                : "CreateForm__actionButton--xs"
+            )}
+            onClick={() => navigate("/cards")}
+            variant="outlined"
+          >
+            {smScreen ? "BACK" : <ReplyIcon />}
+          </Button>
+        }
+      />
 
       <Form
         method="post"

@@ -1,6 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Link } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -12,6 +11,7 @@ import classnames from "classnames";
 import * as React from "react";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
+import useSmallScreen from "~/hooks/useSmallScreen";
 import { getCardListItems } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
 import styles from "~/styles/cards/cards.css";
@@ -29,7 +29,7 @@ export function links() {
 export default function CardsPage() {
   const data = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const smScreen = useMediaQuery("(min-width:370px)");
+  const smScreen = useSmallScreen();
 
   return (
     <div className="Cards">

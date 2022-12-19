@@ -1,12 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import ReplyIcon from "@mui/icons-material/Reply";
 import SendIcon from "@mui/icons-material/Send";
-import {
-  Button,
-  Link,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Button, Link, TextField, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -18,12 +13,14 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { Link as RemixLink } from "@remix-run/react";
+import classNames from "classnames";
 import classnames from "classnames";
 import React from "react";
 import invariant from "tiny-invariant";
 import ConfirmActionDialog from "~/components/ConfirmActionDialog";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
+import useSmallScreen from "~/hooks/useSmallScreen";
 import {
   deleteCard,
   getCard,
@@ -104,6 +101,8 @@ export async function action({ request, params }: ActionArgs) {
         headers: await getSessionHeaders(session),
       });
   }
+
+  throw new Error(`Action ${action} not recognised`);
 }
 
 export function links() {
@@ -121,7 +120,7 @@ export default function CardDetailsPage() {
 
   const navigate = useNavigate();
 
-  const smScreen = useMediaQuery("(min-width:370px)");
+  const smScreen = useSmallScreen();
 
   const fetcher = useFetcher();
 
@@ -168,6 +167,19 @@ export default function CardDetailsPage() {
           title="Edit Card"
           actions={
             <>
+              <Button
+                className={classNames(
+                  "CardDetails__actionButton",
+                  smScreen
+                    ? "CardDetails__actionButton--sm"
+                    : "CardDetails__actionButton--xs"
+                )}
+                name="_action"
+                onClick={() => navigate("/cards")}
+                variant="outlined"
+              >
+                {smScreen ? "Back" : <ReplyIcon />}
+              </Button>
               <Button
                 color="error"
                 className={classnames(
