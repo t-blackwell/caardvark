@@ -36,7 +36,7 @@ export async function action({ request }: ActionArgs) {
         return json(
           {
             errors: {
-              email: emailError ? "valid email address is reaqired" : null,
+              email: emailError ? "valid email address is required" : null,
             },
           },
           { status: 400 }
