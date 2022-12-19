@@ -1,17 +1,21 @@
-CREATE TABLE "user" (
+CREATE TABLE "user"
+(
     user_id SERIAL NOT NULL,
     email VARCHAR(200) NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     created_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted VARCHAR(1) NOT NULL DEFAULT 'N',
 
-    CONSTRAINT pk_user PRIMARY KEY (user_id)
+    CONSTRAINT pk_user PRIMARY KEY (user_id),
+    CONSTRAINT ch_user_deleted CHECK (deleted IN ('Y', 'N'))
 );
 
 CREATE UNIQUE INDEX uk_user_email ON "user"(email);
 
-CREATE TABLE "password" (
+CREATE TABLE "password"
+(
     "hash" VARCHAR(100) NOT NULL,
     user_id INTEGER NOT NULL,
 
@@ -20,7 +24,8 @@ CREATE TABLE "password" (
 
 CREATE UNIQUE INDEX uk_password_user_id ON "password"(user_id);
 
-CREATE TABLE note (
+CREATE TABLE note
+(
     note_id SERIAL NOT NULL,
     user_id INTEGER NOT NULL,
     title VARCHAR(100) NOT NULL,
@@ -32,14 +37,16 @@ CREATE TABLE note (
     CONSTRAINT fk_note_user_id FOREIGN KEY (user_id) REFERENCES "user"(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE card_type (
+CREATE TABLE card_type
+(
     card_type_id SERIAL NOT NULL,
     name VARCHAR(50),
 
     CONSTRAINT pk_card_type PRIMARY KEY (card_type_id)
 );
 
-CREATE TABLE card_template (
+CREATE TABLE card_template
+(
     card_template_id SERIAL NOT NULL,
     card_type_id INTEGER NOT NULL,
     "text" VARCHAR(100),
@@ -52,7 +59,8 @@ CREATE TABLE card_template (
     CONSTRAINT fk_card_template_card_type FOREIGN KEY (card_type_id) REFERENCES card_type(card_type_id)
 );
 
-CREATE TABLE "card" (
+CREATE TABLE "card"
+(
     card_id SERIAL NOT NULL,
     "hash" VARCHAR(100) NOT NULL,
     user_id INTEGER NOT NULL,
@@ -71,7 +79,8 @@ CREATE TABLE "card" (
     CONSTRAINT ch_card_deleted CHECK (deleted IN ('Y', 'N'))
 );
 
-CREATE TABLE "message" (
+CREATE TABLE "message"
+(
     message_id SERIAL NOT NULL,
     card_id INTEGER NOT NULL,
     "from" VARCHAR(50) NOT NULL,
