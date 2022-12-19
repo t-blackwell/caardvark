@@ -1,8 +1,8 @@
 import NavBar from "./components/NavBar";
 import ClientStyleContext from "./contexts/ClientStyleContext";
-import { getMessage } from "./message.server";
 import { getSession, getUser, getSessionHeaders } from "./session.server";
 import theme from "./theme";
+import { getMessage } from "./toast-message.server";
 import { useOptionalUser } from "./utils";
 import { withEmotionCache } from "@emotion/react";
 import { Snackbar } from "@mui/material";

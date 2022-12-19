@@ -16,7 +16,6 @@ import React from "react";
 import invariant from "tiny-invariant";
 import PageHeader from "~/components/PageHeader";
 import TemplatePreview from "~/components/TemplatePreview";
-import { setSuccessMessage } from "~/message.server";
 import {
   deleteCard,
   getCard,
@@ -25,6 +24,7 @@ import {
 } from "~/models/card.server";
 import { getSession, getSessionHeaders } from "~/session.server";
 import styles from "~/styles/cards/$hash.css";
+import { setSuccessMessage } from "~/toast-message.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
