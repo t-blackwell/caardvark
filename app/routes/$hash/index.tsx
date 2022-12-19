@@ -13,7 +13,7 @@ import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link as RemixLink, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
 import MessageCard from "~/components/MessageCard";
 import PageHeader from "~/components/PageHeader";
@@ -114,29 +114,30 @@ export default function ViewCardPage() {
       </div>
       <div className="ViewCard__messageContainer">
         <div id="messages" className="ViewCard__masonryContainer">
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 300: 1, 375: 2, 700: 3, 1050: 4 }}
+          <Masonry
+            breakpoints={{ xs: 0, sm: 375, md: 700, lg: 1050 }}
+            columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+            gap="10px"
+            autoArrange
           >
-            <Masonry gutter="10px">
-              {data.card.message.map((message: any) => (
-                <div key={message.message_id}>
-                  <MessageCard
-                    message={message}
-                    isOwner={data.userId === data.card.user_id}
-                    key={message.message_id}
-                  />
-                </div>
-              ))}
-              <Link component={RemixLink} underline="none" to="new">
-                <Card className="ViewCard__addMessage" variant="outlined">
-                  <CardContent>
-                    <AddComment sx={{ fontSize: 100 }} />
-                    <Typography>Add Message</Typography>
-                  </CardContent>
-                </Card>
-              </Link>
-            </Masonry>
-          </ResponsiveMasonry>
+            {data.card.message.map((message: any) => (
+              <div key={message.message_id}>
+                <MessageCard
+                  message={message}
+                  isOwner={data.userId === data.card.user_id}
+                  key={message.message_id}
+                />
+              </div>
+            ))}
+            <Link component={RemixLink} underline="none" to="new">
+              <Card className="ViewCard__addMessage" variant="outlined">
+                <CardContent>
+                  <AddComment sx={{ fontSize: 100 }} />
+                  <Typography>Add Message</Typography>
+                </CardContent>
+              </Card>
+            </Link>
+          </Masonry>
         </div>
       </div>
     </div>
