@@ -1,5 +1,5 @@
 import ReplyIcon from "@mui/icons-material/Reply";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+import SaveIcon from "@mui/icons-material/Save";
 import {
   Button,
   FormControl,
@@ -164,7 +164,7 @@ export default function NewCardPage() {
                   value="create"
                   variant="contained"
                 >
-                  {smScreen ? "CREATE" : <SaveAsIcon />}
+                  {smScreen ? "CREATE" : <SaveIcon />}
                 </Button>
               </>
             }
