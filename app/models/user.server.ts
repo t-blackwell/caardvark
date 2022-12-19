@@ -30,7 +30,10 @@ export async function createUser(email: user["email"], password: string) {
 }
 
 export async function deleteUserByEmail(email: user["email"]) {
-  return prisma.user.delete({ where: { email } });
+  return prisma.user.update({ 
+    data: { deleted: 'Y' },
+    where: { email }, 
+ });
 }
 
 export async function updateUser({
@@ -60,7 +63,7 @@ export async function verifyLogin(
     },
   });
 
-  if (!userWithPassword || !userWithPassword.password) {
+  if (!userWithPassword || !userWithPassword.password || userWithPassword.deleted === 'Y') {
     return null;
   }
 

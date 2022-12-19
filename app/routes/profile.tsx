@@ -1,16 +1,18 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, TextField, useMediaQuery } from "@mui/material";
-import { Form, useActionData } from "@remix-run/react";
+import { useActionData, useFetcher } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json, redirect } from "@remix-run/server-runtime";
 import classnames from "classnames";
+import * as React from "react";
 import invariant from "tiny-invariant";
+import ConfirmActionDialog from "~/components/ConfirmActionDialog";
 import PageHeader from "~/components/PageHeader";
 import { deleteUserByEmail, updateUser } from "~/models/user.server";
-import { getSession, getSessionHeaders } from "~/session.server";
+import { getSession, getSessionHeaders, logout } from "~/session.server";
 import styles from "~/styles/profile.css";
 import { setSuccessMessage } from "~/toast-message.server";
-import { useUser } from "~/utils";
+import { useUser, validateEmail } from "~/utils";
 
 export async function action({ request }: ActionArgs) {
   const session = await getSession(request);
@@ -21,23 +23,20 @@ export async function action({ request }: ActionArgs) {
 
   switch (_action) {
     case "delete":
-      invariant(typeof email === "string", "user not found");
+      invariant(validateEmail(email), "user not found");
       await deleteUserByEmail(email);
       setSuccessMessage(session, "Profile deleted.");
-
-      return redirect("/.", {
-        headers: await getSessionHeaders(session),
-      });
+      return logout(request);
     case "update":
       const first = formData.get("first_name");
       const last = formData.get("last_name");
-      const emailError = typeof email !== "string" || email.length === 0;
+      const emailError = validateEmail(email);
 
       if (emailError) {
         return json(
           {
             errors: {
-              email: emailError ? "email is reaqired" : null,
+              email: emailError ? "valid email address is reaqired" : null,
             },
           },
           { status: 400 }
@@ -45,6 +44,7 @@ export async function action({ request }: ActionArgs) {
       }
       invariant(typeof first === "string" || first === null, "Error");
       invariant(typeof last === "string" || last === null, "Error");
+      invariant(typeof email === "string", "Error");
 
       await updateUser({
         request,
@@ -71,10 +71,29 @@ export default function ProfilePage() {
 
   const actionData = useActionData();
 
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const fetcher = useFetcher();
+
+  const onConfirmDelete = () => {
+    fetcher.submit(
+      { _action: "delete", email: user.email },
+      { method: "post" }
+    );
+    setIsOpen(false);
+  };
+
   return (
     <div className="Profile">
-      <Form method="post">
-        <input type="hidden" name="user_id" value={user.user_id} />
+      <fetcher.Form method="post">
+        <ConfirmActionDialog
+          actionColorTheme="error"
+          actionName="Delete Account"
+          isOpen={isOpen}
+          message="Are you sure you want to delete your account?"
+          onClose={() => setIsOpen(false)}
+          onConfirm={onConfirmDelete}
+        />
         <PageHeader
           title="Profile"
           actions={
@@ -86,9 +105,7 @@ export default function ProfilePage() {
                   ? "Profile__actionButton--sm"
                   : "Profile__actionButton--xs"
               )}
-              name="_action"
-              type="submit"
-              value="delete"
+              onClick={() => setIsOpen(true)}
               variant="contained"
             >
               {smScreen ? "Delete" : <DeleteIcon></DeleteIcon>}
@@ -154,7 +171,7 @@ export default function ProfilePage() {
             <div>Something</div>
           </div>
         </div>
-      </Form>
+      </fetcher.Form>
     </div>
   );
 }
