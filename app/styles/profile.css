@@ -1,40 +1,40 @@
-.CardDetails {
+.Profile {
   display: grid;
   gap: 20px;
 }
 
-.CardDetails__pageContent {
+.Profile__pageContent {
   text-align: center;
   display: grid;
   gap: 20px;
 }
 
-.CardDetails__inputsContainer {
+.Profile__inputsContainer {
   display: flex;
   flex-direction: column;
   text-align: center;
   gap: 20px;
 }
 
-.CardDetails__fieldsContainer {
+.Profile__fieldsContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 20px;
 }
 
-.CardDetails__templateContainer {
+.Profile__templateContainer {
   display: flex;
   justify-content: center;
 }
 
-.CardDetails__actionButton--xs {
+.Profile__actionButton--xs {
   min-width: 0 !important;
   padding: 5px !important;
 }
 
 @media (min-width: 800px) {
-  .CardDetails__pageContent {
+  .Profile__pageContent {
     grid-template-columns: repeat(2, 1fr);
   }
 }

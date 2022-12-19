@@ -71,28 +71,13 @@ CREATE TABLE "card" (
     CONSTRAINT ch_card_deleted CHECK (deleted IN ('Y', 'N'))
 );
 
-CREATE TABLE color (
-    color_id SERIAL NOT NULL,
-    "name" VARCHAR(50) NOT NULL,
-    hex VARCHAR(8),
-
-    CONSTRAINT pk_color PRIMARY KEY (color_id)
-);
-
-CREATE TABLE font (
-    font_id SERIAL NOT NULL,
-    "name" VARCHAR(100),
-
-    CONSTRAINT pk_font PRIMARY KEY (font_id)
-);
-
 CREATE TABLE "message" (
     message_id SERIAL NOT NULL,
     card_id INTEGER NOT NULL,
     "from" VARCHAR(50) NOT NULL,
     "text" VARCHAR(500) NOT NULL,
-    color_id INTEGER NOT NULL,
-    font_id INTEGER NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    font VARCHAR(50) NOT NULL,
     image_url VARCHAR(500),
     deleted VARCHAR(1) NOT NULL DEFAULT 'N',
     created_date TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -100,7 +85,5 @@ CREATE TABLE "message" (
 
     CONSTRAINT pk_message PRIMARY KEY (message_id),
     CONSTRAINT fk_message_card FOREIGN KEY (card_id) REFERENCES card(card_id),
-    CONSTRAINT fk_message_color FOREIGN KEY (color_id) REFERENCES color(color_id),
-    CONSTRAINT fk_message_font FOREIGN KEY (font_id) REFERENCES font(font_id),
     CONSTRAINT ch_message_deleted CHECK (deleted IN ('Y', 'N'))
 );

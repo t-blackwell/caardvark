@@ -8,11 +8,12 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import type { message } from "@prisma/client";
 import { useFetcher } from "@remix-run/react";
 import * as React from "react";
 
 interface MessageCardProps {
-  message: any;
+  message: message;
   isOwner: boolean;
 }
 
@@ -23,7 +24,7 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
 
   const onConfirmDelete = () => {
     fetcher.submit(
-      { _action: "delete", messageId: message.message_id },
+      { _action: "delete", messageId: message.message_id.toString() },
       { method: "post" }
     );
     setIsOpen(false);
@@ -32,7 +33,7 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
   return (
     <fetcher.Form>
       <Card className="MessageCard" variant="outlined">
-        {message.image_url !== null ? (
+        {message.image_url ? (
           <CardMedia
             component="img"
             src={message.image_url}
@@ -40,10 +41,7 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
           />
         ) : null}
         <CardContent className="MessageCard__content">
-          <Typography
-            color={message.color.hex ?? undefined}
-            fontFamily={message.font.name ?? undefined}
-          >
+          <Typography color={message.color} fontFamily={message.font}>
             {message.text}
           </Typography>
         </CardContent>

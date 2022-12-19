@@ -1,4 +1,4 @@
-.CreateMessage__box {
+.AddMessage__box {
   display: flex;
   flex-direction: column;
   margin: 40px auto;
@@ -7,13 +7,36 @@
   max-width: 350px;
   text-align: center;
   border-radius: 4px;
+  gap: 8px;
+  width: 100%;
 }
-.CreateMessage__title {
+.AddMessage__title {
   margin-bottom: 20px !important;
 }
-.CreateMessage__input {
+.AddMessage__input {
   margin: 10px 0 !important;
 }
-.CreateMessage__button {
+.AddMessage__button {
   margin: 20px 0 !important;
+}
+.AddMessage__colorButton {
+  margin-left: 10px !important ;
+}
+.AddMessage__colorButtonIcon {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+  border-bottom: 4px solid rgba(0, 0, 0, 0.87);
+  line-height: 1.5;
+  width: 23px;
+  height: 23px;
+}
+.AddMessage__inlineError {
+  color: #d32f2f;
+}
+.AddMessage__backLink,
+.AddMessage__backLink a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

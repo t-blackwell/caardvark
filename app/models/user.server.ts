@@ -2,6 +2,7 @@ import type { password, user } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
+import { requireUserId } from "~/session.server";
 
 export type { user } from "@prisma/client";
 
@@ -30,6 +31,22 @@ export async function createUser(email: user["email"], password: string) {
 
 export async function deleteUserByEmail(email: user["email"]) {
   return prisma.user.delete({ where: { email } });
+}
+
+export async function updateUser({
+  request,
+  email,
+  first_name,
+  last_name
+}: Pick<user, "email" | "first_name" | "last_name"> & {
+  request: Request;
+}) {
+  const userId = await requireUserId(request);
+
+  return prisma.user.update({
+    data: { email, first_name, last_name, updated_date: new Date() },
+    where: { user_id: userId },
+  });
 }
 
 export async function verifyLogin(
