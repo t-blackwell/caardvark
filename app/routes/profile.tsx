@@ -7,10 +7,14 @@ import classnames from "classnames";
 import invariant from "tiny-invariant";
 import PageHeader from "~/components/PageHeader";
 import { deleteUserByEmail, updateUser } from "~/models/user.server";
+import { getSession, getSessionHeaders } from "~/session.server";
 import styles from "~/styles/profile.css";
+import { setSuccessMessage } from "~/toast-message.server";
 import { useUser } from "~/utils";
 
 export async function action({ request }: ActionArgs) {
+  const session = await getSession(request);
+
   const formData = await request.formData();
   const email = formData.get("email");
   const { _action } = Object.fromEntries(formData);
@@ -19,7 +23,11 @@ export async function action({ request }: ActionArgs) {
     case "delete":
       invariant(typeof email === "string", "user not found");
       await deleteUserByEmail(email);
-      return redirect("/.");
+      setSuccessMessage(session, "Profile deleted.");
+
+      return redirect("/.", {
+        headers: await getSessionHeaders(session),
+      });
     case "update":
       const first = formData.get("first_name");
       const last = formData.get("last_name");
@@ -38,11 +46,17 @@ export async function action({ request }: ActionArgs) {
       invariant(typeof first === "string" || first === null, "Error");
       invariant(typeof last === "string" || last === null, "Error");
 
-      return await updateUser({
+      await updateUser({
         request,
         email,
         first_name: first?.trim() === "" ? null : first,
         last_name: last?.trim() === "" ? null : last,
+      });
+
+      setSuccessMessage(session, "Profile updated.");
+
+      return redirect("", {
+        headers: await getSessionHeaders(session),
       });
   }
 }
