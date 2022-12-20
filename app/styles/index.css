@@ -1,0 +1,10 @@
+.Home__bannerSubtitle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+.Home__bannerImage {
+  max-width: 150px;
+}

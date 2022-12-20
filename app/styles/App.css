@@ -21,7 +21,7 @@ h4,
 h5,
 h6 {
   font-family: "Nunito", "Roboto", "Helvetica", "Arial", sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 .Nav__signout {
@@ -56,6 +56,17 @@ h6 {
 }
 .Logo--medium .Logo__text {
   font-size: 2.2rem;
+}
+
+/* HeroBanner */
+.HeroBanner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 30px 20px;
+  gap: 10px;
 }
 
 /* TemplatePreview */
