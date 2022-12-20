@@ -1,11 +1,10 @@
-import { AddComment } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import SouthIcon from "@mui/icons-material/South";
-import { IconButton, Card, CardContent, Link, Typography } from "@mui/material";
+import { IconButton, Container } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link as RemixLink, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
@@ -76,18 +75,21 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
+  const isPublished = data?.card?.published_date !== null;
 
   return (
     <Page
       className="ViewCard"
       maxWidth="xl"
       pageHeaderActions={
-        <ActionButton
-          icon={<AddIcon />}
-          title="Add Message"
-          to="new"
-          variant="outlined"
-        />
+        !isPublished ? (
+          <ActionButton
+            icon={<AddIcon />}
+            title="Add Message"
+            to="new"
+            variant="outlined"
+          />
+        ) : undefined
       }
       pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
     >
@@ -131,20 +133,24 @@ export default function ViewCardPage() {
               <div key={message.message_id}>
                 <MessageCard
                   message={message}
-                  isOwner={data.userId === data.card.user_id}
+                  deleteAllowed={
+                    data.userId === data.card.user_id && !isPublished
+                  }
                   key={message.message_id}
                 />
               </div>
             ))}
-            <Link component={RemixLink} underline="none" to="new">
-              <Card className="ViewCard__addMessage" variant="outlined">
-                <CardContent>
-                  <AddComment sx={{ fontSize: 100 }} />
-                  <Typography>Add Message</Typography>
-                </CardContent>
-              </Card>
-            </Link>
           </Masonry>
+          {!isPublished ? (
+            <Container maxWidth="xs" sx={{ my: 2 }}>
+              <ActionButton
+                fullWidth
+                title="Add message"
+                to="new"
+                variant="outlined"
+              />
+            </Container>
+          ) : null}
         </div>
       </div>
     </Page>

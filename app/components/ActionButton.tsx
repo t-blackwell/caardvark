@@ -13,6 +13,7 @@ interface ActionButtonProps
     | "className"
     | "color"
     | "disabled"
+    | "fullWidth"
     | "name"
     | "onClick"
     | "type"
@@ -34,6 +35,7 @@ export default function ActionButton({
   className,
   color,
   disabled,
+  fullWidth,
   icon,
   name,
   onClick,
@@ -64,6 +66,7 @@ export default function ActionButton({
         )}
         color={color}
         disabled={disabled}
+        fullWidth={fullWidth}
         name={name}
         onClick={onClick}
         type={type}
