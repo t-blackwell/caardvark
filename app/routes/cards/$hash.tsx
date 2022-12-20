@@ -32,7 +32,7 @@ import { setSuccessMessage } from "~/toast-message.server";
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
 
-  const card = await getCard({ request, hash: params.hash });
+  const card = await getCard({ hash: params.hash });
   if (card === null) {
     throw new Response("Not Found", { status: 404 });
   }

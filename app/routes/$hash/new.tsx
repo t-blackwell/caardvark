@@ -7,12 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type {
-  ActionArgs,
-  LoaderArgs,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
@@ -31,14 +26,10 @@ import { getSession, getSessionHeaders, requireUserId } from "~/session.server";
 import styles from "~/styles/messages/new.css";
 import { setSuccessMessage } from "~/toast-message.server";
 
-export const loader: LoaderFunction = async ({
-  request,
-  params,
-}: LoaderArgs) => {
-  await requireUserId(request);
+export const loader = async ({ request, params }: LoaderArgs) => {
   invariant(params.hash, "hash not found");
 
-  const card = await getCard({ request, hash: params.hash });
+  const card = await getCard({ hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
   }
