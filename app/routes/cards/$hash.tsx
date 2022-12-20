@@ -17,7 +17,7 @@ import React from "react";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import ConfirmActionDialog from "~/components/ConfirmActionDialog";
-import PageHeader from "~/components/PageHeader";
+import Page from "~/components/Page";
 import TemplatePreview from "~/components/TemplatePreview";
 import {
   deleteCard,
@@ -138,7 +138,37 @@ export default function CardDetailsPage() {
   };
 
   return (
-    <div className="CardDetails">
+    <Page
+      className="CardDetails"
+      pageHeaderActions={
+        <>
+          <ActionButton
+            icon={<ReplyIcon />}
+            title="Back"
+            to="/cards"
+            variant="outlined"
+          />
+          <ActionButton
+            color="error"
+            disabled={isDeleted}
+            icon={<DeleteIcon />}
+            onClick={() => setIsDeleteDialogOpen(true)}
+            title="Delete"
+            value="delete"
+            variant="contained"
+          />
+          <ActionButton
+            disabled={isDeleted || isPublished}
+            icon={<SendIcon />}
+            onClick={() => setIsPublishDialogOpen(true)}
+            title={isPublished ? "Sent" : "Send"}
+            value="publish"
+            variant="contained"
+          />
+        </>
+      }
+      pageHeaderTitle="Edit Card"
+    >
       <fetcher.Form>
         <ConfirmActionDialog
           actionName="Yes, delete this card"
@@ -159,36 +189,6 @@ export default function CardDetailsPage() {
       </fetcher.Form>
       <Form method="post">
         <input type="hidden" name="card_id" value={card.card_id} />
-        <PageHeader
-          title="Edit Card"
-          actions={
-            <>
-              <ActionButton
-                icon={<ReplyIcon />}
-                title="Back"
-                to="/cards"
-                variant="outlined"
-              />
-              <ActionButton
-                color="error"
-                disabled={isDeleted}
-                icon={<DeleteIcon />}
-                onClick={() => setIsDeleteDialogOpen(true)}
-                title="Delete"
-                value="delete"
-                variant="contained"
-              />
-              <ActionButton
-                disabled={isDeleted || isPublished}
-                icon={<SendIcon />}
-                onClick={() => setIsPublishDialogOpen(true)}
-                title={isPublished ? "Sent" : "Send"}
-                value="publish"
-                variant="contained"
-              />
-            </>
-          }
-        />
 
         <div className="CardDetails__pageContent">
           <div className="CardDetails__inputsContainer">
@@ -257,7 +257,7 @@ export default function CardDetailsPage() {
           </div>
         </div>
       </Form>
-    </div>
+    </Page>
   );
 }
 

@@ -18,7 +18,7 @@ import {
 import * as React from "react";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
-import PageHeader from "~/components/PageHeader";
+import Page from "~/components/Page";
 import TemplatePreview from "~/components/TemplatePreview";
 import { createCard } from "~/models/card.server";
 import type { card_template } from "~/models/card_template.server";
@@ -129,35 +129,34 @@ export default function NewCardPage() {
 
   if (templateData.selectedTemplate !== undefined) {
     return (
-      <div className="CreateForm__page">
+      <Page
+        className="CreateForm__page"
+        pageHeaderActions={
+          <>
+            <ActionButton
+              icon={<ReplyIcon />}
+              title="Back"
+              to="/cards/new"
+              variant="outlined"
+            />
+            <ActionButton
+              icon={<SaveIcon />}
+              title="Create"
+              name="_action"
+              type="submit"
+              value="create"
+              variant="contained"
+            />
+          </>
+        }
+        pageHeaderTitle="Create Card"
+      >
         <Form method="post">
           <input
             type="hidden"
             name="template"
             value={templateData.selectedTemplate.card_template_id}
           />
-          <PageHeader
-            title="Create Card"
-            actions={
-              <>
-                <ActionButton
-                  icon={<ReplyIcon />}
-                  title="Back"
-                  to="/cards/new"
-                  variant="outlined"
-                />
-                <ActionButton
-                  icon={<SaveIcon />}
-                  title="Create"
-                  name="_action"
-                  type="submit"
-                  value="create"
-                  variant="contained"
-                />
-              </>
-            }
-          />
-
           <div className="CreateForm__pageContent">
             <div className="CreateForm__inputsContainer">
               <div className="CreateForm__fieldsContainer">
@@ -201,24 +200,22 @@ export default function NewCardPage() {
             </div>
           </div>
         </Form>
-      </div>
+      </Page>
     );
   }
 
   return (
-    <>
-      <PageHeader
-        title="Create new card"
-        actions={
-          <ActionButton
-            icon={<ReplyIcon />}
-            title="Back"
-            to="/cards"
-            variant="outlined"
-          />
-        }
-      />
-
+    <Page
+      pageHeaderActions={
+        <ActionButton
+          icon={<ReplyIcon />}
+          title="Back"
+          to="/cards"
+          variant="outlined"
+        />
+      }
+      pageHeaderTitle="Create new card"
+    >
       <Form
         method="post"
         style={{
@@ -286,6 +283,6 @@ export default function NewCardPage() {
           ))}
         </div>
       </Form>
-    </>
+    </Page>
   );
 }

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { json, redirect } from "@remix-run/node";
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import {
@@ -16,6 +9,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import Logo from "~/components/Logo";
+import Page from "~/components/Page";
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import styles from "~/styles/signup.css";
@@ -103,7 +97,7 @@ export default function SignUp() {
   }, [actionData]);
 
   return (
-    <Container className="SignUp">
+    <Page className="SignUp" maxWidth="xs">
       <Box className="SignUp__logo">
         <Logo size="medium" />
       </Box>
@@ -162,6 +156,6 @@ export default function SignUp() {
           </Link>
         </Typography>
       </Form>
-    </Container>
+    </Page>
   );
 }

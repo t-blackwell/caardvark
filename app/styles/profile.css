@@ -2,12 +2,6 @@
   display: grid;
 }
 
-.Profile__pageContent {
-  text-align: center;
-  display: grid;
-  gap: 20px;
-}
-
 .Profile__inputsContainer {
   display: flex;
   flex-direction: column;
@@ -25,10 +19,4 @@
 .Profile__templateContainer {
   display: flex;
   justify-content: center;
-}
-
-@media (min-width: 800px) {
-  .Profile__pageContent {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }

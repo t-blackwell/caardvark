@@ -11,7 +11,7 @@ import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import MessageCard from "~/components/MessageCard";
-import PageHeader from "~/components/PageHeader";
+import Page from "~/components/Page";
 import ScrollButton from "~/components/ScrollButton";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
@@ -79,20 +79,21 @@ export default function ViewCardPage() {
   const isPublished = data.card.published_date !== null;
 
   return (
-    <div className="ViewCard">
-      <PageHeader
-        title={`From "${data.card.from}" to "${data.card.to}"`}
-        actions={
-          !isPublished ? (
-            <ActionButton
-              icon={<AddIcon />}
-              title="Add Message"
-              to="new"
-              variant="outlined"
-            />
-          ) : null
-        }
-      />
+    <Page
+      className="ViewCard"
+      maxWidth="xl"
+      pageHeaderActions={
+        !isPublished ? (
+          <ActionButton
+            icon={<AddIcon />}
+            title="Add Message"
+            to="new"
+            variant="outlined"
+          />
+        ) : null
+      }
+      pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
+    >
       <div className="ViewCard__templateContainer">
         <TemplatePreview
           size="large"
@@ -151,6 +152,6 @@ export default function ViewCardPage() {
           </Masonry>
         </div>
       </div>
-    </div>
+    </Page>
   );
 }
