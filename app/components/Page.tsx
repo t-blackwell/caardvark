@@ -27,20 +27,15 @@ export default function Page({
       {infoBarContent !== undefined ? (
         <InfoBar>{infoBarContent}</InfoBar>
       ) : null}
-      <Container className="Page">
-        {pageHeaderTitle !== undefined ? (
-          <PageHeader
-            actions={pageHeaderActions}
-            maxWidth={maxWidth}
-            title={pageHeaderTitle}
-          />
-        ) : null}
-        <Container
-          className={classNames("Page__contentContainer", className)}
+      {pageHeaderTitle !== undefined ? (
+        <PageHeader
+          actions={pageHeaderActions}
           maxWidth={maxWidth}
-        >
-          {children}
-        </Container>
+          title={pageHeaderTitle}
+        />
+      ) : null}
+      <Container className={classNames("Page", className)} maxWidth={maxWidth}>
+        {children}
       </Container>
     </>
   );
