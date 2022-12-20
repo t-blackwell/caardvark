@@ -34,10 +34,10 @@ export default function NavBar({
 
   return user !== undefined ? (
     <Box sx={{ flexGrow: 0 }}>
-      <AppBar position="static">
+      <AppBar color="transparent" position="static">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
-            <Logo color="white" size="small" />
+            <Logo size="small" />
           </Box>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -90,10 +90,10 @@ export default function NavBar({
     </Box>
   ) : (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar color="transparent" position="static">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
-            <Logo color="white" size="small" />
+            <Logo size="small" />
           </Box>
           <Link
             component={RemixLink}

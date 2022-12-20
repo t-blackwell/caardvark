@@ -247,7 +247,11 @@ export default function CardDetailsPage() {
                   : undefined
               }
             />
-            <Link component={RemixLink} to={`/${card.hash}`} underline="none">
+            <Link
+              component={RemixLink}
+              to={`/${card.hash}#messages`}
+              underline="none"
+            >
               <Typography>View messages</Typography>
             </Link>
           </div>

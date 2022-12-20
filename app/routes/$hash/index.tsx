@@ -121,10 +121,10 @@ export default function ViewCardPage() {
       <div className="ViewCard__messageContainer">
         <div id="messages" className="ViewCard__masonryContainer">
           <Masonry
-            breakpoints={{ xs: 0, sm: 375, md: 700, lg: 1050 }}
-            columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
-            gap="10px"
             autoArrange
+            breakpoints={{ xs: 0, sm: 450, md: 700, lg: 1050 }}
+            columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+            gap="20px"
           >
             {data.card.message.map((message: any) => (
               <div key={message.message_id}>

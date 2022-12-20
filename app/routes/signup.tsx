@@ -105,7 +105,7 @@ export default function SignUp() {
   return (
     <Container className="SignUp">
       <Box className="SignUp__logo">
-        <Logo color="black" size="medium" />
+        <Logo size="medium" />
       </Box>
       <Form className="SignUp__box" method="post" noValidate>
         <Typography className="SignUp__title" variant="h5">
