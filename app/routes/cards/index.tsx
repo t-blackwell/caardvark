@@ -1,12 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Link } from "@mui/material";
+import { Typography } from "@mui/material";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-  Link as RemixLink,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import * as React from "react";
 import ActionButton from "~/components/ActionButton";
 import Page from "~/components/Page";
@@ -42,45 +38,44 @@ export default function CardsPage() {
       }
       pageHeaderTitle="My Cards"
     >
-      <div>
-        {data.cardListItems.length === 0 ? (
-          <p>
-            You do not have any cards yet. Create one{" "}
-            <Link component={RemixLink} to="new" underline="none">
-              here
-            </Link>
-            .
-          </p>
-        ) : (
-          <div className="Wrapper">
-            {data.cardListItems.map((card) => (
-              <div className="Wrapper__template" key={card.card_id}>
-                <TemplatePreview
-                  backgroundCss={
-                    card.card_template.bg_css !== null
-                      ? (JSON.parse(
-                          card.card_template.bg_css
-                        ) as React.CSSProperties)
-                      : undefined
-                  }
-                  textCss={
-                    card.card_template.text_css !== null
-                      ? (JSON.parse(
-                          card.card_template.text_css
-                        ) as React.CSSProperties)
-                      : undefined
-                  }
-                  text={card.card_template.text ?? ""}
-                  onClick={() => {
-                    navigate(`/cards/${card.hash}`);
-                  }}
-                />
-                <div className="Wrapper__text">To: {card.to}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {data.cardListItems.length === 0 ? (
+        <div className="Cards__noDataFound">
+          <Typography variant="h5">
+            You haven't created any cards yet.
+          </Typography>
+          <ActionButton size="small" title="Create new card" to="new" />
+        </div>
+      ) : (
+        <div className="Cards__grid">
+          {data.cardListItems.map((card) => (
+            <div className="Cards__template" key={card.card_id}>
+              <TemplatePreview
+                backgroundCss={
+                  card.card_template.bg_css !== null
+                    ? (JSON.parse(
+                        card.card_template.bg_css
+                      ) as React.CSSProperties)
+                    : undefined
+                }
+                textCss={
+                  card.card_template.text_css !== null
+                    ? (JSON.parse(
+                        card.card_template.text_css
+                      ) as React.CSSProperties)
+                    : undefined
+                }
+                text={card.card_template.text ?? ""}
+                onClick={() => {
+                  navigate(`/cards/${card.hash}`);
+                }}
+              />
+              <Typography className="Cards__text" color="text.secondary">
+                {card.to}
+              </Typography>
+            </div>
+          ))}
+        </div>
+      )}
     </Page>
   );
 }
