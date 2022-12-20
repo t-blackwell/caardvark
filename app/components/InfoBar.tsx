@@ -7,7 +7,7 @@ interface InfoBarProps {
 export default function InfoBar({ children }: InfoBarProps) {
   return (
     <Toolbar className="InfoBar" variant="dense">
-      {children}
+      <div className="InfoBar__content">{children}</div>
     </Toolbar>
   );
 }

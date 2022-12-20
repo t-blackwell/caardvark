@@ -22,14 +22,6 @@ h6 {
   font-weight: 600 !important;
 }
 
-.InfoBar {
-  background-color: #1976D2;
-  color: #FFF;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-}
-
 /* NavBar */
 .NavBar {
   background-color: white !important;
@@ -154,6 +146,19 @@ p.TemplatePreview__text {
   display: flex;
   justify-content: space-between;
   padding: 8px 16px !important;
+}
+
+/* Page */
+.InfoBar {
+  background-color: #1976D2;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.InfoBar__content {
+  padding: 5px;
 }
 
 /* Page */
