@@ -49,8 +49,12 @@ export default function MessageCard({
           </Typography>
         </CardContent>
         <CardActions className="MessageCard__actions">
-          <Typography variant="caption" color="text.secondary">
-            From <strong>{message.from}</strong>
+          <Typography
+            color={message.color}
+            fontFamily={message.font}
+            variant="caption"
+          >
+            <strong>{message.from}</strong>
           </Typography>
           {deleteAllowed ? (
             <IconButton size="small" onClick={() => setIsOpen(true)}>

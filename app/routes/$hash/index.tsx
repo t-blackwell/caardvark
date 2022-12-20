@@ -1,9 +1,10 @@
 import AddIcon from "@mui/icons-material/Add";
 import SouthIcon from "@mui/icons-material/South";
-import { IconButton, Container } from "@mui/material";
+import { IconButton, Container, Link, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { Link as RemixLink } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry from "react-smart-masonry";
@@ -75,11 +76,27 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
-  const isPublished = data?.card?.published_date !== null;
+  const isPublished = data.card.published_date !== null;
+  const isSample = data.card.hash === "sample";
 
   return (
     <Page
       className="ViewCard"
+      infoBarContent={
+        isSample ? (
+          <Typography>
+            This is a sample card -{" "}
+            <Link
+              className="ViewCard__infoBarLink"
+              component={RemixLink}
+              underline="none"
+              to="/cards/new"
+            >
+              create your own!
+            </Link>{" "}
+          </Typography>
+        ) : null
+      }
       maxWidth="xl"
       pageHeaderActions={
         !isPublished ? (
@@ -89,7 +106,7 @@ export default function ViewCardPage() {
             to="new"
             variant="outlined"
           />
-        ) : undefined
+        ) : null
       }
       pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
     >
