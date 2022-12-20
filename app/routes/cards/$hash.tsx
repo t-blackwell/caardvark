@@ -141,7 +141,7 @@ export default function CardDetailsPage() {
     <div className="CardDetails">
       <fetcher.Form>
         <ConfirmActionDialog
-          actionName="Delete"
+          actionName="Yes, delete this card"
           actionColorTheme="error"
           isOpen={isDeleteDialogOpen}
           message="Are you sure you want to delete this card?"
@@ -149,7 +149,7 @@ export default function CardDetailsPage() {
           onConfirm={onConfirmDelete}
         />
         <ConfirmActionDialog
-          actionName="Send"
+          actionName="Yes, send this card"
           actionColorTheme="primary"
           isOpen={isPublishDialogOpen}
           message="Are you sure you want to send this card?"
