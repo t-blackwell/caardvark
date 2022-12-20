@@ -1,11 +1,11 @@
 import ReplyIcon from "@mui/icons-material/Reply";
-import SaveIcon from "@mui/icons-material/Save";
 import {
   FormControl,
   InputLabel,
   Select,
   TextField,
   MenuItem,
+  Button,
 } from "@mui/material";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -130,24 +130,14 @@ export default function NewCardPage() {
   if (templateData.selectedTemplate !== undefined) {
     return (
       <Page
-        className="CreateForm__page"
+        className="CreateForm"
         pageHeaderActions={
-          <>
-            <ActionButton
-              icon={<ReplyIcon />}
-              title="Back"
-              to="/cards/new"
-              variant="outlined"
-            />
-            <ActionButton
-              icon={<SaveIcon />}
-              title="Create"
-              name="_action"
-              type="submit"
-              value="create"
-              variant="contained"
-            />
-          </>
+          <ActionButton
+            icon={<ReplyIcon />}
+            title="Back"
+            to="/cards/new"
+            variant="outlined"
+          />
         }
         pageHeaderTitle="Create Card"
       >
@@ -177,6 +167,14 @@ export default function NewCardPage() {
                   type="text"
                 />
               </div>
+              <Button
+                name="_action"
+                type="submit"
+                value="create"
+                variant="contained"
+              >
+                Create
+              </Button>
             </div>
             <div className="CreateForm__templateContainer">
               <TemplatePreview
