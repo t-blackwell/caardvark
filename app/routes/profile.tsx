@@ -7,7 +7,7 @@ import React from "react";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import ConfirmActionDialog from "~/components/ConfirmActionDialog";
-import PageHeader from "~/components/PageHeader";
+import Page from "~/components/Page";
 import { deleteUserByEmail, updateUser } from "~/models/user.server";
 import { getSession, getSessionHeaders, logout } from "~/session.server";
 import styles from "~/styles/profile.css";
@@ -82,7 +82,20 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="Profile">
+    <Page
+      className="Profile"
+      maxWidth="md"
+      pageHeaderActions={
+        <ActionButton
+          color="error"
+          icon={<DeleteIcon />}
+          title="Delete"
+          onClick={() => setIsOpen(true)}
+          variant="contained"
+        />
+      }
+      pageHeaderTitle="Profile"
+    >
       <fetcher.Form method="post">
         <ConfirmActionDialog
           actionColorTheme="error"
@@ -94,77 +107,59 @@ export default function ProfilePage() {
         />
       </fetcher.Form>
       <Form method="post">
-        <PageHeader
-          title="Profile"
-          actions={
-            <ActionButton
-              color="error"
-              icon={<DeleteIcon />}
-              title="Delete"
-              onClick={() => setIsOpen(true)}
-              variant="contained"
+        <div className="Profile__inputsContainer">
+          <div className="Profile__fieldsContainer">
+            <TextField
+              className="Profile__field"
+              defaultValue={user.email}
+              error={actionData?.errors?.email}
+              helperText={actionData?.errors?.email}
+              label="Email"
+              name="email"
+              type="text"
             />
-          }
-        />
-
-        <div className="Profile__pageContent">
-          <div className="Profile__inputsContainer">
-            <div className="Profile__fieldsContainer">
-              <TextField
-                className="Profile__field"
-                defaultValue={user.email}
-                error={actionData?.errors?.email}
-                helperText={actionData?.errors?.email}
-                label="Email"
-                name="email"
-                type="text"
-              />
-              <TextField
-                className="Profile__field"
-                defaultValue={user.first_name}
-                label="First Name"
-                name="first_name"
-                type="text"
-              />
-              <TextField
-                className="Profile__field"
-                defaultValue={user.last_name}
-                label="Last Name"
-                name="last_name"
-                type="text"
-              />
-              <TextField
-                className="Profile__field"
-                value={new Date(user.updated_date).toLocaleDateString("en-GB")}
-                disabled
-                label="Last Updated"
-                name="updated"
-                type="text"
-              />
-              <TextField
-                className="Profile__field"
-                value={new Date(user.created_date).toLocaleDateString("en-GB")}
-                disabled
-                label="Created"
-                name="created"
-                type="text"
-              />
-            </div>
-
-            <Button
-              name="_action"
-              type="submit"
-              value="update"
-              variant="contained"
-            >
-              Save Changes
-            </Button>
+            <TextField
+              className="Profile__field"
+              defaultValue={user.first_name}
+              label="First Name"
+              name="first_name"
+              type="text"
+            />
+            <TextField
+              className="Profile__field"
+              defaultValue={user.last_name}
+              label="Last Name"
+              name="last_name"
+              type="text"
+            />
+            <TextField
+              className="Profile__field"
+              value={new Date(user.updated_date).toLocaleDateString("en-GB")}
+              disabled
+              label="Last Updated"
+              name="updated"
+              type="text"
+            />
+            <TextField
+              className="Profile__field"
+              value={new Date(user.created_date).toLocaleDateString("en-GB")}
+              disabled
+              label="Created"
+              name="created"
+              type="text"
+            />
           </div>
-          <div className="Profile__templateContainer">
-            <div>Something</div>
-          </div>
+
+          <Button
+            name="_action"
+            type="submit"
+            value="update"
+            variant="contained"
+          >
+            Save Changes
+          </Button>
         </div>
       </Form>
-    </div>
+    </Page>
   );
 }

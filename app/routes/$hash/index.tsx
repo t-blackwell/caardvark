@@ -11,6 +11,7 @@ import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import MessageCard from "~/components/MessageCard";
+import Page from "~/components/Page";
 import PageHeader from "~/components/PageHeader";
 import ScrollButton from "~/components/ScrollButton";
 import TemplatePreview from "~/components/TemplatePreview";
@@ -78,7 +79,7 @@ export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <div className="ViewCard">
+    <Page className="ViewCard" maxWidth="xl">
       <PageHeader
         title={`From "${data.card.from}" to "${data.card.to}"`}
         actions={
@@ -146,6 +147,6 @@ export default function ViewCardPage() {
           </Masonry>
         </div>
       </div>
-    </div>
+    </Page>
   );
 }

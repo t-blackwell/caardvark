@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Container,
   FormControlLabel,
   Link,
   TextField,
@@ -18,6 +17,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import Logo from "~/components/Logo";
+import Page from "~/components/Page";
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import styles from "~/styles/login.css";
@@ -100,7 +100,7 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <Container className="Login">
+    <Page className="Login" maxWidth="xs">
       <Box className="Login__logo">
         <Logo color="black" size="medium" />
       </Box>
@@ -163,6 +163,6 @@ export default function LoginPage() {
           </Link>
         </Typography>
       </Form>
-    </Container>
+    </Page>
   );
 }

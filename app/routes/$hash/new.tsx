@@ -1,12 +1,5 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {
-  Box,
-  Button,
-  Container,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import type {
   ActionArgs,
   LoaderArgs,
@@ -23,6 +16,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import Page from "~/components/Page";
 import RichTextEditor from "~/components/RichTextEditor";
 import type { Color, FontFamily } from "~/components/RichTextEditor";
 import { getCard } from "~/models/card.server";
@@ -114,7 +108,7 @@ export default function NewMessagePage() {
   const [fontFamily, setFontFamily] = React.useState<FontFamily>("Arial");
 
   return (
-    <Container className="AddMessage">
+    <Page className="AddMessage" maxWidth="xs">
       <Form className="AddMessage__box" method="post">
         <Typography className="AddMessage__title" variant="h5">
           Add Message
@@ -181,6 +175,6 @@ export default function NewMessagePage() {
           </Link>
         </Typography>
       </Form>
-    </Container>
+    </Page>
   );
 }

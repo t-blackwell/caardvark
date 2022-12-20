@@ -9,7 +9,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import ActionButton from "~/components/ActionButton";
-import PageHeader from "~/components/PageHeader";
+import Page from "~/components/Page";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardListItems } from "~/models/card.server";
 import { requireUserId } from "~/session.server";
@@ -30,18 +30,18 @@ export default function CardsPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="Cards">
-      <PageHeader
-        title="My Cards"
-        actions={
-          <ActionButton
-            icon={<AddIcon />}
-            title="Create New Card"
-            to="new"
-            variant="outlined"
-          />
-        }
-      />
+    <Page
+      className="Cards"
+      pageHeaderActions={
+        <ActionButton
+          icon={<AddIcon />}
+          title="Create New Card"
+          to="new"
+          variant="outlined"
+        />
+      }
+      pageHeaderTitle="My Cards"
+    >
       <div>
         {data.cardListItems.length === 0 ? (
           <p>
@@ -81,6 +81,6 @@ export default function CardsPage() {
           </div>
         )}
       </div>
-    </div>
+    </Page>
   );
 }

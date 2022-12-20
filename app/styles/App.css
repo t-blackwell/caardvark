@@ -131,12 +131,15 @@ p.TemplatePreview__text {
 
 /* PageHeader */
 .PageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 20px;
   padding-bottom: 10px;
+}
+
+.PageHeader__content {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .PageHeader__actions {
