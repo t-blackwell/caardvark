@@ -102,7 +102,7 @@ export default function LoginPage() {
   return (
     <Page className="Login" maxWidth="xs">
       <Box className="Login__logo">
-        <Logo color="black" size="medium" />
+        <Logo size="medium" />
       </Box>
       <Form className="Login__box" method="post" noValidate>
         <Typography className="Login__title" variant="h5">
