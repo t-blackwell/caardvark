@@ -102,7 +102,26 @@ export default function NavBar({
           <Box sx={{ flexGrow: 1 }}>
             <Logo size="small" />
           </Box>
-          {largeScreen === false ? (
+          {largeScreen ? (
+            <>
+              <Link
+                component={RemixLink}
+                to="/login"
+                className="Nav__linkButton"
+                underline="none"
+              >
+                <Button>Sign In</Button>
+              </Link>
+              <Link
+                component={RemixLink}
+                to="/signup"
+                className="Nav__linkButton"
+                underline="none"
+              >
+                <Button>Sign Up</Button>
+              </Link>
+            </>
+          ) : (
             <>
               <IconButton
                 onClick={() => setIsUndefinedUserMenuOpen((prev) => !prev)}
@@ -130,25 +149,6 @@ export default function NavBar({
                   <Typography textAlign="center">Sign up</Typography>
                 </MenuItem>
               </Menu>
-            </>
-          ) : (
-            <>
-              <Link
-                component={RemixLink}
-                to="/login"
-                className="Nav__linkButton"
-                underline="none"
-              >
-                <Button>Sign In</Button>
-              </Link>
-              <Link
-                component={RemixLink}
-                to="/signup"
-                className="Nav__linkButton"
-                underline="none"
-              >
-                <Button>Sign Up</Button>
-              </Link>
             </>
           )}
         </Toolbar>
