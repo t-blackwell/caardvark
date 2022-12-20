@@ -1,3 +1,4 @@
+import InfoBar from "./InfoBar";
 import PageHeader from "./PageHeader";
 import type { Breakpoint } from "@mui/material";
 import Container from "@mui/material/Container";
@@ -7,6 +8,7 @@ import * as React from "react";
 interface PageProps {
   children: React.ReactNode;
   className?: string;
+  infoBarContent?: React.ReactNode;
   maxWidth?: false | Breakpoint | undefined;
   pageHeaderActions?: React.ReactNode;
   pageHeaderTitle?: string;
@@ -15,21 +17,30 @@ interface PageProps {
 export default function Page({
   className,
   children,
+  infoBarContent,
   maxWidth = "lg",
   pageHeaderActions,
   pageHeaderTitle,
 }: PageProps) {
   return (
     <>
-      {pageHeaderTitle !== undefined ? (
-        <PageHeader
-          actions={pageHeaderActions}
-          maxWidth={maxWidth}
-          title={pageHeaderTitle}
-        />
+      {infoBarContent !== undefined ? (
+        <InfoBar>{infoBarContent}</InfoBar>
       ) : null}
-      <Container className={classNames("Page", className)} maxWidth={maxWidth}>
-        {children}
+      <Container className="Page">
+        {pageHeaderTitle !== undefined ? (
+          <PageHeader
+            actions={pageHeaderActions}
+            maxWidth={maxWidth}
+            title={pageHeaderTitle}
+          />
+        ) : null}
+        <Container
+          className={classNames("Page__contentContainer", className)}
+          maxWidth={maxWidth}
+        >
+          {children}
+        </Container>
       </Container>
     </>
   );

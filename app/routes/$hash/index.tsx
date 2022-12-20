@@ -77,10 +77,26 @@ export function links() {
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
   const isPublished = data.card.published_date !== null;
+  const isSample = data.card.hash === "sample";
 
   return (
     <Page
       className="ViewCard"
+      infoBarContent={
+        isSample ? (
+          <Typography>
+            This is a sample card -{" "}
+            <Link
+              className="ViewCard__infoBarLink"
+              component={RemixLink}
+              underline="none"
+              to="/cards/new"
+            >
+              create your own!
+            </Link>{" "}
+          </Typography>
+        ) : null
+      }
       maxWidth="xl"
       pageHeaderActions={
         !isPublished ? (
