@@ -13,11 +13,13 @@ interface ActionButtonProps
     | "className"
     | "color"
     | "disabled"
+    | "fullWidth"
     | "name"
     | "onClick"
+    | "size"
     | "type"
-    | "variant"
     | "value"
+    | "variant"
   > {
   icon?: React.ReactNode;
   title: string;
@@ -34,17 +36,19 @@ export default function ActionButton({
   className,
   color,
   disabled,
+  fullWidth,
   icon,
   name,
   onClick,
+  size,
   title,
   to,
   type,
-  variant,
   value,
+  variant,
 }: ActionButtonProps) {
   const smScreen = useSmallScreen();
-  const size = useSmallScreen() ? "sm" : "xs";
+  const screenSize = useSmallScreen() ? "sm" : "xs";
   return (
     <ConditionalWrapper
       showWrapper={to !== undefined}
@@ -60,15 +64,17 @@ export default function ActionButton({
         className={classnames(
           className,
           "ActionButton",
-          `ActionButton--${size}`
+          `ActionButton--${screenSize}`
         )}
         color={color}
         disabled={disabled}
+        fullWidth={fullWidth}
         name={name}
         onClick={onClick}
+        size={size}
         type={type}
-        variant={variant}
         value={value}
+        variant={variant}
       >
         {smScreen || icon === undefined ? title : icon}
       </Button>

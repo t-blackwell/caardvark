@@ -8,6 +8,7 @@
   border-radius: 4px;
   gap: 8px;
   width: 100%;
+  background-color: #fff;
 }
 .AddMessage__title {
   margin-bottom: 20px !important;

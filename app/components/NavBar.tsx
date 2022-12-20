@@ -34,7 +34,7 @@ export default function NavBar({
 
   return user !== undefined ? (
     <Box sx={{ flexGrow: 0 }}>
-      <AppBar color="transparent" position="static">
+      <AppBar className="NavBar" position="static" elevation={3}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Logo size="small" />
@@ -90,7 +90,7 @@ export default function NavBar({
     </Box>
   ) : (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="transparent" position="static">
+      <AppBar className="NavBar" position="static" elevation={3}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Logo size="small" />

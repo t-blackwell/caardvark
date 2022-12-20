@@ -13,11 +13,14 @@ import { useFetcher } from "@remix-run/react";
 import * as React from "react";
 
 interface MessageCardProps {
+  deleteAllowed: boolean;
   message: message;
-  isOwner: boolean;
 }
 
-export default function MessageCard({ message, isOwner }: MessageCardProps) {
+export default function MessageCard({
+  deleteAllowed,
+  message,
+}: MessageCardProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const fetcher = useFetcher();
@@ -53,7 +56,7 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
           >
             <strong>{message.from}</strong>
           </Typography>
-          {isOwner ? (
+          {deleteAllowed ? (
             <IconButton size="small" onClick={() => setIsOpen(true)}>
               <DeleteIcon sx={{ fontSize: 18 }} />
             </IconButton>
