@@ -4,9 +4,7 @@ html {
 
 body {
   margin: 0;
-}
-main {
-  margin: 16px;
+  background-color: #f7fafc;
 }
 
 button {
@@ -22,6 +20,12 @@ h5,
 h6 {
   font-family: "Nunito", "Roboto", "Helvetica", "Arial", sans-serif !important;
   font-weight: 600 !important;
+}
+
+/* NavBar */
+.NavBar {
+  background-color: white !important;
+  position: relative !important;
 }
 
 .Nav__signout {
@@ -144,11 +148,17 @@ p.TemplatePreview__text {
   padding: 8px 16px !important;
 }
 
+/* Page */
+.Page {
+  padding: 16px;
+}
+
 /* PageHeader */
 .PageHeader {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding: 15px 0;
+  background-color: #fff;
 }
 
 .PageHeader__content {
