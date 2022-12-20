@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, TextField } from "@mui/material";
-import { useActionData, useFetcher } from "@remix-run/react";
+import { Form, useActionData, useFetcher } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json, redirect } from "@remix-run/server-runtime";
 import React from "react";
@@ -25,12 +25,11 @@ export async function action({ request }: ActionArgs) {
     case "delete":
       invariant(validateEmail(email), "user not found");
       await deleteUserByEmail(email);
-      setSuccessMessage(session, "Profile deleted.");
       return logout(request);
     case "update":
       const first = formData.get("first_name");
       const last = formData.get("last_name");
-      const emailError = validateEmail(email);
+      const emailError = !validateEmail(email);
 
       if (emailError) {
         return json(
@@ -93,6 +92,8 @@ export default function ProfilePage() {
           onClose={() => setIsOpen(false)}
           onConfirm={onConfirmDelete}
         />
+      </fetcher.Form>
+      <Form method="post">
         <PageHeader
           title="Profile"
           actions={
@@ -163,7 +164,7 @@ export default function ProfilePage() {
             <div>Something</div>
           </div>
         </div>
-      </fetcher.Form>
+      </Form>
     </div>
   );
 }
