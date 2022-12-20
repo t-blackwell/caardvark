@@ -150,9 +150,9 @@ p.TemplatePreview__text {
 
 /* Page */
 .InfoBar {
-  background-color: #1976D2;
-  color: #FFF;
-  display: flex;
+  background-color: #1976d2;
+  color: #fff;
+  position: static !important;
   justify-content: center;
   text-align: center;
 }

@@ -95,7 +95,7 @@ export default function ViewCardPage() {
               create your own!
             </Link>{" "}
           </Typography>
-        ) : null
+        ) : undefined
       }
       maxWidth="xl"
       pageHeaderActions={
