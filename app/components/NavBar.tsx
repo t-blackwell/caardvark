@@ -1,4 +1,5 @@
 import Logo from "./Logo";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, Divider, Link, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,6 +13,7 @@ import { cyan } from "@mui/material/colors";
 import type { user } from "@prisma/client";
 import { Form, Link as RemixLink } from "@remix-run/react";
 import * as React from "react";
+import useSmallScreen from "~/hooks/useSmallScreen";
 
 interface NavBarProps {
   anchorElUser: null | HTMLElement;
@@ -31,6 +33,11 @@ export default function NavBar({
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const [isUndefinedUserMenuOpen, setIsUndefinedUserMenuOpen] =
+    React.useState<boolean>(false);
+
+  const largeScreen = useSmallScreen();
 
   return user !== undefined ? (
     <Box sx={{ flexGrow: 0 }}>
@@ -95,22 +102,55 @@ export default function NavBar({
           <Box sx={{ flexGrow: 1 }}>
             <Logo size="small" />
           </Box>
-          <Link
-            component={RemixLink}
-            to="/login"
-            className="Nav__linkButton"
-            underline="none"
-          >
-            <Button>Sign In</Button>
-          </Link>
-          <Link
-            component={RemixLink}
-            to="/signup"
-            className="Nav__linkButton"
-            underline="none"
-          >
-            <Button>Sign Up</Button>
-          </Link>
+          {largeScreen === false ? (
+            <>
+              <IconButton
+                onClick={() => setIsUndefinedUserMenuOpen((prev) => !prev)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={isUndefinedUserMenuOpen}
+              >
+                <MenuItem component={RemixLink} to="/login">
+                  <Typography textAlign="center">Sign in</Typography>
+                </MenuItem>
+                <MenuItem component={RemixLink} to="/signup">
+                  <Typography textAlign="center">Sign up</Typography>
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Link
+                component={RemixLink}
+                to="/login"
+                className="Nav__linkButton"
+                underline="none"
+              >
+                <Button>Sign In</Button>
+              </Link>
+              <Link
+                component={RemixLink}
+                to="/signup"
+                className="Nav__linkButton"
+                underline="none"
+              >
+                <Button>Sign Up</Button>
+              </Link>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
