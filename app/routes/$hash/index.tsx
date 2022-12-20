@@ -76,18 +76,21 @@ export function links() {
 
 export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
+  const isPublished = data.card.published_date !== null;
 
   return (
     <div className="ViewCard">
       <PageHeader
         title={`From "${data.card.from}" to "${data.card.to}"`}
         actions={
-          <ActionButton
-            icon={<AddIcon />}
-            title="Add Message"
-            to="new"
-            variant="outlined"
-          />
+          !isPublished ? (
+            <ActionButton
+              icon={<AddIcon />}
+              title="Add Message"
+              to="new"
+              variant="outlined"
+            />
+          ) : null
         }
       />
       <div className="ViewCard__templateContainer">
@@ -135,14 +138,16 @@ export default function ViewCardPage() {
                 />
               </div>
             ))}
-            <Link component={RemixLink} underline="none" to="new">
-              <Card className="ViewCard__addMessage" variant="outlined">
-                <CardContent>
-                  <AddComment sx={{ fontSize: 100 }} />
-                  <Typography>Add Message</Typography>
-                </CardContent>
-              </Card>
-            </Link>
+            {!isPublished ? (
+              <Link component={RemixLink} underline="none" to="new">
+                <Card className="ViewCard__addMessage" variant="outlined">
+                  <CardContent>
+                    <AddComment sx={{ fontSize: 100 }} />
+                    <Typography>Add Message</Typography>
+                  </CardContent>
+                </Card>
+              </Link>
+            ) : null}
           </Masonry>
         </div>
       </div>
