@@ -27,22 +27,6 @@ async function seed() {
     },
   });
 
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      user_id: user.user_id,
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My second note",
-      body: "Hello, world!",
-      user_id: user.user_id,
-    },
-  });
-
   const cardTypeBirthday = await prisma.card_type.create({
     data: {
       name: "Birthday",

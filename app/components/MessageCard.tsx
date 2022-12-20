@@ -56,7 +56,7 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
           ) : null}
         </CardActions>
         <ConfirmActionDialog
-          actionName="Delete Message"
+          actionName="Yes, delete this message"
           actionColorTheme="error"
           isOpen={isOpen}
           message={`Are you sure you want to delete the message from '${message.from}'?`}

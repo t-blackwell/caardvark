@@ -55,7 +55,7 @@ export async function action({ request, params }: ActionArgs) {
     case "delete":
       await deleteCard({ request, card_id: cardId });
 
-      setSuccessMessage(session, "Card Deleted.");
+      setSuccessMessage(session, "Card deleted.");
 
       return redirect("/cards", {
         headers: await getSessionHeaders(session),
@@ -83,7 +83,7 @@ export async function action({ request, params }: ActionArgs) {
 
       await updateCard({ request, card_id: cardId, from, to });
 
-      setSuccessMessage(session, "Card Updated.");
+      setSuccessMessage(session, "Card updated.");
 
       return redirect("", {
         headers: await getSessionHeaders(session),
@@ -93,7 +93,7 @@ export async function action({ request, params }: ActionArgs) {
     case "publish":
       await publishCard({ request, card_id: cardId });
 
-      setSuccessMessage(session, "Card Sent.");
+      setSuccessMessage(session, "Card sent.");
 
       return redirect("", {
         headers: await getSessionHeaders(session),
@@ -141,7 +141,7 @@ export default function CardDetailsPage() {
     <div className="CardDetails">
       <fetcher.Form>
         <ConfirmActionDialog
-          actionName="Delete"
+          actionName="Yes, delete this card"
           actionColorTheme="error"
           isOpen={isDeleteDialogOpen}
           message="Are you sure you want to delete this card?"
@@ -149,7 +149,7 @@ export default function CardDetailsPage() {
           onConfirm={onConfirmDelete}
         />
         <ConfirmActionDialog
-          actionName="Send"
+          actionName="Yes, send this card"
           actionColorTheme="primary"
           isOpen={isPublishDialogOpen}
           message="Are you sure you want to send this card?"

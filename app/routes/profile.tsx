@@ -86,7 +86,7 @@ export default function ProfilePage() {
       <fetcher.Form method="post">
         <ConfirmActionDialog
           actionColorTheme="error"
-          actionName="Delete Account"
+          actionName="Yes, delete my account"
           isOpen={isOpen}
           message="Are you sure you want to delete your account?"
           onClose={() => setIsOpen(false)}
