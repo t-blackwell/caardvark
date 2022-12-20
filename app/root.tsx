@@ -1,11 +1,14 @@
+import ActionButton from "./components/ActionButton";
+import { HeroBanner } from "./components/HeroBanner";
 import NavBar from "./components/NavBar";
+import Page from "./components/Page";
 import ClientStyleContext from "./contexts/ClientStyleContext";
 import { getSession, getUser, getSessionHeaders } from "./session.server";
 import theme from "./theme";
 import { getMessage } from "./toast-message.server";
 import { useOptionalUser } from "./utils";
 import { withEmotionCache } from "@emotion/react";
-import { Snackbar } from "@mui/material";
+import { Snackbar, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
 import type { LoaderArgs, MetaFunction } from "@remix-run/node";
@@ -17,8 +20,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
   useLoaderData,
   useLocation,
+  useNavigate,
 } from "@remix-run/react";
 import * as React from "react";
 import styles from "~/styles/App.css";
@@ -146,6 +151,53 @@ export default function App() {
         </MuiAlert>
       </Snackbar>
       <Outlet />
+    </Document>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  const navigate = useNavigate();
+  const is404 = caught.status === 404;
+  const docTitle = is404 ? "Page Not Found" : "Something went wrong";
+
+  return (
+    <Document title={docTitle}>
+      <Page className="CatchBoundary">
+        <HeroBanner
+          title={docTitle}
+          subtitle={
+            <div className="CatchBoundary__bannerSubtitle">
+              <Typography color="text.secondary">
+                Error {caught.status}
+              </Typography>
+              <img
+                className="CatchBoundary__bannerImage"
+                src="/assets/undraw_notify_re_65on.svg"
+                alt="person with exclamation mark"
+              />
+              {is404 ? (
+                <ActionButton
+                  title="Go back to home page"
+                  to="/"
+                  variant="outlined"
+                />
+              ) : (
+                <ActionButton
+                  title="Go back"
+                  onClick={() => navigate(-1)}
+                  variant="outlined"
+                />
+              )}
+            </div>
+          }
+        />
+        {!is404 && caught.data && process.env.NODE_ENV === "development" ? (
+          <pre className="CatchBoundary__stackTrace">
+            {JSON.stringify(caught.data, null, 2)}
+          </pre>
+        ) : null}
+      </Page>
     </Document>
   );
 }
