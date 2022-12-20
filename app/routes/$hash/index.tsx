@@ -12,7 +12,6 @@ import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import MessageCard from "~/components/MessageCard";
 import Page from "~/components/Page";
-import PageHeader from "~/components/PageHeader";
 import ScrollButton from "~/components/ScrollButton";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
@@ -79,18 +78,19 @@ export default function ViewCardPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Page className="ViewCard" maxWidth="xl">
-      <PageHeader
-        title={`From "${data.card.from}" to "${data.card.to}"`}
-        actions={
-          <ActionButton
-            icon={<AddIcon />}
-            title="Add Message"
-            to="new"
-            variant="outlined"
-          />
-        }
-      />
+    <Page
+      className="ViewCard"
+      maxWidth="xl"
+      pageHeaderActions={
+        <ActionButton
+          icon={<AddIcon />}
+          title="Add Message"
+          to="new"
+          variant="outlined"
+        />
+      }
+      pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
+    >
       <div className="ViewCard__templateContainer">
         <TemplatePreview
           size="large"
