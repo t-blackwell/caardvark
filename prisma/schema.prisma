@@ -42,16 +42,6 @@ model card_type {
   card_template card_template[]
 }
 
-model note {
-  note_id      Int      @id(map: "pk_note") @default(autoincrement())
-  user_id      Int
-  title        String   @db.VarChar(100)
-  body         String   @db.VarChar(4000)
-  created_date DateTime @default(now())
-  updated_date DateTime @default(now())
-  user         user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_note_user_id")
-}
-
 model password {
   hash    String @db.VarChar(100)
   user_id Int    @unique(map: "uk_password_user_id")
@@ -67,7 +57,6 @@ model user {
   updated_date DateTime  @default(now())
   deleted      String    @default("N") @db.VarChar(1)
   card         card[]
-  note         note[]
   password     password?
 }
 
