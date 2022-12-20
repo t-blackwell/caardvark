@@ -1,6 +1,5 @@
 .CardDetails {
   display: grid;
-  gap: 20px;
 }
 
 .CardDetails__pageContent {
