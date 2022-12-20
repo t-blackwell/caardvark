@@ -32,20 +32,13 @@ const selectMessageColumns = {
   updated_date: true,
 };
 
-export async function getCard({
-  request,
-  hash,
-}: Pick<card, "hash"> & {
-  request: Request;
-}) {
-  const userId = await requireUserId(request);
-
+export async function getCard({ hash }: Pick<card, "hash">) {
   return prisma.card.findFirst({
     select: {
       ...selectCardColumns,
       card_template: { select: selectCardTemplateColumns },
     },
-    where: { hash, user_id: userId, deleted: "N" },
+    where: { hash, deleted: "N" },
   });
 }
 

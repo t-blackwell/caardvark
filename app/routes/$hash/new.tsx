@@ -1,11 +1,6 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
-import type {
-  ActionArgs,
-  LoaderArgs,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
@@ -21,20 +16,21 @@ import RichTextEditor from "~/components/RichTextEditor";
 import type { Color, FontFamily } from "~/components/RichTextEditor";
 import { getCard } from "~/models/card.server";
 import { createMessage } from "~/models/message.server";
-import { getSession, getSessionHeaders, requireUserId } from "~/session.server";
+import { getSession, getSessionHeaders } from "~/session.server";
 import styles from "~/styles/messages/new.css";
 import { setSuccessMessage } from "~/toast-message.server";
 
-export const loader: LoaderFunction = async ({
-  request,
-  params,
-}: LoaderArgs) => {
-  await requireUserId(request);
+export const loader = async ({ request, params }: LoaderArgs) => {
   invariant(params.hash, "hash not found");
 
-  const card = await getCard({ request, hash: params.hash });
+  const card = await getCard({ hash: params.hash });
   if (!card) {
     throw new Response("Not Found", { status: 404 });
+  }
+
+  // can't add message to a published card
+  if (card.published_date !== null) {
+    throw redirect(`/${card.hash}`);
   }
 
   return json({ card });
@@ -100,7 +96,7 @@ export function links() {
 }
 
 export default function NewMessagePage() {
-  const loaderData = useLoaderData<typeof loader>();
+  const { card } = useLoaderData<typeof loader>();
   const errors = useActionData();
 
   const [imageUrl, setImageUrl] = React.useState<string>();
@@ -154,8 +150,8 @@ export default function NewMessagePage() {
           required
           size="small"
         />
-        <input type="hidden" name="hash" value={loaderData.card.hash} />
-        <input type="hidden" name="card_id" value={loaderData.card.card_id} />
+        <input type="hidden" name="hash" value={card.hash} />
+        <input type="hidden" name="card_id" value={card.card_id} />
         <Button
           color="primary"
           className="AddMessage__button"
@@ -165,11 +161,7 @@ export default function NewMessagePage() {
           Add message
         </Button>
         <Typography className="AddMessage__backLink" variant="caption">
-          <Link
-            component={RemixLink}
-            to={`/${loaderData.card.hash}`}
-            underline="hover"
-          >
+          <Link component={RemixLink} to={`/${card.hash}`} underline="hover">
             <ArrowBackIcon sx={{ mr: 0.5 }} fontSize="small" />
             Go back to card
           </Link>

@@ -149,14 +149,26 @@ p.TemplatePreview__text {
 }
 
 /* Page */
+.InfoBar {
+  background-color: #1976D2;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.InfoBar__content {
+  padding: 5px;
+}
+
+/* Page */
 .Page {
-  padding: 16px;
+  padding: 32px 16px;
 }
 
 /* PageHeader */
 .PageHeader {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  margin-bottom: 20px;
   padding: 15px 0;
   background-color: #fff;
 }
@@ -172,6 +184,24 @@ p.TemplatePreview__text {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+/* CatchBoundary */
+.CatchBoundary__bannerSubtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.CatchBoundary__stackTrace {
+  background: #fee2e1;
+  padding: 2rem;
+  border-radius: 4px;
+  color: red;
+  overflow: auto;
+}
+.CatchBoundary__bannerImage {
+  max-width: 150px;
 }
 
 /* ActionButton */
