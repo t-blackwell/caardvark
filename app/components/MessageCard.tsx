@@ -46,8 +46,12 @@ export default function MessageCard({ message, isOwner }: MessageCardProps) {
           </Typography>
         </CardContent>
         <CardActions className="MessageCard__actions">
-          <Typography variant="caption" color="text.secondary">
-            From <strong>{message.from}</strong>
+          <Typography
+            color={message.color}
+            fontFamily={message.font}
+            variant="caption"
+          >
+            <strong>{message.from}</strong>
           </Typography>
           {isOwner ? (
             <IconButton size="small" onClick={() => setIsOpen(true)}>
