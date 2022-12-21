@@ -1,7 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReplyIcon from "@mui/icons-material/Reply";
 import SendIcon from "@mui/icons-material/Send";
-import ShareIcon from "@mui/icons-material/Share";
 import { Button, Link, TextField, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -107,7 +106,7 @@ export async function action({ request, params }: ActionArgs) {
       });
   }
 
-  throw new Error(`Action ${action} not recognised`);
+  throw new Error(`Action ${_action} not recognised`);
 }
 
 export function links() {
@@ -142,6 +141,7 @@ export default function CardDetailsPage() {
       { method: "post" }
     );
     setIsPublishDialogOpen(false);
+    setIsShareDialogOpen(true);
   };
 
   const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
@@ -249,8 +249,7 @@ export default function CardDetailsPage() {
             </Button>
 
             <Button
-              disabled={isDeleted || isPublished}
-              endIcon={<ShareIcon />}
+              disabled={isDeleted}
               onClick={() => setIsShareDialogOpen(true)}
               variant="outlined"
             >

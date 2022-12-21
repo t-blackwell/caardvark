@@ -1,10 +1,11 @@
+import { Share } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import SouthIcon from "@mui/icons-material/South";
 import { IconButton, Container, Link, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link as RemixLink } from "@remix-run/react";
+import { Link as RemixLink, useFetcher } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry from "react-smart-masonry";
@@ -13,6 +14,7 @@ import ActionButton from "~/components/ActionButton";
 import MessageCard from "~/components/MessageCard";
 import Page from "~/components/Page";
 import ScrollButton from "~/components/ScrollButton";
+import ShareLinkDialog, { copyLinkAction } from "~/components/ShareLinkDialog";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
 import { deleteMessage } from "~/models/message.server";
@@ -35,23 +37,30 @@ export async function action({ request }: ActionArgs) {
   const session = await getSession(request);
 
   const formData = await request.formData();
-  const action = formData.get("_action");
+  const _action = formData.get("_action");
 
-  if (action === "delete") {
-    const messageId = formData.get("messageId");
-    invariant(messageId, "Error");
+  switch (_action) {
+    // copy
+    case "copy":
+      return copyLinkAction(request);
 
-    await deleteMessage({
-      request,
-      message_id: Number(messageId),
-    });
+    // delete
+    case "delete":
+      const messageId = formData.get("messageId");
+      invariant(messageId, "Error");
 
-    setSuccessMessage(session, "Message deleted.");
+      await deleteMessage({
+        request,
+        message_id: Number(messageId),
+      });
+
+      setSuccessMessage(session, "Message deleted.");
+      return redirect(".", {
+        headers: await getSessionHeaders(session),
+      });
   }
 
-  return redirect(".", {
-    headers: await getSessionHeaders(session),
-  });
+  throw new Error(`Action ${_action} not recognised`);
 }
 
 export function handleScrollDown() {
@@ -79,6 +88,13 @@ export default function ViewCardPage() {
   const isPublished = data.card.published_date !== null;
   const isSample = data.card.hash === "sample";
 
+  const fetcher = useFetcher();
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
+  const onShareCopy = () => {
+    fetcher.submit({ _action: "copy" }, { method: "post" });
+  };
+
   return (
     <Page
       className="ViewCard"
@@ -99,17 +115,34 @@ export default function ViewCardPage() {
       }
       maxWidth="xl"
       pageHeaderActions={
-        !isPublished ? (
+        <>
+          {!isPublished ? (
+            <ActionButton
+              icon={<AddIcon />}
+              title="Add Message"
+              to="new"
+              variant="outlined"
+            />
+          ) : null}
           <ActionButton
-            icon={<AddIcon />}
-            title="Add Message"
-            to="new"
+            icon={<Share />}
+            onClick={() => setIsShareDialogOpen(true)}
+            title="Share"
             variant="outlined"
           />
-        ) : null
+        </>
       }
       pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
     >
+      <fetcher.Form>
+        <ShareLinkDialog
+          hash={data.card.hash}
+          onClose={() => setIsShareDialogOpen(false)}
+          onCopy={onShareCopy}
+          open={isShareDialogOpen}
+        />
+      </fetcher.Form>
+
       <div className="ViewCard__templateContainer">
         <TemplatePreview
           size="large"
