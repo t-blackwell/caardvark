@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReplyIcon from "@mui/icons-material/Reply";
 import SendIcon from "@mui/icons-material/Send";
+import ShareIcon from "@mui/icons-material/Share";
 import { Button, Link, TextField, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -18,6 +19,7 @@ import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
 import ConfirmActionDialog from "~/components/ConfirmActionDialog";
 import Page from "~/components/Page";
+import ShareLinkDialog, { copyLinkAction } from "~/components/ShareLinkDialog";
 import TemplatePreview from "~/components/TemplatePreview";
 import {
   deleteCard,
@@ -31,6 +33,7 @@ import { setSuccessMessage } from "~/toast-message.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.hash, "hash not found");
+  console.log("request", request.headers, request.url);
 
   const card = await getCard({ hash: params.hash });
   if (card === null) {
@@ -51,6 +54,10 @@ export async function action({ request, params }: ActionArgs) {
   const { _action } = Object.fromEntries(formData);
 
   switch (_action) {
+    // copy
+    case "copy":
+      return copyLinkAction(request);
+
     // delete
     case "delete":
       await deleteCard({ request, card_id: cardId });
@@ -137,6 +144,14 @@ export default function CardDetailsPage() {
     setIsPublishDialogOpen(false);
   };
 
+  const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
+  const onShareCopy = () => {
+    fetcher.submit(
+      { _action: "copy", card_id: card.card_id.toString() },
+      { method: "post" }
+    );
+  };
+
   return (
     <Page
       className="CardDetails"
@@ -186,7 +201,14 @@ export default function CardDetailsPage() {
           onClose={() => setIsPublishDialogOpen(false)}
           onConfirm={onConfirmPublish}
         />
+        <ShareLinkDialog
+          hash={card.hash}
+          onClose={() => setIsShareDialogOpen(false)}
+          onCopy={onShareCopy}
+          open={isShareDialogOpen}
+        />
       </fetcher.Form>
+
       <Form method="post">
         <input type="hidden" name="card_id" value={card.card_id} />
 
@@ -224,6 +246,15 @@ export default function CardDetailsPage() {
               variant="contained"
             >
               Save Changes
+            </Button>
+
+            <Button
+              disabled={isDeleted || isPublished}
+              endIcon={<ShareIcon />}
+              onClick={() => setIsShareDialogOpen(true)}
+              variant="outlined"
+            >
+              Share
             </Button>
           </div>
           <div className="CardDetails__templateContainer">
