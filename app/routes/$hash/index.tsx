@@ -50,8 +50,6 @@ export async function action({ request }: ActionArgs) {
     setSuccessMessage(session, "Message deleted.");
   }
   if (action === "add") {
-    console.log("what");
-
     const text = formData.get("text")?.toString();
     const from = formData.get("from")?.toString();
     const hash = formData.get("hash")?.toString();
