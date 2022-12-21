@@ -209,3 +209,32 @@ p.TemplatePreview__text {
   min-width: 0 !important;
   padding: 5px !important;
 }
+
+/* ShareLinkDialog */
+.ShareLinkDialog__closeIcon {
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+}
+
+.ShareLinkDialog__dialogContent {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.ShareLinkDialog__linkButton {
+  border-radius: 4px !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  padding: 0 !important;
+  margin-left: 6px !important;
+}
+
+.ShareLinkDialog__linkText {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.7);
+}
