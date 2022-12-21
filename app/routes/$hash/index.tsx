@@ -197,7 +197,7 @@ export default function ViewCardPage() {
                 fullWidth
                 title="Add message"
                 to="new"
-                variant="outlined"
+                variant="contained"
               />
             </Container>
           ) : null}
