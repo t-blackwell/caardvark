@@ -35,7 +35,7 @@ export default function MessageCard({
 
   return (
     <fetcher.Form>
-      <Card className="MessageCard" variant="outlined">
+      <Card className="MessageCard" variant="elevation">
         {message.image_url ? (
           <CardMedia
             component="img"

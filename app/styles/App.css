@@ -136,8 +136,8 @@ p.TemplatePreview__text {
 
 /* MessageCard */
 .MessageCard {
-  overflow: hidden;
   max-width: 345px;
+  box-shadow: none !important;
 }
 .MessageCard__content {
   padding: 8px 16px !important;
@@ -250,3 +250,31 @@ p.TemplatePreview__text {
   width: 80%;
 }
 
+/* ShareLinkDialog */
+.ShareLinkDialog__closeIcon {
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+}
+
+.ShareLinkDialog__dialogContent {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.ShareLinkDialog__linkButton {
+  border-radius: 4px !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  padding: 0 !important;
+  margin-left: 6px !important;
+}
+
+.ShareLinkDialog__linkText {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.7);
+}
