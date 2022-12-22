@@ -34,10 +34,10 @@ export default function NavBar({
     setAnchorElUser(null);
   };
 
-  const [isUndefinedUserMenuOpen, setIsUndefinedUserMenuOpen] =
+  const [isUnauthenticatedMenuOpen, setIsUnauthenticatedMenuOpen] =
     React.useState<boolean>(false);
 
-  const largeScreen = useSmallScreen();
+  const smScreen = useSmallScreen();
 
   return user !== undefined ? (
     <Box sx={{ flexGrow: 0 }}>
@@ -102,7 +102,7 @@ export default function NavBar({
           <Box sx={{ flexGrow: 1 }}>
             <Logo size="small" />
           </Box>
-          {largeScreen ? (
+          {smScreen ? (
             <>
               <Link
                 component={RemixLink}
@@ -124,7 +124,7 @@ export default function NavBar({
           ) : (
             <>
               <IconButton
-                onClick={() => setIsUndefinedUserMenuOpen((prev) => !prev)}
+                onClick={() => setIsUnauthenticatedMenuOpen((prev) => !prev)}
               >
                 <MenuIcon />
               </IconButton>
@@ -140,7 +140,7 @@ export default function NavBar({
                   vertical: "top",
                   horizontal: "right",
                 }}
-                open={isUndefinedUserMenuOpen}
+                open={isUnauthenticatedMenuOpen}
               >
                 <MenuItem component={RemixLink} to="/login">
                   <Typography textAlign="center">Sign in</Typography>
