@@ -1,3 +1,9 @@
+.ViewCard {
+  background-color: #26a69a;
+  background-image: url("/assets/bg_pattern1.png");
+  background-size: 40%;
+}
+
 .ViewCard__infoBarLink {
   color: inherit !important;
   text-decoration: underline !important;
@@ -53,4 +59,15 @@
 .ViewCard__addMessage {
   display: flex;
   justify-content: center;
+}
+
+@media (min-width: 800px) {
+  .ViewCard {
+    background-size: 30%;
+  }
+}
+@media (min-width: 1000px) {
+  .ViewCard {
+    background-size: 20%;
+  }
 }

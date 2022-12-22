@@ -1,21 +1,28 @@
+import { Share } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import SouthIcon from "@mui/icons-material/South";
 import { IconButton, Container, Link, Typography } from "@mui/material";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link as RemixLink } from "@remix-run/react";
+import {
+  Link as RemixLink,
+  useFetcher,
+  useSearchParams,
+} from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import Masonry from "react-smart-masonry";
 import invariant from "tiny-invariant";
 import ActionButton from "~/components/ActionButton";
+import AddMessageDialog from "~/components/AddMessageDialog";
 import MessageCard from "~/components/MessageCard";
 import Page from "~/components/Page";
 import ScrollButton from "~/components/ScrollButton";
+import ShareLinkDialog, { copyLinkAction } from "~/components/ShareLinkDialog";
 import TemplatePreview from "~/components/TemplatePreview";
 import { getCardWithMessages } from "~/models/card.server";
-import { deleteMessage } from "~/models/message.server";
+import { createMessage, deleteMessage } from "~/models/message.server";
 import { getSession, getSessionHeaders, getUserId } from "~/session.server";
 import styles from "~/styles/messages/index.css";
 import { setSuccessMessage } from "~/toast-message.server";
@@ -35,23 +42,76 @@ export async function action({ request }: ActionArgs) {
   const session = await getSession(request);
 
   const formData = await request.formData();
-  const action = formData.get("_action");
+  const _action = formData.get("_action");
 
-  if (action === "delete") {
-    const messageId = formData.get("messageId");
-    invariant(messageId, "Error");
+  switch (_action) {
+    // copy
+    case "copy":
+      return copyLinkAction(request);
 
-    await deleteMessage({
-      request,
-      message_id: Number(messageId),
-    });
+    // delete
+    case "delete":
+      const messageId = formData.get("messageId");
+      invariant(messageId, "Error");
 
-    setSuccessMessage(session, "Message deleted.");
+      await deleteMessage({
+        request,
+        message_id: Number(messageId),
+      });
+
+      setSuccessMessage(session, "Message deleted.");
+      return redirect(".", {
+        headers: await getSessionHeaders(session),
+      });
+
+    case "add":
+      const text = formData.get("text")?.toString();
+      const from = formData.get("from")?.toString();
+      const hash = formData.get("hash")?.toString();
+      const card_id = Number(formData.get("card_id"));
+      const color = formData.get("color")?.toString();
+      const font = formData.get("font")?.toString();
+      const imageUrl = formData.get("imageUrl")?.toString();
+
+      invariant(!isNaN(card_id), "card not found");
+
+      const errors = {
+        text:
+          typeof text !== "string" || text.length === 0
+            ? "Message is required"
+            : undefined,
+        from:
+          typeof from !== "string" || from.length === 0
+            ? "From is required"
+            : undefined,
+      };
+      if (
+        Object.values(errors).every((error) => error === undefined) &&
+        typeof text === "string" &&
+        typeof from === "string" &&
+        typeof color === "string" &&
+        typeof font === "string"
+      ) {
+        await createMessage({
+          text,
+          from,
+          color,
+          font,
+          card_id,
+          image_url: imageUrl ?? null,
+        });
+
+        setSuccessMessage(session, "Message added.");
+        // TODO: #pageEnd not working but unsure why.
+        return redirect(`/${hash}#pageEnd`, {
+          headers: await getSessionHeaders(session),
+        });
+      } else {
+        return errors;
+      }
   }
 
-  return redirect(".", {
-    headers: await getSessionHeaders(session),
-  });
+  throw new Error(`Action ${_action} not recognised`);
 }
 
 export function handleScrollDown() {
@@ -79,6 +139,14 @@ export default function ViewCardPage() {
   const isPublished = data.card.published_date !== null;
   const isSample = data.card.hash === "sample";
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const fetcher = useFetcher();
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
+  const onShareCopy = () => {
+    fetcher.submit({ _action: "copy" }, { method: "post" });
+  };
+
   return (
     <Page
       className="ViewCard"
@@ -95,21 +163,38 @@ export default function ViewCardPage() {
               create your own!
             </Link>{" "}
           </Typography>
-        ) : null
+        ) : undefined
       }
       maxWidth="xl"
       pageHeaderActions={
-        !isPublished ? (
+        <>
+          {!isPublished ? (
+            <ActionButton
+              icon={<AddIcon />}
+              onClick={() => setSearchParams({ add_message: "true" })}
+              title="Add Message"
+              variant="outlined"
+            />
+          ) : null}
           <ActionButton
-            icon={<AddIcon />}
-            title="Add Message"
-            to="new"
+            icon={<Share />}
+            onClick={() => setIsShareDialogOpen(true)}
+            title="Share"
             variant="outlined"
           />
-        ) : null
+        </>
       }
       pageHeaderTitle={`From "${data.card.from}" to "${data.card.to}"`}
     >
+      <fetcher.Form>
+        <ShareLinkDialog
+          hash={data.card.hash}
+          onClose={() => setIsShareDialogOpen(false)}
+          onCopy={onShareCopy}
+          open={isShareDialogOpen}
+        />
+      </fetcher.Form>
+
       <div className="ViewCard__templateContainer">
         <TemplatePreview
           size="large"
@@ -163,13 +248,20 @@ export default function ViewCardPage() {
               <ActionButton
                 fullWidth
                 title="Add message"
-                to="new"
-                variant="outlined"
+                onClick={() => setSearchParams({ add_message: "true" })}
+                variant="contained"
               />
             </Container>
           ) : null}
         </div>
+        <div id="pageEnd" />
       </div>
+      <AddMessageDialog
+        isOpen={searchParams.get("add_message") === "true"}
+        onClose={() => setSearchParams({})}
+        cardHash={data.card.hash}
+        cardId={data.card.card_id}
+      />
     </Page>
   );
 }
