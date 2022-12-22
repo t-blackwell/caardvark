@@ -49,15 +49,16 @@ model password {
 }
 
 model user {
-  user_id      Int       @id(map: "pk_user") @default(autoincrement())
-  email        String    @unique(map: "uk_user_email") @db.VarChar(200)
-  first_name   String?   @db.VarChar(50)
-  last_name    String?   @db.VarChar(50)
-  created_date DateTime  @default(now())
-  updated_date DateTime  @default(now())
-  deleted      String    @default("N") @db.VarChar(1)
-  card         card[]
-  password     password?
+  user_id        Int       @id(map: "pk_user") @default(autoincrement())
+  email          String    @unique(map: "uk_user_email") @db.VarChar(200)
+  first_name     String?   @db.VarChar(50)
+  last_name      String?   @db.VarChar(50)
+  created_date   DateTime  @default(now())
+  updated_date   DateTime  @default(now())
+  deleted        String    @default("N") @db.VarChar(1)
+  email_verified String    @default("N") @db.VarChar(1)
+  card           card[]
+  password       password?
 }
 
 model message {
