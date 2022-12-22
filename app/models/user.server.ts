@@ -1,8 +1,7 @@
 import type { password, user } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
 import { prisma } from "~/db.server";
-import { requireUserId } from "~/session.server";
+import { requireUserId, setEmailVerify } from "~/session.server";
 
 export type { user } from "@prisma/client";
 
@@ -30,17 +29,17 @@ export async function createUser(email: user["email"], password: string) {
 }
 
 export async function deleteUserByEmail(email: user["email"]) {
-  return prisma.user.update({ 
-    data: { deleted: 'Y' },
-    where: { email }, 
- });
+  return prisma.user.update({
+    data: { deleted: "Y" },
+    where: { email },
+  });
 }
 
 export async function updateUser({
   request,
   email,
   first_name,
-  last_name
+  last_name,
 }: Pick<user, "email" | "first_name" | "last_name"> & {
   request: Request;
 }) {
@@ -53,6 +52,7 @@ export async function updateUser({
 }
 
 export async function verifyLogin(
+  request: Request,
   email: user["email"],
   password: password["hash"]
 ) {
@@ -63,7 +63,11 @@ export async function verifyLogin(
     },
   });
 
-  if (!userWithPassword || !userWithPassword.password || userWithPassword.deleted === 'Y') {
+  if (
+    !userWithPassword ||
+    !userWithPassword.password ||
+    userWithPassword.deleted === "Y"
+  ) {
     return null;
   }
 
@@ -74,6 +78,10 @@ export async function verifyLogin(
 
   if (!isValid) {
     return null;
+  }
+
+  if (userWithPassword.email_verified !== "Y") {
+    return await setEmailVerify(request, email);
   }
 
   const { password: _password, ...userWithoutPassword } = userWithPassword;

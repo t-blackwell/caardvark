@@ -97,7 +97,7 @@ const Document = withEmotionCache(
           />
         </head>
         <body>
-          {!["/login", "/signup"].includes(location.pathname) ? (
+          {!["/login", "/signup", "/verify"].includes(location.pathname) ? (
             <header>
               <NavBar
                 anchorElUser={anchorElUser}

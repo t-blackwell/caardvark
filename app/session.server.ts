@@ -18,6 +18,7 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 const USER_SESSION_KEY = "userId";
+const EMAIL_VERIFY_SESSION_KEY = "emailVerify";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
@@ -69,6 +70,24 @@ export async function requireUser(request: Request) {
   throw await logout(request);
 }
 
+export async function setEmailVerify(request: Request, email: user["email"]) {
+  const session = await getSession(request);
+  session.set(EMAIL_VERIFY_SESSION_KEY, email);
+  throw redirect("/verify", {
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session),
+    },
+  });
+}
+
+export async function getEmailVerify(
+  request: Request
+): Promise<user["email"] | undefined> {
+  const session = await getSession(request);
+  const emailVerify = session.get(EMAIL_VERIFY_SESSION_KEY);
+  return emailVerify;
+}
+
 export async function createUserSession({
   request,
   userId,
@@ -82,6 +101,7 @@ export async function createUserSession({
 }) {
   const session = await getSession(request);
   session.set(USER_SESSION_KEY, userId);
+  session.unset(EMAIL_VERIFY_SESSION_KEY);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {

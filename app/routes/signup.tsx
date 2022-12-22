@@ -11,9 +11,9 @@ import * as React from "react";
 import Logo from "~/components/Logo";
 import Page from "~/components/Page";
 import { createUser, getUserByEmail } from "~/models/user.server";
-import { createUserSession, getUserId } from "~/session.server";
+import { getUserId, setEmailVerify } from "~/session.server";
 import styles from "~/styles/signup.css";
-import { safeRedirect, validateEmail } from "~/utils";
+import { validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -25,7 +25,6 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   if (!validateEmail(email)) {
     return json(
@@ -61,14 +60,9 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await createUser(email, password);
+  await createUser(email, password);
 
-  return createUserSession({
-    request,
-    userId: user.user_id.toString(),
-    remember: false,
-    redirectTo,
-  });
+  return await setEmailVerify(request, email);
 }
 
 export const meta: MetaFunction = () => {
@@ -84,7 +78,7 @@ export function links() {
 export default function SignUp() {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
