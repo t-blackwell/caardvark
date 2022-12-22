@@ -106,7 +106,9 @@ export async function action({ request }: ActionArgs) {
         return redirect(`/${hash}#pageEnd`, {
           headers: await getSessionHeaders(session),
         });
-      } else return errors;
+      } else {
+        return errors;
+      }
   }
 
   throw new Error(`Action ${_action} not recognised`);
@@ -169,8 +171,8 @@ export default function ViewCardPage() {
           {!isPublished ? (
             <ActionButton
               icon={<AddIcon />}
+              onClick={() => setSearchParams({ add_message: "true" })}
               title="Add Message"
-              to="new"
               variant="outlined"
             />
           ) : null}
